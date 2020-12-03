@@ -1,5 +1,7 @@
 from ntuple_processor import Histogram
 from ntuple_processor.utils import Selection
+import logging
+import yaml
 
 m_sv_hist = Histogram("m_sv_puppi", "m_sv_puppi", [i for i in range(0, 255, 5)])
 mt_tot_hist = Histogram("mt_tot_puppi", "mt_tot_puppi", [i for i in range(0, 3900, 10)])
@@ -210,10 +212,12 @@ discr_str = ("(0.5"
 
 fine_binning = [0.0, 0.3, 0.4, 0.45, 0.5, 0.55,  0.6, 0.65, 0.7,
                 0.75, 0.8, 0.85, 0.9, 0.92, 0.94, 0.96, 0.98, 1.]
+fine_binning=[0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0]
 et_hist = Histogram("et_max_score", "et_max_score", fine_binning)
 mt_hist = Histogram("mt_max_score", "mt_max_score", fine_binning)
 tt_hist = Histogram("tt_max_score", "tt_max_score", fine_binning)
 em_hist = Histogram("em_max_score", "em_max_score", fine_binning)
+
 
 nn_categorization = {
         "et": [
@@ -310,7 +314,7 @@ nn_categorization = {
             (Selection(name="Nbtag0_MHGt250",                            cuts=[("nbtag==0&&m_sv_puppi>=250", "category_selection")]),
                     [mt_tot_hist]),
             (Selection(name="NbtagGt1",                                  cuts=[("nbtag>=1", "category_selection")]),
-                    [mt_tot_hist]),
+                    [mt_tot_hist]),        
         ],
         "em": [
             (Selection(name="emb",  cuts=[("em_max_index=={index}".format(index=2), "category_selection"),
@@ -356,3 +360,69 @@ nn_categorization = {
                     [mt_tot_hist]),
         ],
 }
+
+#classdict for NMSSM Index
+def nmssm_cat(channel,cdict):
+        def readclasses():
+                confFileName = "{clsdict}".format(clsdict=cdict)
+                #logger.debug("Parse classes from " + confFileName)
+                confdict = yaml.load(open(confFileName, "r"), Loader=yaml.Loader)
+                classdict = {}
+                for nnclass in set(confdict["classes"]):
+                        classdict[nnclass] = confdict["classes"].index(nnclass)
+                return classdict
+        def hist():
+                if channel=="et":
+                        return et_hist
+                elif channel=="mt":
+                        return mt_hist
+                else:
+                        return tt_hist
+        classdict=readclasses()
+        nmssm_categorization={"{ch}".format(ch=channel) : []}
+        catsL_=nmssm_categorization["{ch}".format(ch=channel)]
+        for label in classdict.keys():               
+                catsL_.append(
+                        (Selection(name="{lab}".format(lab=label),  cuts=[("{ch}_max_index=={index}".format(ch=channel, index=classdict[label]), "category_selection")]),   [hist()]))
+        nmssm_categorization={"{ch}".format(ch=channel) : catsL_}
+        return nmssm_categorization
+
+
+# nmssm_categorization = {
+#         "et": [
+#             (Selection(name="emb",  cuts=[("et_max_index=={index}".format(index=0), "category_selection")]),
+#                     [et_hist]),
+#             (Selection(name="tt",  cuts=[("et_max_index=={index}".format(index=1), "category_selection")]),
+#                     [et_hist]),
+#             (Selection(name="misc",  cuts=[("et_max_index=={index}".format(index=2), "category_selection")]),
+#                     [et_hist]),
+#             (Selection(name="ff",  cuts=[("et_max_index=={index}".format(index=3), "category_selection")]),
+#                     [et_hist]),
+#             (Selection(name="NMSSM_MH500_3",  cuts=[("et_max_index=={index}".format(index=4), "category_selection")]),
+#                     [et_hist]),
+#             ],
+#         "mt": [
+#             (Selection(name="emb",  cuts=[("mt_max_index=={index}".format(index=0), "category_selection")]),
+#                     [et_hist]),
+#             (Selection(name="tt",  cuts=[("mt_max_index=={index}".format(index=1), "category_selection")]),
+#                     [et_hist]),
+#             (Selection(name="misc",  cuts=[("mt_max_index=={index}".format(index=2), "category_selection")]),
+#                     [et_hist]),
+#             (Selection(name="ff",  cuts=[("mt_max_index=={index}".format(index=3), "category_selection")]),
+#                     [et_hist]),
+#             (Selection(name="NMSSM_MH500_3",  cuts=[("mt_max_index=={index}".format(index=4), "category_selection")]),
+#                     [et_hist]),
+#             ],
+#         "tt": [
+#             (Selection(name="emb",  cuts=[("tt_max_index=={index}".format(index=0), "category_selection")]),
+#                     [tt_hist]),
+#             (Selection(name="tt",  cuts=[("tt_max_index=={index}".format(index=1), "category_selection")]),
+#                     [tt_hist]),
+#             (Selection(name="misc",  cuts=[("tt_max_index=={index}".format(index=2), "category_selection")]),
+#                     [tt_hist]),
+#             (Selection(name="ff",  cuts=[("tt_max_index=={index}".format(index=3), "category_selection")]),
+#                     [tt_hist]),
+#             (Selection(name="NMSSM_MH500_3",  cuts=[("tt_max_index=={index}".format(index=4), "category_selection")]),
+#                     [tt_hist]),
+#             ]
+# }
