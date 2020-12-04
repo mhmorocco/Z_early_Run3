@@ -28,7 +28,7 @@ def triggerweight(channel, era):
     # General definitions of weights valid for all eras and channels
     singleMC = "singleTriggerMCEfficiencyWeightKIT_1"
     crossMCL = "crossTriggerMCEfficiencyWeightKIT_1" if "2016" in era else "crossTriggerMCEfficiencyWeight_1"
-    MCTau_1 = "((byTightDeepTau2017v2p1VSjet_1<0.5 && byVLooseDeepTau2017v2p1VSjet_1>0.5)*crossTriggerMCEfficiencyWeight_vloose_DeepTau_1 + (byTightDeepTau2017v2p1VSjet_1>0.5)*crossTriggerMCEfficiencyWeight_tight_DeepTau_1)"
+    MCTau_1 = "((byMediumDeepTau2017v2p1VSjet_1<0.5 && byVVVLooseDeepTau2017v2p1VSjet_1>0.5)*crossTriggerMCEfficiencyWeight_vloose_DeepTau_1 + (byMediumDeepTau2017v2p1VSjet_1>0.5)*crossTriggerMCEfficiencyWeight_medium_DeepTau_1)"
     if "2016" in era:
         MCTau_1 = "((abs(eta_2)<2.1)*" + MCTau_1 + ")"
     MCTau_2 = MCTau_1.replace("_1","_2")
@@ -52,6 +52,7 @@ def triggerweight(channel, era):
             # MuTau = "(" + MuTauData + ")/(" + MuTauMC + ")"
             MuTau = "({trig_sL}*{singleweight}+{trig_X}*{crossweight})".format(trig_sL=trig_sL, singleweight=sL_weight,
                                                                                trig_X=trig_X, crossweight=crossweight)
+
         elif "2017" in era:
             trig_sL = "(trg_singlemuon_27 || trg_singlemuon_24)"
             trig_X = "(pt_1 > 21 && pt_1 < 25 && trg_crossmuon_mu20tau27)"
@@ -70,6 +71,7 @@ def triggerweight(channel, era):
             # MuTau = "("+MuTauData+")/("+MuTauMC+")"
             MuTau = "({trig_sL}*{singleweight}+{trig_X}*{crossweight})".format(trig_sL=trig_sL, singleweight=sL_weight,
                                                                                trig_X=trig_X, crossweight=crossweight)
+                                                                                        
         elif "2018" in era:
             singleMC = "((((pt_1>=25)&&(pt_1<28))*trigger_24_Weight_1)+((pt_1>=28)*(trigger_24_27_Weight_1)))"
             trig_sL = "(trg_singlemuon_27 || trg_singlemuon_24)"
@@ -105,6 +107,7 @@ def triggerweight(channel, era):
             # ElTau = "(" + ElTauData + ")/(" + ElTauMC + ")"
             ElTau = "({trig_sL}*{singleweight}+{trig_X}*{crossweight})".format(trig_sL=trig_sL, singleweight=sL_weight,
                                                                                trig_X=trig_X, crossweight=crossweight)
+                                                                        
         elif "2017" in era:
             trig_sL = "(trg_singleelectron_35 || trg_singleelectron_32 || trg_singleelectron_27)"
             trig_X = "(pt_1>25 && pt_1<28 && trg_crossele_ele24tau30)"
@@ -123,6 +126,7 @@ def triggerweight(channel, era):
 
             ElTau = "({trig_sL}*{singleweight}+{trig_X}*{crossweight})".format(trig_sL=trig_sL, singleweight=sL_weight,
                                                                                trig_X=trig_X, crossweight=crossweight)
+                       
             # ElTau = "("+ElTauData+")/("+ElTauMC+")"
         elif "2018" in era:
             singleMC = "(((pt_1>=33)&&(pt_1<36)*(trigger_32_Weight_1))+((pt_1>=36)*(trigger_32_35_Weight_1)))"
@@ -135,6 +139,7 @@ def triggerweight(channel, era):
             crossWeightMC = "({crossweight}*{trig_X}+(1.0)*(!{trig_X}))".format(crossweight=crossWeightMC, trig_X=trig_X)
             crossWeight = "("+crossWeightData+")/("+crossWeightMC+")"
             ElTau = "("+"*".join([trig_sL, singleMC]) + "+" + "*".join([trig_X, crossWeight])+")"
+  
         weight = (ElTau, "triggerweight")
         # weight = ("1.0", "triggerweight")
 
@@ -155,7 +160,6 @@ def triggerweight(channel, era):
         weight = (
             "singleTriggerDataEfficiencyWeightKIT_1/singleTriggerMCEfficiencyWeightKIT_1",
             "trigger_lepton_sf")
-
     return weight
 
 
@@ -164,7 +168,7 @@ def triggerweight_emb(channel, era):
 
     singleEMB = "singleTriggerEmbeddedEfficiencyWeightKIT_1"
     crossEMBL = "crossTriggerEmbeddedEfficiencyWeightKIT_1"
-    EMBTau_1 = "((byTightDeepTau2017v2p1VSjet_1<0.5 && byVLooseDeepTau2017v2p1VSjet_1>0.5)*crossTriggerEMBEfficiencyWeight_vloose_DeepTau_1 + (byTightDeepTau2017v2p1VSjet_1>0.5)*crossTriggerEMBEfficiencyWeight_tight_DeepTau_1)"
+    EMBTau_1 = "((byMediumDeepTau2017v2p1VSjet_1<0.5 && byVVVLooseDeepTau2017v2p1VSjet_1>0.5)*crossTriggerEMBEfficiencyWeight_vloose_DeepTau_1 + (byMediumDeepTau2017v2p1VSjet_1>0.5)*crossTriggerEMBEfficiencyWeight_medium_DeepTau_1)"
     EMBTau_2 = EMBTau_1.replace("_1", "_2")
 
     if "mt" in channel:
@@ -179,9 +183,9 @@ def triggerweight_emb(channel, era):
             MuTau = "(" + MuTauData + ")/(" + MuTauEMB + ")"
             weight = (MuTau, "triggerweight")
         elif "2017" in era:
-            weight = ("((pt_1>=25 && pt_1<28)*(trigger_24_Weight_1)+(pt_1>=28)*(trigger_24_27_Weight_1)+(pt_1<25)*(crossTriggerDataEfficiencyWeight_tight_DeepTau_2/((pt_1<25)*crossTriggerEMBEfficiencyWeight_tight_DeepTau_2+(pt_1>=25))*crossTriggerEmbeddedWeight_1))", "triggerweight")
+            weight = ("((pt_1>=25 && pt_1<28)*(trigger_24_Weight_1)+(pt_1>=28)*(trigger_24_27_Weight_1)+(pt_1<25)*(crossTriggerDataEfficiencyWeight_medium_DeepTau_2/((pt_1<25)*crossTriggerEMBEfficiencyWeight_medium_DeepTau_2+(pt_1>=25))*crossTriggerEmbeddedWeight_1))", "triggerweight")
         elif "2018" in era:
-            weight = ("((pt_1>=25)*(pt_1<28)*(trigger_24_Weight_1)+(pt_1>=28)*(trigger_24_27_Weight_1)+(pt_1<25)*(abs(eta_2)<2.1)*(crossTriggerDataEfficiencyWeight_tight_DeepTau_2/((pt_1<25)*(abs(eta_2)<2.1)*crossTriggerEMBEfficiencyWeight_tight_DeepTau_2+(abs(eta_2)>=2.1)+(pt_1>=25)))*crossTriggerEmbeddedWeight_1)", "triggerweight")
+            weight = ("((pt_1>=25)*(pt_1<28)*(trigger_24_Weight_1)+(pt_1>=28)*(trigger_24_27_Weight_1)+(pt_1<25)*(abs(eta_2)<2.1)*(crossTriggerDataEfficiencyWeight_medium_DeepTau_2/((pt_1<25)*(abs(eta_2)<2.1)*crossTriggerEMBEfficiencyWeight_medium_DeepTau_2+(abs(eta_2)>=2.1)+(pt_1>=25)))*crossTriggerEmbeddedWeight_1)", "triggerweight")
 
     elif "et" in channel:
         if "2016" in era:
@@ -197,11 +201,9 @@ def triggerweight_emb(channel, era):
             weight = (ElTau, "triggerweight")
         elif "2017" in era:
             # trig_sL = "(pt_1>=28)&&(abs(eta_1) < 1.5 || pt_1 >= 40)"
-            weight = ("((pt_1>=28)*(((pt_1<33)*trigger_27_Weight_1+(pt_1>=33)*(pt_1<36)*trigger_27_32_Weight_1+(pt_1>=36)*trigger_27_32_35_Weight_1)*(abs(eta_1) < 1.5||pt_1>=40) + singleTriggerDataEfficiencyWeightKIT_1*(abs(eta_1)>=1.5)*(pt_1<40)))+(pt_1<28)*((abs(eta_1)>=1.5)*crossTriggerDataEfficiencyWeight_1*crossTriggerDataEfficiencyWeight_tight_DeepTau_2+(abs(eta_1)<1.5)*crossTriggerEmbeddedWeight_1*(crossTriggerDataEfficiencyWeight_tight_DeepTau_2/((pt_1<28)*(abs(eta_1)<1.5)*crossTriggerEMBEfficiencyWeight_tight_DeepTau_2+(pt_1>=28)+(abs(eta_1)>=1.5))))", "triggerweight")
-           # ("((pt_1>=28)+(pt_1<28)*((abs(eta_1)>=1.5)*crossTriggerDataEfficiencyWeight_1*crossTriggerDataEfficiencyWeight_tight_DeepTau_2+(abs(eta_1)<1.5)*crossTriggerEmbeddedWeight_1*(crossTriggerDataEfficiencyWeight_tight_DeepTau_2/((pt_1<28)*(abs(eta_1)<1.5)*crossTriggerEMBEfficiencyWeight_tight_DeepTau_2+(pt_1>=28)+(abs(eta_1)>=1.5)))))<10.0","cross_trg_cut"),
-
+            weight = ("(pt_1>=28)+(pt_1<28)*((abs(eta_1)>=1.5)*crossTriggerDataEfficiencyWeight_1*crossTriggerDataEfficiencyWeight_medium_DeepTau_2+(abs(eta_1)<1.5)*crossTriggerEmbeddedWeight_1*(crossTriggerDataEfficiencyWeight_medium_DeepTau_2/((pt_1<28)*(abs(eta_1)<1.5)*crossTriggerEMBEfficiencyWeight_medium_DeepTau_2+(pt_1>=28)+(abs(eta_1)>=1.5))))", "triggerweight")
         elif "2018" in era:
-            weight = ("(crossTriggerEmbeddedWeight_1*(crossTriggerDataEfficiencyWeight_tight_DeepTau_2/((pt_1<33)*crossTriggerEMBEfficiencyWeight_tight_DeepTau_2+(pt_1>=33)))*(pt_1<33)+(pt_1>=36)*trigger_32_35_Weight_1+(pt_1>=33)*(pt_1<36)*(trigger_32_Weight_1))", "triggerweight")
+            weight = ("(crossTriggerEmbeddedWeight_1*(crossTriggerDataEfficiencyWeight_medium_DeepTau_2/((pt_1<33)*crossTriggerEMBEfficiencyWeight_medium_DeepTau_2+(pt_1>=33)))*(pt_1<33)+(pt_1>=36)*trigger_32_35_Weight_1+(pt_1>=33)*(pt_1<36)*(trigger_32_Weight_1))", "triggerweight")
 
     elif "tt" in channel:
         DiTauEMB = "*".join([EMBTau_1, EMBTau_2])
@@ -220,9 +222,9 @@ def triggerweight_emb(channel, era):
 def tau_by_iso_id_weight(channel):
     weight = ("1.0","taubyIsoIdWeight")
     if "mt" in channel or "et" in channel:
-        weight = ("((gen_match_2 == 5)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2 + (gen_match_2 != 5))", "taubyIsoIdWeight")
+        weight = ("((gen_match_2 == 5)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2 + (gen_match_2 != 5))", "taubyIsoIdWeight")
     elif "tt" in channel:
-        weight = ("((gen_match_1 == 5)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1 + (gen_match_1 != 5))*((gen_match_2 == 5)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2 + (gen_match_2 != 5))", "taubyIsoIdWeight")
+        weight = ("((gen_match_1 == 5)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1 + (gen_match_1 != 5))*((gen_match_2 == 5)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2 + (gen_match_2 != 5))", "taubyIsoIdWeight")
     return weight
 
 
@@ -312,7 +314,8 @@ def DY_process_selection(channel, era):
     return Selection(
             name = "DY",
             weights = DY_process_weights)
-
+        
+    
 
 def TT_process_selection(channel, era):
     TT_process_weights = MC_base_process_selection(channel, era).weights
@@ -484,31 +487,36 @@ def __get_ZTT_cut(channel):
 
 
 def ZTT_embedded_process_selection(channel, era):
-    ztt_embedded_weights = [
-        ("generatorWeight*(generatorWeight<=1.0)", "simulation_sf"),  # Issue with way too large generator weights in 2016
-        ("muonEffTrgWeight*muonEffIDWeight_1*muonEffIDWeight_2", "scale_factor"),
-    ]
+    ztt_embedded_weights = []
+    if "2016" in era: 
+        ztt_embedded_weights.extend([("generatorWeight*(generatorWeight<=1.0)", "simulation_sf")])  # Issue with way too large generator weights in 2016
+    else:
+        ztt_embedded_weights.extend([("generatorWeight", "simulation_sf")])
+    ztt_embedded_weights.extend([("muonEffTrgWeight*muonEffIDWeight_1*muonEffIDWeight_2", "scale_factor")])    
     if "mt" in channel:
         ztt_embedded_weights.extend([
             ("gen_match_1==4 && gen_match_2==5","emb_veto"),
             ("embeddedDecayModeWeight", "decayMode_SF"),
             ("idWeight_1*isoWeight_1", "lepton_sf"),
             tau_by_iso_id_weight(channel),
-            triggerweight_emb(channel, era),
+            triggerweight_emb(channel, era)
             ])
     elif "et" in channel:
         ztt_embedded_weights.extend([
             ("gen_match_1==3 && gen_match_2==5","emb_veto"),
             ("embeddedDecayModeWeight", "decayMode_SF"),
-            ("idWeight_1*isoWeight_1", "lepton_sf"),
             tau_by_iso_id_weight(channel),
-            triggerweight_emb(channel, era),
-            ])
+            triggerweight_emb(channel, era)])
         if "2017" in era:
             ztt_embedded_weights.extend([
-                ("(pt_1<28)*((abs(eta_1)<=1.5)*0.852469262576+(abs(eta_1)>1.5)*0.689309270861)+(pt_1>=28)", "low_crossele_nonclosure_weight"),
-                ("(pt_1>=28)*(pt_1<40)*((abs(eta_1)<=1.5)*0.950127109065+(abs(eta_1)>1.5)*0.870372483259)+(pt_1<28)+(pt_1>=40)", "low_singleelectron_nonclosure_weight"),
-            ])
+            ("(idWeight_1*((pt_1>28)*(trigger_27_32_35_Weight_1*(abs(eta_1) < 1.5||pt_1>=40) + singleTriggerDataEfficiencyWeightKIT_1*(abs(eta_1)>=1.5)*(pt_1<40))+(pt_1<28))*isoWeight_1)<10.0", "lepton_cut"),
+            ("idWeight_1*isoWeight_1*((pt_1>28)*(((pt_1<33)*trigger_27_Weight_1+(pt_1>=33)*(pt_1<36)*trigger_27_32_Weight_1+(pt_1>=36)*trigger_27_32_35_Weight_1)*(abs(eta_1) < 1.5||pt_1>=40) + singleTriggerDataEfficiencyWeightKIT_1*(abs(eta_1)>=1.5)*(pt_1<40))+(pt_1<28))", "lepton_sf"),
+            ("(pt_1<28)*((abs(eta_1)<=1.5)*0.852469262576+(abs(eta_1)>1.5)*0.689309270861)+(pt_1>=28)", "low_crossele_nonclosure_weight"),
+            ("(pt_1>=28)*(pt_1<40)*((abs(eta_1)<=1.5)*0.950127109065+(abs(eta_1)>1.5)*0.870372483259)+(pt_1<28)+(pt_1>=40)", "low_singleelectron_nonclosure_weight"),
+            ("((pt_1>=28)+(pt_1<28)*((abs(eta_1)>=1.5)*crossTriggerDataEfficiencyWeight_1*crossTriggerDataEfficiencyWeight_medium_DeepTau_2+(abs(eta_1)<1.5)*crossTriggerEmbeddedWeight_1*(crossTriggerDataEfficiencyWeight_medium_DeepTau_2/((pt_1<28)*(abs(eta_1)<1.5)*crossTriggerEMBEfficiencyWeight_medium_DeepTau_2+(pt_1>=28)+(abs(eta_1)>=1.5)))))<10.0","cross_trg_cut")])
+        else:
+            ztt_embedded_weights.extend([("idWeight_1*isoWeight_1", "lepton_sf")])
+     
     elif "tt" in channel:
         ztt_embedded_weights.extend([
             ("embeddedDecayModeWeight", "decayMode_SF"),
@@ -573,7 +581,7 @@ def ZJ_nlo_process_selection(channel):
 
 def __get_ZJ_cut(channel):
     if "mt" in channel or "et" in channel:
-        return "gen_match_2 == 6"
+        return "abs(gen_match_2-6.0)<0.01"
     elif "tt" in channel:
         return "(gen_match_1 == 6 || gen_match_2 == 6)"
     elif "em" in channel:
@@ -786,6 +794,24 @@ def qqH125_process_selection(channel, era):
         ]
     qqH125_cuts = [("(htxs_stage1p1cat>=200)&&(htxs_stage1p1cat<=210)", "qqH125")]
     return Selection(name = "qqH125", weights = qqH125_weights, cuts = qqH125_cuts)
+
+def NMSSM_process_selection(channel,era):
+    NMSSM_weights = [("generatorWeight", "generatorWeight"),
+    ("0.1*crossSectionPerEventWeight", "crossSectionPerEventWeight"),
+    ("numberGeneratedEventsWeight", "numberGeneratedEventsWeight"),
+    ("puweight", "puweight"),
+    ("idWeight_1*idWeight_2","idweight"),
+    ("isoWeight_1*isoWeight_2","isoweight"),
+    ("trackWeight_1*trackWeight_2","trackweight"),
+    ("eleTauFakeRateWeight*muTauFakeRateWeight", "leptonTauFakeRateWeight"),
+    triggerweight(channel, era),
+    tau_by_iso_id_weight(channel),
+    ele_hlt_Z_vtx_weight(channel, era),  # only used in the et channel in 2017 per function definition.
+    ele_reco_weight(channel, era),  # only used in the et, em channels in 2016 per function definition.
+    prefiring_weight(era),  # only used in 2016 and 2017 per function definition.
+    lumi_weight(era), 
+        ]
+    return Selection(name="NMSSM", weights=NMSSM_weights)
 
 
 def SUSYggH_process_selection(channel, era):
