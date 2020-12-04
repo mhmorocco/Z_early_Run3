@@ -5,7 +5,7 @@
 The workflow of the analysis consists of multiple steps: 
 
 0. Producing the simulation. This is already done for the case H->h(tautau)h'(bb), however can be extended to also H->h(bb)h'(tautau)
-1. Skimming the official CMS data and our own simulation(miniAOD format) to create our own KIT internal format ("Kappa"). This step is neglected for now as it will very likely not need to be redone anytime soon.
+1. Skimming the official CMS data and our own simulation(miniAOD format) to create our own KIT internal format ("Kappa"). 
 2. Creation of flat ntuples from the skimmed CMS data and simulation. During the creation of ntuple, the data is filtered and the releveant physical variables (e.g. invariant masses of tau-pairs, ...) are calculated.
 3. Production of "friend trees" for the ntuples created in step 1. Friend trees are additional ntuples with a 1:1 correspondence with the ntuples of step 1. Friend trees contain further information about the event, usually things which are often updated, and thus the calculation of friend trees is faster. Three friend trees need to be created here: HHKinFit (kinematic fit of the bb$\tau\tau$ mass), SVFit (likelihood fit of the $\tau\tau$ mass, FakeFactors (event-by-event probability of a tau_h being a misidentified jet)
 4. Training of the machine learning model. 
@@ -14,6 +14,29 @@ The workflow of the analysis consists of multiple steps:
 7. Statistical treatment of the histograms and calculation of the results, which are in this case exclusion limits.
 
 The different steps usually uses different software, which will be explained below. All software has been tested on `portal1`, and should also work on `bms1` and `bms3`.
+
+
+## 0. Gridpack generation using the NMSSM model in MadGraph5
+
+The code used for the 2018 gridpack generation using the NMSSM model is below. The masses are set in the script `create_gridpack_for_mass_2018.sh` in which also further NMSSM parameters or the decay modes of the Higgs bosons can be changed. 
+
+```bash
+ https://launchpad.net/mg5amcnlo/2.0/2.6.x/+download/MG5_aMC_v2.6.7.tar.gz
+wget https://launchpad.net/mg5amcnlo/2.0/2.6.x/+download/MG5_aMC_v2.6.7.tar.gz
+tar xf MG5_aMC_v2.6.7.tar.gz
+rm MG5_aMC_v2.6.7.tar.gz
+cd MG5_aMC_v2_6_7
+rm -rf models/hgg_plugin
+git clone https://github.com/janekbechtel/NMSSM-madgraph
+cp -r NMSSM-madgraph/models/* models/.
+rm -rf NMSSM-madgraph
+wget https://raw.githubusercontent.com/janekbechtel/NMSSM-madgraph/master/create_gridpack_for_mass_2018.sh
+mkdir models/custom
+git clone https://github.com/cms-sw/genproductions/ -b mg265
+sh create_gridpack_for_mass_2018.sh
+```
+The gridpacks can be used in standard CMS simulation config (GEN-SIM -> PU-mixing -> AOD -> miniAOD)
+
 
 ## 1. Skimming from miniAOD
 
@@ -241,6 +264,8 @@ Compared to the command of step 2, now also the options `--friend_ntuples_direct
 After creating these friend trees, they can be added to the `utils/setup_samples.sh` and the full information of the NN response to each event is available.
 
 ## 5. Produce analysis histograms
+
+This will change in this new framework! Will be updated once the commands are validated.
 
 If all ntuples in  `utils/setup_samples.sh` are correct, you can produce the analysis shapes via the commands:
 ```bash
