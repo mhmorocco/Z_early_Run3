@@ -140,7 +140,7 @@ and then again submitting the grid-control command that is output from the comma
 
 
 
-## 2. Create friends trees
+## 3. Create friends trees
 
 Friend trees need to be created for the FakeFactors, SVFit and HHKinFit. For this we use https://github.com/KIT-CMS/friend-tree-producer.
 
@@ -173,7 +173,7 @@ Again, after running the command above, you will get a command of the form `go.p
 
 When the command is complete, run the command from above again, only change `--command submit` to `--command collect`. This will merge the outputs of the individual tasks to single files.
 
-## 3. Train machine learning methods
+## 4. Train machine learning methods
 
 For this, you will need to check out the following software:
 ```bash
@@ -253,7 +253,7 @@ Furthermore, the variables that were used to train on are defined as
 
 
 
-## 4. Apply ML model
+## 5. Apply ML model
 
 To apply it we use the friend tree producer from step 2, and run e.g. the command
 ```bash
@@ -263,7 +263,7 @@ Compared to the command of step 2, now also the options `--friend_ntuples_direct
 
 After creating these friend trees, they can be added to the `utils/setup_samples.sh` and the full information of the NN response to each event is available.
 
-## 5. Produce analysis histograms
+## 6. Produce analysis histograms
 
 This will change in this new framework! Will be updated once the commands are validated.
 
