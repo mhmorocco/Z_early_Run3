@@ -11,7 +11,8 @@ from ntuple_processor import dataset_from_artusoutput, Unit, UnitManager, GraphM
 from config.shapes.channel_selection import channel_selection
 from config.shapes.file_names import files
 from config.shapes.process_selection import DY_process_selection, TT_process_selection, VV_process_selection, W_process_selection, ZTT_process_selection, ZL_process_selection, ZJ_process_selection, TTT_process_selection, TTL_process_selection, TTJ_process_selection, VVT_process_selection, VVJ_process_selection, VVL_process_selection, ggH125_process_selection, qqH125_process_selection, ZTT_embedded_process_selection, ZH_process_selection, WH_process_selection, ggHWW_process_selection, qqHWW_process_selection, ZHWW_process_selection, WHWW_process_selection, ttH_process_selection
-from config.shapes.process_selection import SUSYbbH_process_selection, SUSYggH_process_selection, SUSYggH_Ai_contribution_selection, SUSYggH_At_contribution_selection, SUSYggH_Ab_contribution_selection, SUSYggH_Hi_contribution_selection, SUSYggH_Ht_contribution_selection, SUSYggH_Hb_contribution_selection, SUSYggH_hi_contribution_selection, SUSYggH_ht_contribution_selection, SUSYggH_hb_contribution_selection
+#from config.shapes.process_selection import SUSYbbH_process_selection, SUSYggH_process_selection, SUSYggH_Ai_contribution_selection, SUSYggH_At_contribution_selection, SUSYggH_Ab_contribution_selection, SUSYggH_Hi_contribution_selection, SUSYggH_Ht_contribution_selection, SUSYggH_Hb_contribution_selection, SUSYggH_hi_contribution_selection, SUSYggH_ht_contribution_selection, SUSYggH_hb_contribution_selection
+from config.shapes.process_selection import NMSSM_process_selection
 # from config.shapes.category_selection import categorization
 from config.shapes.category_selection import nn_categorization, categorization
 # Variations for estimation of fake processes
@@ -48,7 +49,7 @@ def setup_logging(output_file, level=logging.DEBUG):
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
-            description="Produce shapes for the legacy MSSM analysis.")
+            description="Produce shapes for the legacy NMSSM analysis.")
     parser.add_argument(
         "--era",
         required=True,
@@ -156,18 +157,52 @@ def parse_arguments():
         type=str,
         help="Directory the graph file is written to."
     )
+
     return parser.parse_args()
+
+# mass_dict = {
+#     "heavy_mass": [240, 280, 320, 360, 400, 450, 500, 550, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2500, 3000],
+#     "light_mass_coarse": [60, 70, 80, 90, 100, 120, 150, 170, 190, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800],
+#     "light_mass_fine": [60, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 150, 170, 190, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850],
+# }
+
+# mass_dict = {
+#     "heavy_mass": [320,500,900],
+#     "light_mass_fine": [60,85,90,95,100,750],
+#     "light_mass_coarse": [60,100,750],
+# }
+
+
+mass_dict = {
+    "heavy_mass": [320],
+    "light_mass_fine": [60,100],
+    "light_mass_coarse": [60],
+}
+
+
+def light_masses(heavy_mass):
+        if heavy_mass > 1001:
+            return mass_dict["light_mass_coarse"]
+        else:
+            return mass_dict["light_mass_fine"]
 
 
 def main(args):
-    # categorization = nn_categorization
-    # Parse given arguments.
+#the mass_dict for NMSSM masses must also be changed in config/shapes/file_names.py   
+#if nmssm_categorization:
+    classdict="/work/jbechtel/postprocessing/nmssm/train_all/output/ml/all_eras_mt_500_3/dataset_config.yaml"
+    from config.shapes.category_selection import nmssm_cat
+    categorization=nmssm_cat(args.channels[0], classdict)
+    #Parse given arguments.
+    #from config.shapes.category_selection import nmssm_categorization
+
     friend_directories = {
         "et": args.et_friend_directory,
         "mt": args.mt_friend_directory,
         "tt": args.tt_friend_directory,
         "em": args.em_friend_directory,
     }
+
     if ".root" in args.output_file:
         output_file = args.output_file
         log_file = args.output_file.replace(".root", ".log")
@@ -180,28 +215,10 @@ def main(args):
     nominals[args.era]['datasets'] = {}
     nominals[args.era]['units'] = {}
 
-    susy_masses = {
-        "2016": {
-            "bbH": [ 80, 90, 100, 110, 120, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200],
-            "bbH_nlo": [ 80, 90, 110, 120, 130, 140, 160, 180, 200, 250, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200],
-            "ggH": [ 80, 90, 100, 110, 120, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200],
-        },
-        "2017": {
-            "bbH": [  80,   90,  100,  110,  120,  130,  140,  160,  180,  200, 250,  300,  350,  400,  600,  700,  800,  900, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200],
-            "bbH_nlo": [  80,   90,  110,  120,  125,  130,  140,  160,  180,  200, 250,  300,  350,  400,  500,  600,  700,  800,  900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200],
-            "ggH": [  80,   90,  100,  110,  120,  130,  140,  180,  200, 250,  300,  350,  400,  450,  600,  700,  800,  900, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200],
-        },
-        "2018": {
-            "bbH": [  80,   90,  100,  110,  120,  130,  140,  160,  180,  200, 250,  300,  350,  400,  450,  600,  700,  800,  900, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200],
-            "bbH_nlo": [  80,   90,  100,  110,  120,  125,  130,  140,  160,  180,  200, 250,  300,  350,  400,  450,  500,  600,  700,  800,  900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500],
-            "ggH": [  80,   90,  100,  110,  120,  130,  140,  160,  180,  200, 250,  300,  350,  400,  450,  600,  700,  800,  900, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200],
-        },
-    }
-
     def get_nominal_datasets(era, channel):
         datasets = dict()
         def filter_friends(dataset, friend):
-            if re.match("(gg|qq|susybb|susygg|tt|w|z|v)h", dataset.lower()):
+            if re.match("(gg|qq|tt|w|z|v)h", dataset.lower()):
                 if "FakeFactors" in friend or "EMQCDWeights" in friend:
                     return False
             return True
@@ -291,72 +308,16 @@ def main(args):
                                 channel_selection(channel, era),
                                 qqH125_process_selection(channel, era),
                                 category_selection], actions) for category_selection, actions in categorization[channel]],
-                "wh"  : [Unit(
-                            datasets["WH"], [
-                                channel_selection(channel, era),
-                                WH_process_selection(channel, era),
-                                category_selection], actions) for category_selection, actions in categorization[channel]],
-                "zh"  : [Unit(
-                            datasets["ZH"], [
-                                channel_selection(channel, era),
-                                ZH_process_selection(channel, era),
-                                category_selection], actions) for category_selection, actions in categorization[channel]],
-                "tth"  : [Unit(
-                            datasets["ttH"], [
-                                channel_selection(channel, era),
-                                ttH_process_selection(channel, era),
-                                category_selection], actions) for category_selection, actions in categorization[channel]],
-                "gghww"  : [Unit(
-                            datasets["ggHWW"], [
-                                channel_selection(channel, era),
-                                ggHWW_process_selection(channel, era),
-                                category_selection], actions) for category_selection, actions in categorization[channel]],
-                "qqhww"  : [Unit(
-                            datasets["qqHWW"], [
-                                channel_selection(channel, era),
-                                qqHWW_process_selection(channel, era),
-                                category_selection], actions) for category_selection, actions in categorization[channel]],
-                "zhww"  : [Unit(
-                            datasets["ZHWW"], [
-                                channel_selection(channel, era),
-                                ZHWW_process_selection(channel, era),
-                                category_selection], actions) for category_selection, actions in categorization[channel]],
-                "whww"  : [Unit(
-                            datasets["WHWW"], [
-                                channel_selection(channel, era),
-                                WHWW_process_selection(channel, era),
-                                category_selection], actions) for category_selection, actions in categorization[channel]],
-                **{"ggh{}".format(mass): [Unit(
-                                            datasets["susyggH_{}".format(mass)], [
-                                                channel_selection(channel, era),
-                                                SUSYggH_process_selection(channel, era),
-                                                contribution_selection(channel),
-                                                category_selection], actions) for category_selection, actions in categorization[channel]
-                                                                                               for contribution_selection in [
-                                                                                                                              SUSYggH_Ai_contribution_selection,
-                                                                                                                              SUSYggH_At_contribution_selection,
-                                                                                                                              SUSYggH_Ab_contribution_selection,
-                                                                                                                              SUSYggH_Hi_contribution_selection,
-                                                                                                                              SUSYggH_Ht_contribution_selection,
-                                                                                                                              SUSYggH_Hb_contribution_selection,
-                                                                                                                              SUSYggH_hi_contribution_selection,
-                                                                                                                              SUSYggH_ht_contribution_selection,
-                                                                                                                              SUSYggH_hb_contribution_selection]]
-                                            for mass in susy_masses[era]["ggH"]},
-                **{"bbh{}".format(mass): [Unit(
-                                            datasets["susybbH_{}".format(mass)], [
-                                                channel_selection(channel, era),
-                                                SUSYbbH_process_selection(channel, era),
-                                                category_selection], actions) for category_selection, actions in categorization[channel]]
-                                            for mass in susy_masses[era]["bbH"]},
-                **{"bbh{}_nlo".format(mass): [Unit(
-                                                datasets["susybbH_nlo_{}".format(mass)], [
-                                                    channel_selection(channel, era),
-                                                    SUSYbbH_process_selection(channel, era),
-                                                    category_selection], actions) for category_selection, actions in categorization[channel]]
-                                            for mass in susy_masses[era]["bbH_nlo"]},
-        }
 
+                **{"NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass):[Unit(
+                                                                                                                datasets["NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass)], [
+                                                                                                                    channel_selection(channel,era),
+                                                                                                                    NMSSM_process_selection(channel,era),
+                                                                                                                    category_selection], actions) for category_selection, actions in categorization[channel]]
+                                                                                                            for heavy_mass in mass_dict["heavy_mass"]
+                                                                                                                for light_mass in light_masses(heavy_mass) if light_mass+125<heavy_mass} 
+                }
+        
     def get_control_units(channel, era, datasets):
         return {
                'data' : [Unit(
@@ -437,6 +398,12 @@ def main(args):
                        channel_selection(channel, era),
                        qqH125_process_selection(channel, era)],
                        [control_binning[channel][v] for v in set(control_binning[channel].keys()) & set(args.control_plot_set)])],
+                **{"NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass):[Unit(
+                                                                                                            datasets["NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass)],
+                                                                                                            [channel_selection(channel, era),           NMSSM_process_selection(channel, era)],
+                                                                                                            [control_binning[channel][v] for v in set(control_binning[channel].keys()) & set(args.control_plot_set)])] 
+                                                                                                            for heavy_mass in mass_dict["heavy_mass"] 
+                                                                                                                for light_mass in light_masses(heavy_mass) if light_mass+125<heavy_mass}
                 }
     # Step 1: create units and book actions
     for channel in args.channels:
@@ -450,9 +417,10 @@ def main(args):
 
     if args.process_selection is None:
         procS = {"data", "emb", "ztt", "zl", "zj", "ttt", "ttl", "ttj", "vvt", "vvl", "vvj", "w",
-                 "ggh", "qqh", "tth", "zh", "wh", "gghww", "qqhww", "zhww", "whww"} \
-                | set("ggh{}".format(mass) for mass in susy_masses[args.era]["ggH"]) \
-                | set("bbh{}_nlo".format(mass) for mass in susy_masses[args.era]["bbH_nlo"])
+                 "ggh", "qqh"} \
+                | set("NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass) for heavy_mass in mass_dict["heavy_mass"]
+                                                                                                                for light_mass in light_masses(heavy_mass) if light_mass+125<heavy_mass)
+       # procS={"w"}
     else:
         procS = args.process_selection
 
@@ -467,12 +435,12 @@ def main(args):
     }
     leptonFakesS = {"zl", "ttl", "vvl"} & procS
     trueTauBkgS = {"ztt", "ttt", "vvt"} & procS
-    sm_signalsS = {"ggh", "qqh", "tth", "zh", "wh", "gghww", "qqhww", "zhww", "whww"} & procS
-    mssm_signalsS = (set("ggh{}".format(mass) for mass in susy_masses[args.era]["ggH"]) \
-                    | set("bbh{}_nlo".format(mass) for mass in susy_masses[args.era]["bbH_nlo"]) ) & procS
-    signalsS = sm_signalsS | mssm_signalsS
+    sm_signalsS = {"ggh", "qqh"} & procS
+    nmssm_signalsS = (set("NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass) for heavy_mass in mass_dict["heavy_mass"]
+                                                                                                                for light_mass in light_masses(heavy_mass) if light_mass+125<heavy_mass)) & procS
+    signalsS =  nmssm_signalsS | sm_signalsS
     if args.control_plots:
-        signalsS = signalsS & {"ggh", "qqh"}
+        signalsS = signalsS 
 
     simulatedProcsDS = {
         chname_: jetFakesDS[chname_] | leptonFakesS | trueTauBkgS | signalsS for chname_ in ["et", "mt", "tt", "em"]
@@ -555,14 +523,13 @@ def main(args):
                     um.book([unit for d in {"zl"} & procS for unit in nominals[args.era]['units'][ch_][d]], [*zll_et_fake_rate_2018])
                     um.book([unit for d in embS for unit in nominals[args.era]['units'][ch_][d]], [*lep_trigger_eff_et_emb_2018, *tau_trigger_eff_et_emb_2018])
 
-
+    
     # Step 2: convert units to graphs and merge them
     g_manager = GraphManager(um.booked_units, True)
     g_manager.optimize(args.optimization_level)
     graphs = g_manager.graphs
     for graph in graphs:
         print("%s" % graph)
-
     if args.only_create_graphs:
         if args.control_plots:
             graph_file_name = "control_unit_graphs-{}-{}-{}.pkl".format(args.era, ",".join(args.channels), ",".join(sorted(procS)))
