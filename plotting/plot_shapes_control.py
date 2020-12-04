@@ -15,7 +15,7 @@ import logging
 logger = logging.getLogger("")
 from multiprocessing import Pool
 from multiprocessing import Process
-
+import multiprocessing
 def parse_arguments():
     parser = argparse.ArgumentParser(
         description=
@@ -80,6 +80,13 @@ def setup_logging(output_file, level=logging.DEBUG):
 
 
 def main(info):
+
+    #add NMSSM masses, mass_dict has do be adapted in rootfile_parser_inputshapes.py
+    mass_dict = {
+    "heavy_mass": [320],
+    "light_mass_fine": [60,100],
+    "light_mass_coarse": [60],
+    }
     args = info["args"]
     variable = info["variable"]
     channel = info["channel"]
@@ -102,8 +109,8 @@ def main(info):
     split_dict = {c: split_value for c in ["et", "mt", "tt", "em", "mm"]}
 
     bkg_processes = [
-        "VVL", "TTL", "ZL", "jetFakesEMB", "EMB"
-    ]
+        "VVL", "TTL", "ZL", "jetFakesEMB", "EMB", "HTT" ] #"ggH125", "qqH125"
+   
     if not args.fake_factor and args.embedding:
         bkg_processes = [
             "QCDEMB", "VVL", "VVJ", "W", "TTL", "TTJ", "ZJ", "ZL", "EMB"
@@ -135,7 +142,6 @@ def main(info):
     all_bkg_processes = [b for b in bkg_processes]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
     legend_bkg_processes.reverse()
-
     if "2016" in args.era:
         era = "Run2016"
     elif "2017" in args.era:
@@ -146,9 +152,9 @@ def main(info):
         logger.critical("Era {} is not implemented.".format(args.era))
         raise Exception
 
-    # category = "_".join([channel, variable])
-    # if args.category_postfix is not None:
-    #     category += "_%s"%args.category_postfix
+    category = "_".join([channel, variable])
+    if args.category_postfix is not None:
+        category += "_%s"%args.category_postfix
     rootfile = rootfile_parser.Rootfile_parser(args.input, variable)
     bkg_processes = [b for b in all_bkg_processes]
     if "em" in channel:
@@ -195,20 +201,22 @@ def main(info):
         stype = args.draw_jet_fake_variation
     for index,process in enumerate(bkg_processes):
         if index == 0:
-            total_bkg = rootfile.get(channel, process, shape_type=stype).Clone()
+            total_bkg = rootfile.get(channel, process, args.category_postfix,shape_type=stype).Clone()
+            plot.add_hist(
+                    rootfile.get(channel, process,args.category_postfix, shape_type=stype), process, "bkg")
         else:
-            total_bkg.Add(rootfile.get(channel, process, shape_type=stype))
-        plot.add_hist(
-            rootfile.get(channel, process, shape_type=stype), process, "bkg")
+            if process=="HTT":
+                HTT=rootfile.get(channel, "ggH125",args.category_postfix, shape_type=stype).Clone()
+                HTT.Add(rootfile.get(channel, "qqH125",args.category_postfix, shape_type=stype))
+                total_bkg.Add(HTT)     
+                plot.add_hist(HTT,"HTT","bkg")       
+            else:
+                total_bkg.Add(rootfile.get(channel, process,args.category_postfix, shape_type=stype))
+                plot.add_hist(
+                    rootfile.get(channel, process,args.category_postfix, shape_type=stype), process, "bkg")
+        
         plot.setGraphStyle(
-            process, "hist", fillcolor=styles.color_dict[process])
-
-
-    # if "mm" not in channel:
-    #     # add VH, ttH & HWW to total bkg histogram
-    #     total_bkg.Add(rootfile.get(channel, "VH125"))
-    #     total_bkg.Add(rootfile.get(channel, "ttH125"))
-    #     total_bkg.Add(rootfile.get(channel, "HWW"))
+            process, "hist", fillcolor=styles.color_dict[process])    
 
     plot.add_hist(total_bkg, "total_bkg")
     plot.setGraphStyle(
@@ -218,7 +226,7 @@ def main(info):
         fillcolor=styles.color_dict["unc"],
         linecolor=0)
 
-    plot.add_hist(rootfile.get(channel, "data", shape_type=stype), "data_obs")
+    plot.add_hist(rootfile.get(channel, "data", args.category_postfix,shape_type=stype), "data_obs")
     data_norm = plot.subplot(0).get_hist("data_obs").Integral()
     plot.subplot(0).get_hist("data_obs").GetXaxis().SetMaxDigits(4)
     plot.subplot(0).setGraphStyle("data_obs", "e0")
@@ -227,99 +235,62 @@ def main(info):
         pass
     else:
         plot.subplot(1).setGraphStyle("data_obs", "e0")
+    
+    NMSSM_rfile_dict={}
+    NMSSM_bkg_dict={}
 
     if "mm" not in channel:
         # get signal histograms
+        for heavy_mass in mass_dict["heavy_mass"]:
+            light_masses = mass_dict["light_mass_coarse"] if heavy_mass > 1001 else mass_dict["light_mass_fine"]
+            for light_mass in light_masses:
+                if light_mass+125<heavy_mass:
+                    NMSSM_rfile_dict["NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass,light_mass=light_mass)] = rootfile.get(
+                            channel, "NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass,light_mass=light_mass), args.category_postfix).Clone()
+                    
+
         plot_idx_to_add_signal = [0,2] if args.linear else [1,2]
         for i in plot_idx_to_add_signal:
-            ggH = rootfile.get(channel, "ggH125").Clone()
-            qqH = rootfile.get(channel, "qqH125").Clone()
-            # VH = rootfile.get(channel, "VH125").Clone()
-            # ttH = rootfile.get(channel, "ttH125").Clone()
-            # HWW = rootfile.get(channel, "HWW").Clone()
-            if ggH.Integral() > 0:
-                ggH_scale = 10
-            else:
-                ggH_scale = 0.0
-            if qqH.Integral() > 0:
-                qqH_scale = 10
-            else:
-                qqH_scale = 0.0
-            # if VH.Integral() > 0:
-            #     VH_scale = 10
-            # else:
-            #     VH_scale = 0.0
-            # if ttH.Integral() > 0:
-            #     ttH_scale = 10
-            # else:
-            #     ttH_scale = 0.0
-            # if HWW.Integral() > 0:
-            #     HWW_scale = 10
-            # else:
-            #     HWW_scale = 0
-
-            if i in [0,1]:
-                ggH.Scale(ggH_scale)
-                qqH.Scale(qqH_scale)
-                # VH.Scale(VH_scale)
-                # ttH.Scale(ttH_scale)
-                # HWW.Scale(HWW_scale)
-            plot.subplot(i).add_hist(ggH, "ggH")
-            plot.subplot(i).add_hist(ggH, "ggH_top")
-            plot.subplot(i).add_hist(qqH, "qqH")
-            plot.subplot(i).add_hist(qqH, "qqH_top")
-            # plot.subplot(i).add_hist(VH, "VH")
-            # plot.subplot(i).add_hist(VH, "VH_top")
-            # plot.subplot(i).add_hist(ttH, "ttH")
-            # plot.subplot(i).add_hist(ttH, "ttH_top")
-            # plot.subplot(i).add_hist(HWW, "HWW")
-            # plot.subplot(i).add_hist(HWW, "HWW_top")
+            for nmssm_signals in NMSSM_rfile_dict:
+                if NMSSM_rfile_dict[nmssm_signals].Integral() > 0:
+                    NMSSM_scale = 10
+                else:
+                    NMSSM_scale = 0.0                        
+                if i in [0,1]: 
+                    NMSSM_rfile_dict[nmssm_signals].Scale(NMSSM_scale)
+                plot.subplot(i).add_hist(NMSSM_rfile_dict[nmssm_signals], 
+                    nmssm_signals)
+                plot.subplot(i).add_hist(NMSSM_rfile_dict[nmssm_signals], 
+                    nmssm_signals+"_top")
 
     if "mm" not in channel:
-        plot.subplot(0 if args.linear else 1).setGraphStyle(
-            "ggH", "hist", linecolor=styles.color_dict["ggH"], linewidth=3)
-        plot.subplot(0 if args.linear else 1).setGraphStyle("ggH_top", "hist", linecolor=0)
-        plot.subplot(0 if args.linear else 1).setGraphStyle(
-            "qqH", "hist", linecolor=styles.color_dict["qqH"], linewidth=3)
-        plot.subplot(0 if args.linear else 1).setGraphStyle("qqH_top", "hist", linecolor=0)
-        # plot.subplot(0 if args.linear else 1).setGraphStyle(
-        #     "VH", "hist", linecolor=styles.color_dict["VH"], linewidth=3)
-        # plot.subplot(0 if args.linear else 1).setGraphStyle("VH_top", "hist", linecolor=0)
-        # plot.subplot(0 if args.linear else 1).setGraphStyle(
-        #     "ttH", "hist", linecolor=styles.color_dict["ttH"], linewidth=3)
-        # plot.subplot(0 if args.linear else 1).setGraphStyle("ttH_top", "hist", linecolor=0)
-        # plot.subplot(0 if args.linear else 1).setGraphStyle(
-        #     "HWW", "hist", linecolor=styles.color_dict["HWW"], linewidth=3)
-        # plot.subplot(0 if args.linear else 1).setGraphStyle("HWW_top", "hist", linecolor=0)
+        for nmssm_signals in NMSSM_rfile_dict:
+            plot.subplot(0 if args.linear else 1).setGraphStyle(
+                        nmssm_signals, "hist", linecolor=styles.color_dict[nmssm_signals], linewidth=3)
+            plot.subplot(0 if args.linear else 1).setGraphStyle(nmssm_signals+"_top", "hist", linecolor=0)
 
-
+    NMSSM_top=[]
+    NMSSM_top_bkg=[]
+    for nmssm_signals in NMSSM_rfile_dict:
+        NMSSM_top.append(nmssm_signals+"_top")
+        NMSSM_top_bkg.append("bkg_"+nmssm_signals+"_top")
     # assemble ratio
     if "mm" not in channel:
-        bkg_ggH = plot.subplot(2).get_hist("ggH")
-        bkg_qqH = plot.subplot(2).get_hist("qqH")
-        bkg_ggH.Add(plot.subplot(2).get_hist("total_bkg"))
-        bkg_qqH.Add(plot.subplot(2).get_hist("total_bkg"))
-        plot.subplot(2).add_hist(bkg_ggH, "bkg_ggH")
-        plot.subplot(2).add_hist(bkg_ggH, "bkg_ggH_top")
-        plot.subplot(2).add_hist(bkg_qqH, "bkg_qqH")
-        plot.subplot(2).add_hist(bkg_qqH, "bkg_qqH_top")
-        plot.subplot(2).setGraphStyle(
-            "bkg_ggH",
-            "hist",
-            linecolor=styles.color_dict["ggH"],
-            linewidth=3)
-        plot.subplot(2).setGraphStyle("bkg_ggH_top", "hist", linecolor=0)
-        plot.subplot(2).setGraphStyle(
-            "bkg_qqH",
-            "hist",
-            linecolor=styles.color_dict["qqH"],
-            linewidth=3)
-        plot.subplot(2).setGraphStyle("bkg_qqH_top", "hist", linecolor=0)
-
+        for nmssm_signals in NMSSM_rfile_dict:
+            NMSSM_bkg_dict["bkg_"+nmssm_signals]  = plot.subplot(2).get_hist(nmssm_signals)
+            NMSSM_bkg_dict["bkg_"+nmssm_signals].Add(plot.subplot(2).get_hist("total_bkg"))            
+            plot.subplot(2).add_hist(NMSSM_bkg_dict["bkg_"+nmssm_signals], "bkg_"+nmssm_signals)
+            plot.subplot(2).add_hist(NMSSM_bkg_dict["bkg_"+nmssm_signals], "bkg_"+nmssm_signals+"_top")
+            plot.subplot(2).setGraphStyle(
+                        "bkg_"+nmssm_signals,
+                        "hist",
+                        linecolor=styles.color_dict[nmssm_signals],
+                        linewidth=3)
+            plot.subplot(2).setGraphStyle(
+                        "bkg_"+nmssm_signals+"_top",
+                        "hist", linecolor=0)
         plot.subplot(2).normalize([
-            "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
-            "bkg_qqH_top", "data_obs"
-        ], "total_bkg")
+                        "total_bkg", "data_obs"] + NMSSM_bkg_dict.keys()+NMSSM_top_bkg, "total_bkg")
     else:
         plot.subplot(2).normalize(["total_bkg", "data_obs"], "total_bkg")
 
@@ -377,27 +348,20 @@ def main(info):
     if not channel == "tt" and category in ["11", "12", "13", "14", "15", "16"]:
         plot.subplot(2).changeXLabels(["0.2", "0.4", "0.6", "0.8", "1.0"])
 
+
     # draw subplots. Argument contains names of objects to be drawn in corresponding order.
+  
     if "mm" not in channel:
         # procs_to_draw = ["stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top", "VH", "VH_top", "ttH", "ttH_top", "data_obs"] if args.linear else ["stack", "total_bkg", "data_obs"]
-        procs_to_draw = ["stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top", "data_obs"] if args.linear else ["stack", "total_bkg", "data_obs"]
+        procs_to_draw = ["stack", "total_bkg" ,"data_obs"]+NMSSM_rfile_dict.keys()+NMSSM_top if args.linear else ["stack", "total_bkg", "data_obs"]
         if args.draw_jet_fake_variation is not None:
             procs_to_draw = ["stack", "total_bkg", "data_obs"]
         plot.subplot(0).Draw(procs_to_draw)
         if args.linear != True:
-            # plot.subplot(1).Draw([
-            #     "stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top",
-            #     "VH", "VH_top", "ttH", "ttH_top", "HWW", "HWW_top", "data_obs"
-            # ])
             plot.subplot(1).Draw([
-                "stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top",
-                "data_obs"
-            ])
+                "stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top","data_obs"])
         if args.draw_jet_fake_variation is None:
-            plot.subplot(2).Draw([
-                "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
-                "bkg_qqH_top", "data_obs"
-            ])
+            plot.subplot(2).Draw(["total_bkg", "data_obs"]+NMSSM_bkg_dict.keys()+NMSSM_top_bkg)
         else:
             plot.subplot(2).Draw([
                 "total_bkg", "data_obs"
@@ -417,20 +381,17 @@ def main(info):
     # create legends
     suffix = ["", "_top"]
     for i in range(2):
-
-        plot.add_legend(width=0.6, height=0.15)
+        plot.add_legend(width=0.625, height=0.15)
         for process in legend_bkg_processes:
             plot.legend(i).add_entry(
                 0, process, styles.legend_label_dict[process.replace("TTL", "TT").replace("VVL", "VV").replace("NLO","")], 'f')
+
         plot.legend(i).add_entry(0, "total_bkg", "Bkg. stat. unc.", 'f')
         if "mm" not in channel and args.draw_jet_fake_variation is None:
-            plot.legend(i).add_entry(0 if args.linear else 1, "ggH%s" % suffix[i], "%s #times gg#rightarrowH"%str(int(ggH_scale)), 'l')
-            plot.legend(i).add_entry(0 if args.linear else 1, "qqH%s" % suffix[i], "%s #times qq#rightarrowH"%str(int(qqH_scale)), 'l')
-            # plot.legend(i).add_entry(0 if args.linear else 1, "VH%s" % suffix[i], "%s #times V(lep)H"%str(int(VH_scale)), 'l')
-            # plot.legend(i).add_entry(0 if args.linear else 1, "ttH%s" % suffix[i], "%s #times ttH"%str(int(ttH_scale)), 'l')
-            # # plot.legend(i).add_entry(0 if args.linear else 1, "HWW%s" % suffix[i], "%s #times H#rightarrowWW"%str(int(HWW_scale)), 'l')
+            for nmssm_signals in NMSSM_rfile_dict:
+                plot.legend(i).add_entry(0 if args.linear else 1, nmssm_signals+suffix[i], "H("+nmssm_signals[nmssm_signals.find("_")+1:nmssm_signals.find("125")-1]+")#rightarrowh(125)h'("+nmssm_signals[nmssm_signals.find("125")+4:]+")" , 'l')
         plot.legend(i).add_entry(0, "data_obs", "Observed", 'PE2L')
-        plot.legend(i).setNColumns(3)
+        plot.legend(i).setNColumns(2)
     plot.legend(0).Draw()
     plot.legend(1).setAlpha(0.0)
     plot.legend(1).Draw()
@@ -439,17 +400,21 @@ def main(info):
         plot.add_legend(
             reference_subplot=2, pos=1, width=0.6, height=0.03)
         plot.legend(i + 2).add_entry(0, "data_obs", "Observed", 'PE2L')
-        if "mm" not in channel and args.draw_jet_fake_variation is None:
-            plot.legend(i + 2).add_entry(0 if args.linear else 1, "ggH%s" % suffix[i],
-                                         "ggH+bkg.", 'l')
-            plot.legend(i + 2).add_entry(0 if args.linear else 1, "qqH%s" % suffix[i],
-                                         "qqH+bkg.", 'l')
+
+        #add NMSSM legend in ratio plot
+        # if "mm" not in channel and args.draw_jet_fake_variation is None:
+        #     for nmssm_signals in NMSSM_rfile_dict:
+        #         plot.legend(i + 2).add_entry(0 if args.linear else 1, nmssm_signals+suffix[i],
+        #                                 nmssm_signals+"bkg.", 'l')
         plot.legend(i + 2).add_entry(0, "total_bkg", "Bkg. stat. unc.", 'f')
         plot.legend(i + 2).setNColumns(4)
     plot.legend(2).Draw()
     plot.legend(3).setAlpha(0.0)
     plot.legend(3).Draw()
-
+    
+    #draw scale text
+    signal_cs=NMSSM_scale*0.1
+    plot.DrawText(0.16, 0.8, "\sigma_{\mathrm{signal}}=%s\,\mathrm{pb}" %signal_cs,textsize=0.024)
     # draw additional labels
     plot.DrawCMS()
     if "2016" in args.era:
@@ -464,7 +429,7 @@ def main(info):
 
     posChannelCategoryLabelLeft = None
     plot.DrawChannelCategoryLabel(
-        "%s, %s" % (channel_dict[channel], "inclusive"),
+        "%s, %s" % (channel_dict[channel], "{cat}".format(cat=args.category_postfix)),
         begin_left=posChannelCategoryLabelLeft)
 
     # save plot
@@ -479,13 +444,13 @@ def main(info):
     if args.draw_jet_fake_variation is not None:
         postfix = postfix + "_" + args.draw_jet_fake_variation
 
-    if not os.path.exists("%s_plots_%s"%(args.era,postfix)):
-        os.mkdir("%s_plots_%s"%(args.era,postfix))
-    if not os.path.exists("%s_plots_%s/%s"%(args.era,postfix,channel)):
-        os.mkdir("%s_plots_%s/%s"%(args.era,postfix,channel))
+    if not os.path.exists("plots/%s_plots_%s"%(args.era,postfix)):
+        os.mkdir("plots/%s_plots_%s"%(args.era,postfix))
+    if not os.path.exists("plots/%s_plots_%s/%s"%(args.era,postfix,channel)):
+        os.mkdir("plots/%s_plots_%s/%s"%(args.era,postfix,channel))
     print "Trying to save the created plot"
-    plot.save("%s_plots_%s/%s/%s_%s_%s.%s" % (args.era, postfix, channel, args.era, channel, variable, "pdf"))
-    plot.save("%s_plots_%s/%s/%s_%s_%s.%s" % (args.era, postfix, channel, args.era, channel, variable, "png"))
+    plot.save("plots/%s_plots_%s/%s/%s_%s_%s_%s.%s" % (args.era, postfix, channel, args.era, channel, variable, args.category_postfix, "pdf"))
+    plot.save("plots/%s_plots_%s/%s/%s_%s_%s_%s.%s" % (args.era, postfix, channel, args.era, channel, variable, args.category_postfix, "png"))
 
 
 if __name__ == "__main__":
@@ -513,3 +478,8 @@ if __name__ == "__main__":
             infolist.append({"args" : args, "channel" : ch, "variable" : v})
     pool = Pool(1)
     pool.map(main, infolist)
+    # for info in infolist:
+    #     main(info)
+
+
+
