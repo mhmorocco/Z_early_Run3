@@ -1,4 +1,27 @@
 # Input files used accross all channels in 2016.
+mass_dict = {
+    "heavy_mass": [240, 280, 320, 360, 400, 450, 500, 550, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2500, 3000],
+    "light_mass_coarse": [60, 70, 80, 90, 100, 120, 150, 170, 190, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800],
+    "light_mass_fine": [60, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 150, 170, 190, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850],
+}
+mass_dict = {
+    "heavy_mass": [320,500,900],
+    "light_mass_fine": [60,85,90,95,100,750],
+    "light_mass_coarse": [60,100,750],
+}
+
+mass_dict = {
+    "heavy_mass": [320],
+    "light_mass_fine": [60,100],
+    "light_mass_coarse": [60],
+}
+
+def light_masses(heavy_mass):
+        if heavy_mass > 1001:
+            return mass_dict["light_mass_coarse"]
+        else:
+            return mass_dict["light_mass_fine"]
+
 common_files_2016 = {
     "DY": [
         "DY1JetsToLLM50_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_madgraph-pythia8_v1",
@@ -55,7 +78,7 @@ common_files_2016 = {
         "EWKWPlus2JetsWToLNuM50_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_madgraph-pythia8_ext2-v2",
     ],
     "ggH": [
-        "ggZHHToTauTauZToQQM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v1",
+     #   "ggZHHToTauTauZToQQM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v1",
         "GluGluHToTauTauM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_ext1-v3",
         "GluGluHToTauTauM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_ext2-v1",
         "GluGluHToTauTauM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v3",
@@ -69,48 +92,51 @@ common_files_2016 = {
         "WplusHToTauTauM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v2",
     ],
     "VH": [
-        "ggZHHToTauTauZToLLM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v1",
-        "ggZHHToTauTauZToNuNuM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v1",
+    #    "ggZHHToTauTauZToLLM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v1",
+     #   "ggZHHToTauTauZToNuNuM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v1",
         "ZHToTauTauM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v2",
         "WminusHToTauTauM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v2",
         "WplusHToTauTauM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v2",
     ],
     "ZH": [
-        "ggZHHToTauTauZToLLM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v1",
-        "ggZHHToTauTauZToNuNuM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v1",
+    #    "ggZHHToTauTauZToLLM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v1",
+    #    "ggZHHToTauTauZToNuNuM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v1",
         "ZHToTauTauM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v2",
     ],
     "WH": [
         "WminusHToTauTauM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v2",
         "WplusHToTauTauM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v2",
     ],
-    "ggHWW": [
-        "GluGluHToWWTo2L2NuM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-JHUgenv628-pythia8_v1",
-    ],
-    "qqHWW": [
-        "VBFHToWWTo2L2NuM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-JHUgenv628-pythia8_v2",
-    ],
-    "WHWW": [
-        "HWminusJHToWWM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v2",
-        "HWplusJHToWWM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v2",
-    ],
-    "ZHWW": [
-        "HZJHToWWM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v2",
-        "GluGluZHHToWWM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v2",
-    ],
+    # "ggHWW": [
+    #     "GluGluHToWWTo2L2NuM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-JHUgenv628-pythia8_v1",
+    # ],
+    # "qqHWW": [
+    #     "VBFHToWWTo2L2NuM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-JHUgenv628-pythia8_v2",
+    # ],
+    # "WHWW": [
+    #     "HWminusJHToWWM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v2",
+    #     "HWplusJHToWWM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v2",
+    # ],
+    # "ZHWW": [
+    #     "HZJHToWWM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v2",
+    #     "GluGluZHHToWWM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_powheg-pythia8_v2",
+    # ],
     "ttH": [
         "ttHJetToTTM125_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_amcatnlo-pythia8_ext4-v1",
     ],
-    **{"susybbH_nlo_{}".format(mass): ["SUSYGluGluToBBHToTauTauM{}_RunIISummer16MiniAODv3_94X_13TeV_MINIAOD_amcatnlo-pythia8_v2".format(mass)]
-            for mass in [ 80, 90, 110, 120, 130, 140, 160, 180, 200, 250, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1400, 1600, 1800, 2000, 2900]},
-    **{"susybbH_nlo_{}".format(mass): ["SUSYGluGluToBBHToTauTauM{}_RunIISummer16MiniAODv3_94X_13TeV_MINIAOD_amcatnlo-pythia8_v3".format(mass)]
-            for mass in [1200, 2300, 2600, 3200]},
-    **{"susybbH_{}".format(mass): ["SUSYGluGluToBBHToTauTauM{}_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_pythia8_v2".format(mass)]
-            for mass in [ 80, 100, 110, 120, 130, 140, 160, 180, 200, 250, 300, 350, 400, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200]},
-    **{"susybbH_{}".format(mass): ["SUSYGluGluToBBHToTauTauM{}_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_pythia8_v1".format(mass)]
-            for mass in [90, 450]},
-    **{"susyggH_{}".format(mass): ["SUSYGluGluToHToTauTauM{}_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_pythia8_v2".format(mass)]
-            for mass in [ 80, 90, 100, 110, 120, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200]},
+    **{"NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass): ["NMSSMM{heavy_mass}h1M125tautauh2M{light_mass}_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_madgraph-pythia8_v1".format(heavy_mass=heavy_mass, light_mass=light_mass)]
+        for heavy_mass in mass_dict["heavy_mass"]
+            for light_mass in light_masses(heavy_mass) if light_mass+125<heavy_mass}
+    # **{"susybbH_nlo_{}".format(mass): ["SUSYGluGluToBBHToTauTauM{}_RunIISummer16MiniAODv3_94X_13TeV_MINIAOD_amcatnlo-pythia8_v2".format(mass)]
+    #         for mass in [ 80, 90, 110, 120, 130, 140, 160, 180, 200, 250, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1400, 1600, 1800, 2000, 2900]},
+    # **{"susybbH_nlo_{}".format(mass): ["SUSYGluGluToBBHToTauTauM{}_RunIISummer16MiniAODv3_94X_13TeV_MINIAOD_amcatnlo-pythia8_v3".format(mass)]
+    #         for mass in [1200, 2300, 2600, 3200]},
+    # **{"susybbH_{}".format(mass): ["SUSYGluGluToBBHToTauTauM{}_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_pythia8_v2".format(mass)]
+    #         for mass in [ 80, 100, 110, 120, 130, 140, 160, 180, 200, 250, 300, 350, 400, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200]},
+    # **{"susybbH_{}".format(mass): ["SUSYGluGluToBBHToTauTauM{}_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_pythia8_v1".format(mass)]
+    #         for mass in [90, 450]},
+    # **{"susyggH_{}".format(mass): ["SUSYGluGluToHToTauTauM{}_RunIISummer16MiniAODv3_PUMoriond17_13TeV_MINIAOD_pythia8_v2".format(mass)]
+    #         for mass in [ 80, 90, 100, 110, 120, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200]},
 }
 # Input files used accross all channels in 2017.
 common_files_2017 = {
@@ -123,7 +149,7 @@ common_files_2017 = {
         "DY3JetsToLLM50_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_madgraph-pythia8_v1",
         "DY4JetsToLLM50_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_madgraph-pythia8_v2",
         "DYJetsToLLM10to50_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_madgraph-pythia8_ext1-v2",
-        "DYJetsToLLM10to50_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_madgraph-pythia8_v1",
+        #"DYJetsToLLM10to50_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_madgraph-pythia8_v1",
         "DYJetsToLLM50_RunIIFall17MiniAODv2_PU2017RECOSIMstep_13TeV_MINIAOD_madgraph-pythia8_ext1-v1",
         "DYJetsToLLM50_RunIIFall17MiniAODv2_PU2017RECOSIMstep_13TeV_MINIAOD_madgraph-pythia8_v1",
         "EWKZ2Jets_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_madgraph-pythia8_v2",
@@ -160,7 +186,7 @@ common_files_2017 = {
         "EWKWPlus2JetsWToLNuM50_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_madgraph-pythia8_v2",
     ],
     "ggH": [
-        "ggZHHToTauTauZToQQM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v2",
+     #   "ggZHHToTauTauZToQQM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v2",
         "GluGluHToTauTauHTXSFilterSTXS1p1Bin101M125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v2",
         "GluGluHToTauTauHTXSFilterSTXS1p1Bin104to105M125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
         "GluGluHToTauTauHTXSFilterSTXS1p1Bin106M125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v2",
@@ -181,49 +207,52 @@ common_files_2017 = {
     ],
     "VH": [
         "ZHToTauTauM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
-        "ggZHHToTauTauZToLLM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
-        "ggZHHToTauTauZToNuNuM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
+     #   "ggZHHToTauTauZToLLM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
+     #   "ggZHHToTauTauZToNuNuM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
         "WminusHToTauTauM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
         "WplusHToTauTauM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
     ],
     "ZH": [
-        "ggZHHToTauTauZToLLM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
-        "ggZHHToTauTauZToNuNuM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
+     #   "ggZHHToTauTauZToLLM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
+      #  "ggZHHToTauTauZToNuNuM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
         "ZHToTauTauM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
     ],
     "WH": [
         "WminusHToTauTauM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
         "WplusHToTauTauM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
     ],
-    "ggHWW": [
-        "GluGluHToWWTo2L2NuM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
-    ],
-    "qqHWW": [
-        "VBFHToWWTo2L2NuM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
-    ],
-    "WHWW": [
-        "HWminusJHToWWM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
-        "HWplusJHToWWM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
-    ],
-    "ZHWW": [
-        "HZJHToWWM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v4",
-        "GluGluZHHToWWM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
-    ],
+    # "ggHWW": [
+    #     "GluGluHToWWTo2L2NuM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
+    # ],
+    # "qqHWW": [
+    #     "VBFHToWWTo2L2NuM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
+    # ],
+    # "WHWW": [
+    #     "HWminusJHToWWM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
+    #     "HWplusJHToWWM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
+    # ],
+    # "ZHWW": [
+    #     "HZJHToWWM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v4",
+    #     "GluGluZHHToWWM125_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_powheg-pythia8_v1",
+    # ],
     "ttH": [
         "ttHToTauTauM125_RunIIFall17MiniAODv2_PU2017newmpx_13TeV_MINIAOD_powheg-pythia8_v1",
     ],
-    **{"susybbH_{}".format(mass): ["SUSYGluGluToBBHToTauTauM{}_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_pythia8_v1".format(mass)]
-            for mass in [  80,   90,  100,  110,  120,  130,  140,  160,  180,  200,
-                          250,  300,  350,  400,  600,  700,  800,  900,
-                         1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200]},
-    **{"susybbH_nlo_{}".format(mass): ["SUSYGluGluToBBHToTauTauM{}_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_amcatnlo-pythia8_v1".format(mass)]
-            for mass in [  80,   90,  110,  120,  125,  130,  140,  160,  180,  200,
-                          250,  300,  350,  400,  500,  600,  700,  800,  900, 1000,
-                         1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200]},
-    **{"susyggH_{}".format(mass): ["SUSYGluGluToHToTauTauM{}_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_pythia8_v1".format(mass)]
-            for mass in [  80,   90,  100,  110,  120,  130,  140,  180,  200,
-                          250,  300,  350,  400,  450,  600,  700,  800,  900,
-                         1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200]},
+    **{"NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass): ["NMSSMM{heavy_mass}h1M125tautauh2M{light_mass}_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_madgraph-pythia8_v1".format(heavy_mass=heavy_mass, light_mass=light_mass)]
+        for heavy_mass in mass_dict["heavy_mass"]
+            for light_mass in light_masses(heavy_mass) if light_mass+125<heavy_mass}
+    # **{"susybbH_{}".format(mass): ["SUSYGluGluToBBHToTauTauM{}_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_pythia8_v1".format(mass)]
+    #         for mass in [  80,   90,  100,  110,  120,  130,  140,  160,  180,  200,
+    #                       250,  300,  350,  400,  600,  700,  800,  900,
+    #                      1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200]},
+    # **{"susybbH_nlo_{}".format(mass): ["SUSYGluGluToBBHToTauTauM{}_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_amcatnlo-pythia8_v1".format(mass)]
+    #         for mass in [  80,   90,  110,  120,  125,  130,  140,  160,  180,  200,
+    #                       250,  300,  350,  400,  500,  600,  700,  800,  900, 1000,
+    #                      1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200]},
+    # **{"susyggH_{}".format(mass): ["SUSYGluGluToHToTauTauM{}_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_pythia8_v1".format(mass)]
+    #         for mass in [  80,   90,  100,  110,  120,  130,  140,  180,  200,
+    #                       250,  300,  350,  400,  450,  600,  700,  800,  900,
+    #                      1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200]},
 }
 
 # Input files used accross all channels in 2018.
@@ -267,7 +296,7 @@ common_files_2018 = {
         "EWKWPlus2JetsWToLNuM50_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_madgraph-pythia8_v1",
     ],
     "ggH": [
-        "ggZHHToTauTauZToQQM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
+     #   "ggZHHToTauTauZToQQM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
         "GluGluHToTauTauHTXSFilterSTXS1p1Bin101M125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v2",
         "GluGluHToTauTauHTXSFilterSTXS1p1Bin104to105M125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
         "GluGluHToTauTauHTXSFilterSTXS1p1Bin106M125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v2",
@@ -285,50 +314,54 @@ common_files_2018 = {
         "WplusHToTauTauM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v2",
     ],
     "VH": [
-        "ggZHHToTauTauZToLLM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
-        "ggZHHToTauTauZToNuNuM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
+    #    "ggZHHToTauTauZToLLM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
+    #    "ggZHHToTauTauZToNuNuM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
         "ZHToTauTauM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v2",
         "WminusHToTauTauM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v2",
         "WplusHToTauTauM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v2",
     ],
     "ZH": [
-        "ggZHHToTauTauZToLLM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
-        "ggZHHToTauTauZToNuNuM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
+    #    "ggZHHToTauTauZToLLM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
+    #    "ggZHHToTauTauZToNuNuM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
         "ZHToTauTauM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v2",
     ],
     "WH": [
         "WminusHToTauTauM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v2",
         "WplusHToTauTauM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v2",
     ],
-    "ggHWW": [
-        "GluGluHToWWTo2L2NuM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
-    ],
-    "qqHWW": [
-        "VBFHToWWTo2L2NuM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
-    ],
-    "WHWW": [
-        "HWminusJHToWWM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
-        "HWplusJHToWWM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
-    ],
-    "ZHWW": [
-        "HZJHToWWM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
-        "GluGluZHHToWWM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
-    ],
+    # "ggHWW": [
+    #     "GluGluHToWWTo2L2NuM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
+    # ],
+    # "qqHWW": [
+    #     "VBFHToWWTo2L2NuM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
+    # ],
+    # "WHWW": [
+    #     "HWminusJHToWWM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
+    #     "HWplusJHToWWM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
+    # ],
+    # "ZHWW": [
+    #     "HZJHToWWM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
+    #     "GluGluZHHToWWM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
+    # ],
     "ttH": [
         "ttHToTauTauM125_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_powheg-pythia8_v1",
     ],
-    **{"susybbH_{}".format(mass): ["SUSYGluGluToBBHToTauTauM{}_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_pythia8_v2".format(mass)]
-            for mass in [  80,   90,  100,  110,  120,  130,  140,  160,  180,  200,
-                          250,  300,  350,  400,  450,  600,  700,  800,  900,
-                         1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200]},
-    **{"susybbH_nlo_{}".format(mass): ["SUSYGluGluToBBHToTauTauM{}_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_amcatnlo-pythia8_v1".format(mass)]
-            for mass in [  80,   90,  100,  110,  120,  125,  130,  140,  160,  180,  200,
-                          250,  300,  350,  400,  450,  500,  600,  700,  800,  900, 1000,
-                         1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500]},
-    **{"susyggH_{}".format(mass): ["SUSYGluGluToHToTauTauM{}_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_pythia8_v2".format(mass)]
-            for mass in [  80,   90,  100,  110,  120,  130,  140,  160,  180,  200,
-                          250,  300,  350,  400,  450,  600,  700,  800,  900,
-                         1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200]},
+            
+    **{"NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass): ["NMSSMM{heavy_mass}h1M125tautauh2M{light_mass}_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_madgraph-pythia8_v1".format(heavy_mass=heavy_mass, light_mass=light_mass)]
+        for heavy_mass in mass_dict["heavy_mass"]
+            for light_mass in light_masses(heavy_mass) if light_mass+125<heavy_mass}
+    # **{"susybbH_{}".format(mass): ["SUSYGluGluToBBHToTauTauM{}_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_pythia8_v2".format(mass)]
+    #         for mass in [  80,   90,  100,  110,  120,  130,  140,  160,  180,  200,
+    #                       250,  300,  350,  400,  450,  600,  700,  800,  900,
+    #                      1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200]},
+    # **{"susybbH_nlo_{}".format(mass): ["SUSYGluGluToBBHToTauTauM{}_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_amcatnlo-pythia8_v1".format(mass)]
+    #         for mass in [  80,   90,  100,  110,  120,  125,  130,  140,  160,  180,  200,
+    #                       250,  300,  350,  400,  450,  500,  600,  700,  800,  900, 1000,
+    #                      1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500]},
+    # **{"susyggH_{}".format(mass): ["SUSYGluGluToHToTauTauM{}_RunIIAutumn18MiniAOD_102X_13TeV_MINIAOD_pythia8_v2".format(mass)]
+    #         for mass in [  80,   90,  100,  110,  120,  130,  140,  160,  180,  200,
+    #                       250,  300,  350,  400,  450,  600,  700,  800,  900,
+    #                      1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200]},
 }
 
 files = {
@@ -398,6 +431,7 @@ files = {
                 ],
             },
             **common_files_2016
+
             ),
         "em": dict({
             "data": [
@@ -513,6 +547,7 @@ files = {
             },
             **common_files_2018
             ),
+
         "mt": dict({
             "data": [
                 "SingleMuon_Run2018A_17Sep2018v2_13TeV_MINIAOD",
@@ -529,6 +564,7 @@ files = {
             },
             **common_files_2018
             ),
+
         "tt": dict({
             "data": [
                 "Tau_Run2018A_17Sep2018v1_13TeV_MINIAOD",
@@ -545,6 +581,7 @@ files = {
             },
             **common_files_2018
             ),
+
         "em": dict({
             "data": [
                 "MuonEG_Run2018A_17Sep2018v1_13TeV_MINIAOD",
