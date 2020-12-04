@@ -81,7 +81,7 @@ def setup_logging(output_file, level=logging.DEBUG):
 
 def main(info):
 
-    #add NMSSM masses, mass_dict has do be adapted in rootfile_parser_inputshapes.py
+    #add NMSSM masses, mass_dict has do be adapted in rootfile_parser_inputshapes.py and styles.py
     mass_dict = {
     "heavy_mass": [320],
     "light_mass_fine": [60,100],
