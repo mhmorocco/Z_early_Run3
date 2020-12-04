@@ -88,7 +88,11 @@ def replace_negative_entries_and_renormalize(histogram, tolerance):
         logger.fatal(
             "Aborted renormalization because initial normalization is negative: %f. Check histogram %s ",
             norm_all, histogram.GetName())
-        raise Exception
+        for i_bin in range(1, histogram.GetNbinsX() + 1):
+            histogram.SetBinContent(i_bin, 0.0)
+        norm_all=0.
+        norm_positive=0.
+        #raise Exception
 
     if abs(norm_all - norm_positive) > tolerance * norm_all:
         logger.warning(
@@ -260,38 +264,78 @@ def abcd_estimation(rootfile, channel, selection, variable,
                                         variation=variation.replace("same_sign_anti_iso", "same_sign") if transposed else variation.replace("same_sign_anti_iso", "anti_iso"),
                                         variable=variable)), -1.0)
     # Calculate extrapolation_factor from regions C and D.
-    data_yield_C = rootfile.Get(_name_string.format(
+    data_c = rootfile.Get(_name_string.format(
                                 dataset="data",
                                 channel=channel,
                                 process="",
                                 selection="-" + selection if selection != "" else "",
                                 variation=variation.replace("same_sign_anti_iso", "anti_iso") if transposed else variation.replace("same_sign_anti_iso", "same_sign"),
                                 variable=variable
-        )).Integral()
-    bkg_yield_C = sum(rootfile.Get(_name_string.format(
+        ))
+    bin_zero=data_c.GetBinContent(0)
+    bin_one=data_c.GetBinContent(1)
+    bin_n1=data_c.GetBinContent(data_c.GetNbinsX()+1)
+    bin_n=data_c.GetBinContent(data_c.GetNbinsX())
+    data_c.SetBinContent(data_c.GetNbinsX(),bin_n+bin_n1)
+    #print(variable, "data_c",bin_zero)
+    data_c.SetBinContent(1,bin_zero+bin_one)
+    data_yield_C=data_c.Integral()
+    bkg_yield_C=0.
+    for proc in procs_to_subtract:
+        hist=rootfile.Get(_name_string.format(
                                 dataset=_dataset_map[proc],
                                 channel=channel,
                                 process="-" + _process_map[proc],
                                 selection="-" + selection if selection != "" else "",
                                 variation=variation.replace("same_sign_anti_iso", "anti_iso") if transposed else variation.replace("same_sign_anti_iso", "same_sign"),
                                 variable=variable
-        )).Integral() for proc in procs_to_subtract)
-    data_yield_D = rootfile.Get(_name_string.format(
+        ))
+        bin_zero=hist.GetBinContent(0)
+        bin_n1=hist.GetBinContent(hist.GetNbinsX()+1)
+        bin_n=hist.GetBinContent(hist.GetNbinsX())
+        hist.SetBinContent(hist.GetNbinsX(),bin_n+bin_n1)
+        bin_one=hist.GetBinContent(1)
+        hist.SetBinContent(1,bin_one+bin_zero)
+        bkg_yield_C+=hist.Integral()
+
+    data_d = rootfile.Get(_name_string.format(
                                 dataset="data",
                                 channel=channel,
                                 process="",
                                 selection="-" + selection if selection != "" else "",
                                 variation=variation,
                                 variable=variable
-        )).Integral()
-    bkg_yield_D = sum(rootfile.Get(_name_string.format(
+        ))
+    bin_zero=data_d.GetBinContent(0)
+    #print(variable,"data_d",bin_zero)
+    bin_one=data_d.GetBinContent(1)
+    data_d.SetBinContent(1,bin_zero+bin_one)
+    bin_n1=data_d.GetBinContent(data_d.GetNbinsX()+1)
+    bin_n=data_d.GetBinContent(data_d.GetNbinsX())
+    data_d.SetBinContent(data_d.GetNbinsX(),bin_n+bin_n1)
+    data_yield_D=data_d.Integral()
+    bkg_yield_D=0.
+    for proc in procs_to_subtract:
+        hist=rootfile.Get(_name_string.format(
                                 dataset=_dataset_map[proc],
                                 channel=channel,
                                 process="-" + _process_map[proc],
                                 selection="-" + selection if selection != "" else "",
                                 variation=variation,
                                 variable=variable
-        )).Integral() for proc in procs_to_subtract)
+        ))
+        # print(hist)
+        bin_zero=hist.GetBinContent(0)
+        bin_one=hist.GetBinContent(1)
+        bin_n1=hist.GetBinContent(hist.GetNbinsX()+1)
+        bin_n=hist.GetBinContent(hist.GetNbinsX())
+        hist.SetBinContent(hist.GetNbinsX(),bin_n+bin_n1)
+        #print(variable,"bkg_d",proc, bin_zero,bin_one,hist.Integral())
+        hist.SetBinContent(1,bin_one+bin_zero)
+        #print(bin_one,hist.Integral())
+        bkg_yield_D += hist.Integral()
+   # print(variable,bkg_yield_D)
+   #print("")
     if data_yield_C == 0 or data_yield_D == 0:
         logger.warning("No data in region C or region D for shape of variable %s in category %s. Setting extrapolation_factor to zero.",
                        variable, "-" + selection if selection != "" else "")
@@ -371,6 +415,7 @@ def main(args):
     for key in input_file.GetListOfKeys():
         logger.debug("Processing histogram %s",key.GetName())
         dataset, selection, variation, variable = key.GetName().split("#")
+        #if variable not in ["bcsv_2","bpt_bReg_2","bm_bReg_2"]:
         if "anti_iso" in variation or "same_sign" in variation:
             sel_split = selection.split("-", maxsplit=1)
             # Set category to default since not present in control plots.
@@ -445,7 +490,6 @@ def main(args):
         #  Booking of necessary categories for embedded tt bar variation.
         if "Nominal" in variation:
             sel_split = selection.split("-", maxsplit=1)
-
             if "EMB" in dataset:
                 channel = sel_split[0]
                 category = sel_split[1].replace("Embedded", "").strip("-")
@@ -457,7 +501,8 @@ def main(args):
                 else:
                     emb_categories[channel] = {category: [variable]}
 
-    # Loop over available ff inputs and do the estimations
+# Loop over available ff inputs and do the estimations
+   # if variable not in ["bcsv_2","bpt_bReg_2","bm_bReg_2"]:
     logger.info("Starting estimations for fake factors and their variations")
     logger.debug("%s", json.dumps(ff_inputs, sort_keys=True, indent=4))
     for ch in ff_inputs:
@@ -465,10 +510,10 @@ def main(args):
             logger.info("Do estimation for category %s", cat)
             for var in ff_inputs[ch][cat]:
                 for variation in ff_inputs[ch][cat][var]:
-                   estimated_hist = fake_factor_estimation(input_file, ch, cat, var, variation=variation)
-                   estimated_hist.Write()
-                   estimated_hist = fake_factor_estimation(input_file, ch, cat, var, variation=variation, is_embedding=False)
-                   estimated_hist.Write()
+                    estimated_hist = fake_factor_estimation(input_file, ch, cat, var, variation=variation)
+                    estimated_hist.Write()
+                    estimated_hist = fake_factor_estimation(input_file, ch, cat, var, variation=variation, is_embedding=False)
+                    estimated_hist.Write()
     logger.info("Starting estimations for the QCD mulitjet process.")
     logger.debug("%s", json.dumps(qcd_inputs, sort_keys=True, indent=4))
     for ch in qcd_inputs:
@@ -492,11 +537,11 @@ def main(args):
                         estimated_hist.Write()
                     else:
                         estimated_hist = abcd_estimation(input_file, ch, cat, var,
-                                                         variation=variation)
+                                                        variation=variation)
                         estimated_hist.Write()
                         estimated_hist = abcd_estimation(input_file, ch, cat, var,
-                                                         variation=variation,
-                                                         is_embedding=False)
+                                                        variation=variation,
+                                                        is_embedding=False)
                         estimated_hist.Write()
     if args.emb_tt:
         logger.info("Producing embedding ttbar variations.")
