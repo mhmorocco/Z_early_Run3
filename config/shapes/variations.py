@@ -22,30 +22,30 @@ same_sign_em = ReplaceCutAndAddWeight("same_sign", "os",
                                       )
 abcd_method = [ReplaceCut("abcd_same_sign", "os", Cut("q_1*q_2>0", "ss")),
                ReplaceCut("abcd_anti_iso", "tau_iso",
-                          Cut("(byTightDeepTau2017v2p1VSjet_1>0.5&&byTightDeepTau2017v2p1VSjet_2<0.5&&byMediumDeepTau2017v2p1VSjet_2>0.5)", "tau_anti_iso")),
+                          Cut("(byMediumDeepTau2017v2p1VSjet_1>0.5&&byMediumDeepTau2017v2p1VSjet_2<0.5&&byVVVLooseDeepTau2017v2p1VSjet_2>0.5)", "tau_anti_iso")),
                ReplaceMultipleCuts("abcd_same_sign_anti_iso", ["os", "tau_iso"],
                            [Cut("q_1*q_2>0", "ss"),
-                            Cut("(byTightDeepTau2017v2p1VSjet_1>0.5&&byTightDeepTau2017v2p1VSjet_2<0.5&&byMediumDeepTau2017v2p1VSjet_2>0.5)", "tau_anti_iso")])
+                            Cut("(byMediumDeepTau2017v2p1VSjet_1>0.5&&byMediumDeepTau2017v2p1VSjet_2<0.5&&byVVVLooseDeepTau2017v2p1VSjet_2>0.5)", "tau_anti_iso")])
 ]
 
 anti_iso_lt = ReplaceCutAndAddWeight("anti_iso", "tau_iso",
-                                     Cut("byTightDeepTau2017v2p1VSjet_2<0.5&&byVLooseDeepTau2017v2p1VSjet_2>0.5", "tau_anti_iso"),
+                                     Cut("byMediumDeepTau2017v2p1VSjet_2<0.5&&byVVVLooseDeepTau2017v2p1VSjet_2>0.5", "tau_anti_iso"),
                                      Weight("ff2_nom", "fake_factor")
                                      )
 anti_iso_tt = ReplaceCutAndAddWeight("anti_iso", "tau_iso",
-                                     Cut("(byTightDeepTau2017v2p1VSjet_2>0.5&&byTightDeepTau2017v2p1VSjet_1<0.5&&byVLooseDeepTau2017v2p1VSjet_1>0.5)||(byTightDeepTau2017v2p1VSjet_1>0.5&&byTightDeepTau2017v2p1VSjet_2<0.5&&byVLooseDeepTau2017v2p1VSjet_2>0.5)", "tau_anti_iso"),
-                                     Weight("(0.5*ff1_nom*(byTightDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_nom*(byTightDeepTau2017v2p1VSjet_2<0.5))", "fake_factor")
+                                     Cut("(byMediumDeepTau2017v2p1VSjet_2>0.5&&byMediumDeepTau2017v2p1VSjet_1<0.5&&byVVVLooseDeepTau2017v2p1VSjet_1>0.5)||(byMediumDeepTau2017v2p1VSjet_1>0.5&&byMediumDeepTau2017v2p1VSjet_2<0.5&&byVVVLooseDeepTau2017v2p1VSjet_2>0.5)", "tau_anti_iso"),
+                                     Weight("(0.5*ff1_nom*(byMediumDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_nom*(byMediumDeepTau2017v2p1VSjet_2<0.5))", "fake_factor")
                                      )
 anti_iso_split_lt = [ReplaceCutAndAddWeight("anti_iso_w", "tau_iso",
-                                     Cut("byTightDeepTau2017v2p1VSjet_2<0.5&&byVLooseDeepTau2017v2p1VSjet_2>0.5", "tau_anti_iso"),
+                                     Cut("byMediumDeepTau2017v2p1VSjet_2<0.5&&byVVVLooseDeepTau2017v2p1VSjet_2>0.5", "tau_anti_iso"),
                                      Weight("ff2_onlyw*ff2_fracw", "fake_factor")
                                      ),
                      ReplaceCutAndAddWeight("anti_iso_qcd", "tau_iso",
-                                     Cut("byTightDeepTau2017v2p1VSjet_2<0.5&&byVLooseDeepTau2017v2p1VSjet_2>0.5", "tau_anti_iso"),
+                                     Cut("byMediumDeepTau2017v2p1VSjet_2<0.5&&byVVVLooseDeepTau2017v2p1VSjet_2>0.5", "tau_anti_iso"),
                                      Weight("ff2_onlyqcd*ff2_fracqcd", "fake_factor")
                                      ),
                      ReplaceCutAndAddWeight("anti_iso_tt", "tau_iso",
-                                     Cut("byTightDeepTau2017v2p1VSjet_2<0.5&&byVLooseDeepTau2017v2p1VSjet_2>0.5", "tau_anti_iso"),
+                                     Cut("byMediumDeepTau2017v2p1VSjet_2<0.5&&byVVVLooseDeepTau2017v2p1VSjet_2>0.5", "tau_anti_iso"),
                                      Weight("ff2_onlytt*ff2_fractt", "fake_factor")
                                      ),
                     ]
@@ -874,15 +874,15 @@ _ff_variations_lt = [
 #  Variations on the jet backgrounds estimated with the fake factor method.
 ff_variations_lt = [
         ReplaceCutAndAddWeight("anti_iso_CMS_{syst}".format(syst=syst.format(shift=shift.capitalize(), era="Era", ch="Channel_").replace("w_dr0", "w_lowdR").replace("w_dr1", "w_highdR").replace("_dr0", "")), "tau_iso",
-                               Cut("byTightDeepTau2017v2p1VSjet_2<0.5&&byVLooseDeepTau2017v2p1VSjet_2>0.5", "tau_anti_iso"),
+                               Cut("byMediumDeepTau2017v2p1VSjet_2<0.5&&byVLooseDeepTau2017v2p1VSjet_2>0.5", "tau_anti_iso"),
                                Weight("ff2_{syst}".format(syst=syst.format(shift=shift, era="", ch="")), "fake_factor")
                                ) for shift in ["up", "down"] for syst in _ff_variations_lt
         ]
 
 ff_variations_tt = [
         ReplaceCutAndAddWeight("anti_iso_CMS_{syst}".format(syst=syst.format(shift=shift.capitalize(), era="_Era", ch="_tt").replace("dr0_", "")), "tau_iso",
-                               Cut("(byTightDeepTau2017v2p1VSjet_2>0.5&&byTightDeepTau2017v2p1VSjet_1<0.5&&byVLooseDeepTau2017v2p1VSjet_1>0.5)||(byTightDeepTau2017v2p1VSjet_1>0.5&&byTightDeepTau2017v2p1VSjet_2<0.5&&byVLooseDeepTau2017v2p1VSjet_2>0.5)", "tau_anti_iso"),
-                               Weight("(0.5*ff1_{syst}*(byTightDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_{syst}*(byTightDeepTau2017v2p1VSjet_2<0.5))".format(syst=syst.format(shift="_"+shift, era="", ch="")), "fake_factor")
+                               Cut("(byMediumDeepTau2017v2p1VSjet_2>0.5&&byMediumDeepTau2017v2p1VSjet_1<0.5&&byVLooseDeepTau2017v2p1VSjet_1>0.5)||(byMediumDeepTau2017v2p1VSjet_1>0.5&&byMediumDeepTau2017v2p1VSjet_2<0.5&&byVLooseDeepTau2017v2p1VSjet_2>0.5)", "tau_anti_iso"),
+                               Weight("(0.5*ff1_{syst}*(byMediumDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_{syst}*(byMediumDeepTau2017v2p1VSjet_2<0.5))".format(syst=syst.format(shift="_"+shift, era="", ch="")), "fake_factor")
                                ) for shift in ["up", "down"] for syst in ["ff_qcd_dr0_njet0_morphed_stat{ch}{era}{shift}",
                                                                           "ff_qcd_dr0_njet1_morphed_stat{ch}{era}{shift}",
                                                                           "ff_qcd_dr0_njet2_morphed_stat{ch}{era}{shift}",
