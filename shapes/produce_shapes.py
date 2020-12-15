@@ -4,6 +4,7 @@ import logging
 import os
 import pickle
 import re
+import yaml
 
 from ntuple_processor import Histogram
 from ntuple_processor import dataset_from_artusoutput, Unit, UnitManager, GraphManager, RunManager
@@ -160,24 +161,14 @@ def parse_arguments():
 
     return parser.parse_args()
 
-# mass_dict = {
-#     "heavy_mass": [240, 280, 320, 360, 400, 450, 500, 550, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2500, 3000],
-#     "light_mass_coarse": [60, 70, 80, 90, 100, 120, 150, 170, 190, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800],
-#     "light_mass_fine": [60, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 150, 170, 190, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850],
-# }
+mass_dict= yaml.load(open("shapes/mass_dict_nmssm.yaml"), Loader=yaml.Loader)["analysis"]
 
 # mass_dict = {
-#     "heavy_mass": [320,500,900],
-#     "light_mass_fine": [60,85,90,95,100,750],
-#     "light_mass_coarse": [60,100,750],
+# "heavy_mass": [320],
+# "light_mass_fine": [60],
+# "light_mass_coarse": [60],
 # }
 
-
-mass_dict = {
-    "heavy_mass": [320],
-    "light_mass_fine": [60,100],
-    "light_mass_coarse": [60],
-}
 
 
 def light_masses(heavy_mass):
@@ -218,7 +209,7 @@ def main(args):
     def get_nominal_datasets(era, channel):
         datasets = dict()
         def filter_friends(dataset, friend):
-            if re.match("(gg|qq|tt|w|z|v)h", dataset.lower()):
+            if re.match("(gg|qq|tt|w|z|v)h", dataset.lower()) or re.match("NMSSM",dataset):
                 if "FakeFactors" in friend or "EMQCDWeights" in friend:
                     return False
             return True
@@ -477,6 +468,8 @@ def main(args):
                 um.book([unit for d in trueTauBkgS | leptonFakesS | signalsS - {"zl"} for unit in nominals[args.era]['units'][ch_][d]], [*tau_id_eff_lt])
                 um.book([unit for d in dataS | embS | leptonFakesS | trueTauBkgS for unit in nominals[args.era]['units'][ch_][d]], [*ff_variations_lt])
                 um.book([unit for d in embS for unit in nominals[args.era]['units'][ch_][d]], [*emb_tau_id_eff_lt, *tau_id_eff_lt])
+            print("salut")
+            print(ff_variations_lt)
             if ch_ in ["et", "em"]:
                 um.book([unit for d in simulatedProcsDS[ch_] for unit in nominals[args.era]['units'][ch_][d]], [*ele_es, *ele_res])
                 um.book([unit for d in embS for unit in nominals[args.era]['units'][ch_][d]], [*emb_e_es])
