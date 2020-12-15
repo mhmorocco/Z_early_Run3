@@ -81,12 +81,9 @@ def setup_logging(output_file, level=logging.DEBUG):
 
 def main(info):
 
-    #add NMSSM masses, mass_dict has do be adapted in rootfile_parser_inputshapes.py and styles.py
-    mass_dict = {
-    "heavy_mass": [320],
-    "light_mass_fine": [60,100],
-    "light_mass_coarse": [60],
-    }
+    #add NMSSM masses to plot
+    mass_dict= yaml.load(open("shapes/mass_dict_nmssm.yaml"), Loader=yaml.Loader)["plots"]
+
     args = info["args"]
     variable = info["variable"]
     channel = info["channel"]
