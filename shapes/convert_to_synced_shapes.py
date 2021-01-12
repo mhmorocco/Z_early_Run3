@@ -66,6 +66,7 @@ def setup_logging(output_file, level=logging.INFO):
     return
 
 
+
 def write_hists_per_category(cat_hists : tuple):
     category, keys, channel, ofname, ifname = cat_hists
     infile = ROOT.TFile(ifname, "READ")
@@ -75,6 +76,10 @@ def write_hists_per_category(cat_hists : tuple):
             CHANNEL=channel, CATEGORY=category)
     outfile.mkdir(dir_name)
     outfile.cd(dir_name)
+    name_ttt_nominal_input = ""
+    name_emb_nominal_input = ""
+    name_ttt_nominal_output = ""
+    name_emb_nominal_output = ""
     for name in sorted(keys):
         hist = infile.Get(name)
         name_output = keys[name]
@@ -94,9 +99,30 @@ def write_hists_per_category(cat_hists : tuple):
         hist.SetTitle(name_output)
         hist.SetName(name_output)
         hist.Write()
+        if "TT-TTT" in name and "Nominal" in name:
+            name_ttt_nominal_input = name
+            name_ttt_nominal_output = name_output
+        if "EMB" in name and "Nominal" in name:
+            name_emb_nominal_input = name
+            name_emb_nominal_output = name_output
+    if (name_ttt_nominal_input and name_emb_nominal_input):
+        hist_emb = infile.Get(name_emb_nominal_input)
+        hist_tt = infile.Get(name_ttt_nominal_input)
+        hist_up = hist_emb.Clone("EMB_CMS_htt_emb_ttbar_{era}Up".format(era=args.era))
+        hist_up.SetTitle("EMB_CMS_htt_emb_ttbar_{era}Up".format(era=args.era))
+        hist_down = hist_emb.Clone("EMB_CMS_htt_emb_ttbar_{era}Down".format(era=args.era))
+        hist_down.SetTitle("EMB_CMS_htt_emb_ttbar_{era}Down".format(era=args.era))
+        hist_up.Add(hist_tt,0.1)
+        hist_down.Add(hist_tt,-0.1)
+        hist_up.Write()
+        hist_down.Write()
+    else:
+        print("Could not find EMB and TTT histogram in order to set CMS_htt_emb_ttbar uncertainty!")
+        
     outfile.Close()
     infile.Close()
     return
+
 
 
 def main(args):
@@ -115,7 +141,10 @@ def main(args):
             process = "-".join(split_name[1].split("-")[1:]) if not "data" in split_name[0] else "data_obs"
         else:
             category = split_name[1].split("-")[-1]
-            process = "-".join(split_name[1].split("-")[1:-1]) if not "data" in split_name[0] else "data_obs"
+            if "NMSSM" in split_name[0]:
+                process=split_name[0]
+            else:
+                process = "-".join(split_name[1].split("-")[1:-1]) if not "data" in split_name[0] else "data_obs"
             # Skip discriminant variables we do not want in the sync file.
             # This is necessary because the sync file only allows for one type of histogram.
             # A combination of the runs for different variables can then be used in separate files.
@@ -170,14 +199,14 @@ def main(args):
         logging.info("Writing histograms to file %s with %s processes",
                      os.path.join(
                             args.output,
-                            "{ERA}-{CHANNELS}-synced-MSSM.root".format(
+                            "{ERA}-{CHANNELS}-synced-NMSSM.root".format(
                                                                     CHANNELS=channel,
                                                                     ERA=args.era)),
                      args.num_processes)
         if not os.path.exists(args.output):
             os.mkdir(args.output)
         ofname = os.path.join(args.output,
-                              "{ERA}-{CHANNELS}-synced-MSSM.root".format(
+                              "{ERA}-{CHANNELS}-synced-NMSSM.root".format(
                                   CHANNELS=channel,
                                   ERA=args.era))
         with multiprocessing.Pool(args.num_processes) as pool:
