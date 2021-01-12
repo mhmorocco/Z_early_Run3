@@ -222,7 +222,7 @@ def qcd_estimation(rootfile, channel, selection, variable, variation="Nominal", 
 
 
 def abcd_estimation(rootfile, channel, selection, variable,
-                    variation="Nominal", is_embedding=True, transposed=False):
+                    variation="Nominal", is_embedding=True, transposed=False):    
     if is_embedding:
         procs_to_subtract = ["EMB", "ZL", "ZJ", "TTL", "TTJ", "VVL", "VVJ", "W"]
         if "em" in channel:
@@ -307,7 +307,6 @@ def abcd_estimation(rootfile, channel, selection, variable,
                                 variable=variable
         ))
     bin_zero=data_d.GetBinContent(0)
-    #print(variable,"data_d",bin_zero)
     bin_one=data_d.GetBinContent(1)
     data_d.SetBinContent(1,bin_zero+bin_one)
     bin_n1=data_d.GetBinContent(data_d.GetNbinsX()+1)
@@ -324,18 +323,14 @@ def abcd_estimation(rootfile, channel, selection, variable,
                                 variation=variation,
                                 variable=variable
         ))
-        # print(hist)
         bin_zero=hist.GetBinContent(0)
         bin_one=hist.GetBinContent(1)
         bin_n1=hist.GetBinContent(hist.GetNbinsX()+1)
         bin_n=hist.GetBinContent(hist.GetNbinsX())
         hist.SetBinContent(hist.GetNbinsX(),bin_n+bin_n1)
-        #print(variable,"bkg_d",proc, bin_zero,bin_one,hist.Integral())
         hist.SetBinContent(1,bin_one+bin_zero)
-        #print(bin_one,hist.Integral())
         bkg_yield_D += hist.Integral()
-   # print(variable,bkg_yield_D)
-   #print("")
+
     if data_yield_C == 0 or data_yield_D == 0:
         logger.warning("No data in region C or region D for shape of variable %s in category %s. Setting extrapolation_factor to zero.",
                        variable, "-" + selection if selection != "" else "")
@@ -502,7 +497,6 @@ def main(args):
                     emb_categories[channel] = {category: [variable]}
 
 # Loop over available ff inputs and do the estimations
-   # if variable not in ["bcsv_2","bpt_bReg_2","bm_bReg_2"]:
     logger.info("Starting estimations for fake factors and their variations")
     logger.debug("%s", json.dumps(ff_inputs, sort_keys=True, indent=4))
     for ch in ff_inputs:
