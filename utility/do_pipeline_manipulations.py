@@ -45,11 +45,9 @@ def main(args):
         print("Checking file {} for missing pipelines".format(args.input))
         if in_folders < ref_folders:
             for folder in ref_folders - in_folders:
-                print(in_file)
                 print("Creating directory {}".format(folder))
                 print("Trying to get input {}".format("_".join([folder.split("_")[0], "nominal"]) + "/ntuple"))
                 nominal_tree = in_file.Get("_".join([folder.split("_")[0], "nominal"]) + "/ntuple")
-                print(nominal_tree)
                 in_file.mkdir(folder)
                 in_file.cd(folder)
                 #emptytree=ROOT.TTree("ntuple","empty")
