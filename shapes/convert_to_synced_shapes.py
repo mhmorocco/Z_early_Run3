@@ -22,17 +22,7 @@ _process_map = {
     "EMB": "Embedded",
     "W": "W",
     "jetFakes": "jetFakes",
-    "QCD": "QCD",
-    "bbH": "SUSYbbH",
-    "ggh_i": "SUSYggH-ggh_i",
-    "ggh_t": "SUSYggH-ggh_t",
-    "ggh_b": "SUSYggH-ggh_b",
-    "ggH_i": "SUSYggH-ggH_i",
-    "ggH_t": "SUSYggH-ggH_t",
-    "ggH_b": "SUSYggH-ggH_b",
-    "ggA_i": "SUSYggH-ggA_i",
-    "ggA_t": "SUSYggH-ggA_t",
-    "ggA_b": "SUSYggH-ggA_b",
+    "QCD": "QCD"
 }
 
 def parse_args():
