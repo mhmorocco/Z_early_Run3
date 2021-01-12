@@ -11,7 +11,7 @@ from ntuple_processor import dataset_from_artusoutput, Unit, UnitManager, GraphM
 
 from config.shapes.channel_selection import channel_selection
 from config.shapes.file_names import files
-from config.shapes.process_selection import DY_process_selection, TT_process_selection, VV_process_selection, W_process_selection, ZTT_process_selection, ZL_process_selection, ZJ_process_selection, TTT_process_selection, TTL_process_selection, TTJ_process_selection, VVT_process_selection, VVJ_process_selection, VVL_process_selection, ggH125_process_selection, qqH125_process_selection, ZTT_embedded_process_selection, ZH_process_selection, WH_process_selection, ggHWW_process_selection, qqHWW_process_selection, ZHWW_process_selection, WHWW_process_selection, ttH_process_selection
+from config.shapes.process_selection import DY_process_selection, TT_process_selection, VV_process_selection, W_process_selection, ZTT_process_selection, ZL_process_selection, ZJ_process_selection, TTT_process_selection, TTL_process_selection, TTJ_process_selection, VVT_process_selection, VVJ_process_selection, VVL_process_selection, ggH125_process_selection, qqH125_process_selection, ZTT_embedded_process_selection, ZH_process_selection, WH_process_selection, ggHWW_process_selection, qqHWW_process_selection, ZHWW_process_selection, WHWW_process_selection, ttH_process_selection, VH_process_selection
 #from config.shapes.process_selection import SUSYbbH_process_selection, SUSYggH_process_selection, SUSYggH_Ai_contribution_selection, SUSYggH_At_contribution_selection, SUSYggH_Ab_contribution_selection, SUSYggH_Hi_contribution_selection, SUSYggH_Ht_contribution_selection, SUSYggH_Hb_contribution_selection, SUSYggH_hi_contribution_selection, SUSYggH_ht_contribution_selection, SUSYggH_hb_contribution_selection
 from config.shapes.process_selection import NMSSM_process_selection
 # from config.shapes.category_selection import categorization
@@ -30,6 +30,7 @@ from config.shapes.variations import jet_to_tau_fake, zll_et_fake_rate_2016, zll
 from config.shapes.variations import tau_trigger_eff_tt, tau_trigger_eff_emb_tt, lep_trigger_eff_mt_2016, lep_trigger_eff_et_2016, lep_trigger_eff_et_emb_2016, lep_trigger_eff_mt_emb_2016, tau_trigger_eff_et_2016, tau_trigger_eff_mt_2016, tau_trigger_eff_et_emb_2016, tau_trigger_eff_mt_emb_2016, lep_trigger_eff_et_2017, lep_trigger_eff_mt_2017, lep_trigger_eff_et_emb_2017, lep_trigger_eff_mt_emb_2017, tau_trigger_eff_et_2017, tau_trigger_eff_mt_2017, tau_trigger_eff_et_emb_2017, tau_trigger_eff_mt_emb_2017, lep_trigger_eff_mt_2018, lep_trigger_eff_et_2018, lep_trigger_eff_et_emb_2018, lep_trigger_eff_mt_emb_2018, tau_trigger_eff_et_2018, tau_trigger_eff_mt_2018, tau_trigger_eff_et_emb_2018, tau_trigger_eff_mt_emb_2018
 from config.shapes.variations import prefiring, btag_eff, mistag_eff, ggh_acceptance, qqh_acceptance, zpt, top_pt, emb_decay_mode_eff
 from config.shapes.variations import ff_variations_lt, ff_variations_tt, qcd_variations_em
+from config.shapes.variations import MG_scale_choice, MG_scale_norm,PDF_scale
 from config.shapes.control_binning import control_binning, minimal_control_plot_set
 
 logger = logging.getLogger("")
@@ -149,7 +150,7 @@ def parse_arguments():
     parser.add_argument(
         "--process-selection",
         default=None,
-        type=lambda proclist: set([process.lower() for process in proclist.split(',')]),
+        type=lambda proclist: set([process for process in proclist.split(',')]),
         help="Subset of processes to be processed."
     )
     parser.add_argument(
@@ -161,15 +162,8 @@ def parse_arguments():
 
     return parser.parse_args()
 
+#load NMSSM mass_dict
 mass_dict= yaml.load(open("shapes/mass_dict_nmssm.yaml"), Loader=yaml.Loader)["analysis"]
-
-# mass_dict = {
-# "heavy_mass": [320],
-# "light_mass_fine": [60],
-# "light_mass_coarse": [60],
-# }
-
-
 
 def light_masses(heavy_mass):
         if heavy_mass > 1001:
@@ -177,16 +171,13 @@ def light_masses(heavy_mass):
         else:
             return mass_dict["light_mass_fine"]
 
-
-def main(args):
-#the mass_dict for NMSSM masses must also be changed in config/shapes/file_names.py   
-#if nmssm_categorization:
+def main(args): 
+#if nmssm_categorization, otherwise outcommend the following 3 lines:
     classdict="/work/jbechtel/postprocessing/nmssm/train_all/output/ml/all_eras_mt_500_3/dataset_config.yaml"
     from config.shapes.category_selection import nmssm_cat
     categorization=nmssm_cat(args.channels[0], classdict)
-    #Parse given arguments.
-    #from config.shapes.category_selection import nmssm_categorization
 
+    #Parse given arguments.
     friend_directories = {
         "et": args.et_friend_directory,
         "mt": args.mt_friend_directory,
@@ -294,10 +285,23 @@ def main(args):
                                 channel_selection(channel, era),
                                 ggH125_process_selection(channel, era),
                                 category_selection], actions) for category_selection, actions in categorization[channel]],
+                
                 "qqh" : [Unit(
                             datasets["qqH"], [
                                 channel_selection(channel, era),
                                 qqH125_process_selection(channel, era),
+                                category_selection], actions) for category_selection, actions in categorization[channel]],
+                
+                "vh" : [Unit(
+                            datasets["VH"], [
+                                channel_selection(channel, era),
+                                VH_process_selection(channel, era),
+                                category_selection], actions) for category_selection, actions in categorization[channel]],
+                
+                "tth" : [Unit(
+                            datasets["ttH"], [
+                                channel_selection(channel, era),
+                                ttH_process_selection(channel, era),
                                 category_selection], actions) for category_selection, actions in categorization[channel]],
 
                 **{"NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass):[Unit(
@@ -389,6 +393,16 @@ def main(args):
                        channel_selection(channel, era),
                        qqH125_process_selection(channel, era)],
                        [control_binning[channel][v] for v in set(control_binning[channel].keys()) & set(args.control_plot_set)])],
+                'vh' : [Unit(
+                   datasets['VH'], [
+                       channel_selection(channel, era),
+                       VH_process_selection(channel, era)],
+                       [control_binning[channel][v] for v in set(control_binning[channel].keys()) & set(args.control_plot_set)])],
+                'tth' : [Unit(
+                   datasets['ttH'], [
+                       channel_selection(channel, era),
+                       ttH_process_selection(channel, era)],
+                       [control_binning[channel][v] for v in set(control_binning[channel].keys()) & set(args.control_plot_set)])],
                 **{"NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass):[Unit(
                                                                                                             datasets["NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass)],
                                                                                                             [channel_selection(channel, era),           NMSSM_process_selection(channel, era)],
@@ -408,10 +422,8 @@ def main(args):
 
     if args.process_selection is None:
         procS = {"data", "emb", "ztt", "zl", "zj", "ttt", "ttl", "ttj", "vvt", "vvl", "vvj", "w",
-                 "ggh", "qqh"} \
-                | set("NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass) for heavy_mass in mass_dict["heavy_mass"]
-                                                                                                                for light_mass in light_masses(heavy_mass) if light_mass+125<heavy_mass)
-       # procS={"w"}
+                 "ggh", "qqh","vh","tth"} \
+                | set("NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass) for heavy_mass in mass_dict["heavy_mass"] for light_mass in light_masses(heavy_mass) if light_mass+125<heavy_mass)
     else:
         procS = args.process_selection
 
@@ -426,9 +438,8 @@ def main(args):
     }
     leptonFakesS = {"zl", "ttl", "vvl"} & procS
     trueTauBkgS = {"ztt", "ttt", "vvt"} & procS
-    sm_signalsS = {"ggh", "qqh"} & procS
-    nmssm_signalsS = (set("NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass) for heavy_mass in mass_dict["heavy_mass"]
-                                                                                                                for light_mass in light_masses(heavy_mass) if light_mass+125<heavy_mass)) & procS
+    sm_signalsS = {"ggh", "qqh","vh","tth"} & procS
+    nmssm_signalsS = (set("NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass) for heavy_mass in mass_dict["heavy_mass"] for light_mass in light_masses(heavy_mass) if light_mass+125<heavy_mass)) & procS
     signalsS =  nmssm_signalsS | sm_signalsS
     if args.control_plots:
         signalsS = signalsS 
@@ -450,36 +461,36 @@ def main(args):
         if args.skip_systematic_variations:
             pass
         else:
-            # Book variations common to all channels.
+            # Book variations common to all channels
             um.book([unit for d in {"ggh"} & procS for unit in nominals[args.era]['units'][ch_][d]], [*ggh_acceptance])
             um.book([unit for d in {"qqh"} & procS for unit in nominals[args.era]['units'][ch_][d]], [*qqh_acceptance])
+            um.book([unit for d in nmssm_signalsS for unit in nominals[args.era]['units'][ch_][d]], [*MG_scale_choice,*MG_scale_norm,*PDF_scale])
             um.book([unit for d in simulatedProcsDS[ch_] for unit in nominals[args.era]['units'][ch_][d]], [*jet_es, *met_unclustered, *btag_eff, *mistag_eff])
-            um.book([unit for d in {'ztt', 'zj', 'zl', 'w'} & procS | signalsS for unit in nominals[args.era]['units'][ch_][d]], [*recoil_resolution, *recoil_response])
-            um.book([unit for d in {'ztt', 'zl'} & procS for unit in nominals[args.era]['units'][ch_][d]], [*zpt])
-            um.book([unit for d in {'ttt', 'ttl'} & procS for unit in nominals[args.era]['units'][ch_][d]], [*top_pt])
+            um.book([unit for d in {'ztt', 'zj', 'zl', 'w'} & procS | signalsS for unit in nominals[args.era]['units'][ch_][d]], [*recoil_resolution, *recoil_response])  
+
             # Book variations common to multiple channels.
             if ch_ in ["et", "mt", "tt"]:
-                um.book([unit for d in trueTauBkgS | leptonFakesS | signalsS - {"zl"} for unit in nominals[args.era]['units'][ch_][d]], [*tau_es_3prong, *tau_es_3prong1pizero, *tau_es_1prong, *tau_es_1prong1pizero])
+                um.book([unit for d in {'ztt', 'zl','zj'} & procS for unit in nominals[args.era]['units'][ch_][d]], [*zpt])
+                um.book([unit for d in {'ttt', 'ttl','ttj'} & procS for unit in nominals[args.era]['units'][ch_][d]], [*top_pt])
+                um.book([unit for d in (trueTauBkgS | leptonFakesS | signalsS) - {"zl"} for unit in nominals[args.era]['units'][ch_][d]], [*tau_es_3prong, *tau_es_3prong1pizero, *tau_es_1prong, *tau_es_1prong1pizero])
                 um.book([unit for d in jetFakesDS[ch_] for unit in nominals[args.era]['units'][ch_][d]], [*jet_to_tau_fake])
                 um.book([unit for d in embS for unit in nominals[args.era]['units'][ch_][d]], [*emb_tau_es_3prong, *emb_tau_es_3prong1pizero, *emb_tau_es_1prong, *emb_tau_es_1prong1pizero,
                                                                                                *tau_es_3prong, *tau_es_3prong1pizero, *tau_es_1prong, *tau_es_1prong1pizero,
                                                                                                *emb_decay_mode_eff])
             if ch_ in ["et", "mt"]:
-                um.book([unit for d in trueTauBkgS | leptonFakesS | signalsS - {"zl"} for unit in nominals[args.era]['units'][ch_][d]], [*tau_id_eff_lt])
+                um.book([unit for d in (trueTauBkgS | leptonFakesS | signalsS) - {"zl"} for unit in nominals[args.era]['units'][ch_][d]], [*tau_id_eff_lt])
                 um.book([unit for d in dataS | embS | leptonFakesS | trueTauBkgS for unit in nominals[args.era]['units'][ch_][d]], [*ff_variations_lt])
                 um.book([unit for d in embS for unit in nominals[args.era]['units'][ch_][d]], [*emb_tau_id_eff_lt, *tau_id_eff_lt])
-            print("salut")
-            print(ff_variations_lt)
             if ch_ in ["et", "em"]:
                 um.book([unit for d in simulatedProcsDS[ch_] for unit in nominals[args.era]['units'][ch_][d]], [*ele_es, *ele_res])
                 um.book([unit for d in embS for unit in nominals[args.era]['units'][ch_][d]], [*emb_e_es])
-            # Book channel independent variables.
+            # Book channel dependent variables.
             if ch_ == "mt":
                 um.book([unit for d in {"zl"} & procS for unit in nominals[args.era]['units'][ch_][d]], [*mu_fake_es_1prong, *mu_fake_es_1prong1pizero])
             if ch_ == "et":
                 um.book([unit for d in {"zl"} & procS for unit in nominals[args.era]['units'][ch_][d]], [*ele_fake_es_1prong, *ele_fake_es_1prong1pizero])
             if ch_ == "tt":
-                um.book([unit for d in trueTauBkgS | leptonFakesS | signalsS for unit in nominals[args.era]['units'][ch_][d]], [*tau_id_eff_tt])
+                um.book([unit for d in (trueTauBkgS | leptonFakesS | signalsS) -{"zl"} for unit in nominals[args.era]['units'][ch_][d]], [*tau_id_eff_tt])
                 um.book([unit for d in simulatedProcsDS[ch_] for unit in nominals[args.era]['units'][ch_][d]], [*tau_trigger_eff_tt])
                 um.book([unit for d in embS for unit in nominals[args.era]['units'][ch_][d]], [*emb_tau_id_eff_tt, *tau_id_eff_tt, *tau_trigger_eff_emb_tt])
                 um.book([unit for d in dataS | embS | trueTauBkgS | leptonFakesS for unit in nominals[args.era]['units'][ch_][d]], [*ff_variations_tt])
