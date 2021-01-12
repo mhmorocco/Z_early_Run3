@@ -49,7 +49,20 @@ anti_iso_split_lt = [ReplaceCutAndAddWeight("anti_iso_w", "tau_iso",
                                      Weight("ff2_onlytt*ff2_fractt", "fake_factor")
                                      ),
                     ]
+#NMSSM variations
+MG_scale_choice=[
+        AddWeight("MG_scale_choiceUp", Weight("(muR1p0_muF1p0_scale_ht_weight)", "muR1p0_muF1p0_scale_ht_weight")),
+        AddWeight("MG_scale_choiceDown", Weight("(1.0/muR1p0_muF1p0_scale_ht_weight)", "muR1p0_muF1p0_scale_ht_weight"))
+]
+MG_scale_norm=[
+        AddWeight("MG_scale_normUp", Weight("(muR1p0_muF2p0_weight)", "muR1p0_muF2p0_weight")),
+        AddWeight("MG_scale_normDown", Weight("(muR1p0_muF0p5_weight)", "muR1p0_muF0p5_weight"))
+]
+PDF_scale=[
+        AddWeight("PDF_scaleUp",Weight("(NNPDF23_lo_as_0130_qed_weight)", "NNPDF23_lo_as_0130_qed_weight")),
+        AddWeight("PDF_scaleDown",  Weight("(1.0/NNPDF23_lo_as_0130_qed_weight)", "NNPDF23_lo_as_0130_qed_weight"))
 
+]
 # Energy scales.
 # Tau energy scale.
 # mc_tau_es_3prong = [
@@ -72,6 +85,9 @@ anti_iso_split_lt = [ReplaceCutAndAddWeight("anti_iso_w", "tau_iso",
 #         ChangeDataset("CMS_scale_t_mc_1prong1pizero_2017Down", "tauEsOneProngOnePiZeroDown")
 #         ]
 #
+
+
+
 
 # Previously defined with 2017 in name.
 tau_es_3prong = [
@@ -211,51 +227,51 @@ mistag_eff = [
 # Efficiency corrections.
 # Tau ID efficiency.
 tau_id_eff_lt = [
-        ReplaceWeight("CMS_eff_t_30-35_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 30 && pt_2 <= 35)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 30 || pt_2 > 35)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_30-35_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 30 && pt_2 <= 35)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 30 || pt_2 > 35)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_35-40_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 35 && pt_2 <= 40)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 35 || pt_2 > 40)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_35-40_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 35 && pt_2 <= 40)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 35 || pt_2 > 40)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_40-500_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 40 && pt_2 <= 500)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 40 || pt_2 > 500)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_40-500_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 40 && pt_2 <= 500)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 40 || pt_2 > 500)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_500-1000_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 500 && pt_2 <= 1000)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 500 || pt_2 > 1000)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_500-1000_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 500 && pt_2 <= 1000)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 500 || pt_2 > 1000)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_1000-inf_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 1000)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 1000)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_1000-inf_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 1000)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 1000)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_30-35_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 30 && pt_2 <= 35)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 30 || pt_2 > 35)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_30-35_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 30 && pt_2 <= 35)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 30 || pt_2 > 35)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_35-40_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 35 && pt_2 <= 40)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 35 || pt_2 > 40)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_35-40_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 35 && pt_2 <= 40)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 35 || pt_2 > 40)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_40-500_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 40 && pt_2 <= 500)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 40 || pt_2 > 500)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_40-500_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 40 && pt_2 <= 500)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 40 || pt_2 > 500)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_500-1000_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 500 && pt_2 <= 1000)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 500 || pt_2 > 1000)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_500-1000_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 500 && pt_2 <= 1000)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 500 || pt_2 > 1000)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_1000-inf_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 1000)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 1000)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_1000-inf_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 1000)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 1000)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
         ]
 
 emb_tau_id_eff_lt = [
-        ReplaceWeight("CMS_eff_t_emb_30-35_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 30 && pt_2 <= 35)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 30 || pt_2 > 35)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_emb_30-35_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 30 && pt_2 <= 35)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 30 || pt_2 > 35)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_emb_35-40_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 35 && pt_2 <= 40)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 35 || pt_2 > 40)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_emb_35-40_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 35 && pt_2 <= 40)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 35 || pt_2 > 40)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_emb_40-500_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 40 && pt_2 <= 500)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 40 || pt_2 > 500)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_emb_40-500_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 40 && pt_2 <= 500)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 40 || pt_2 > 500)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_emb_500-1000_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 500 && pt_2 <= 1000)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 500 || pt_2 > 1000)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_emb_500-1000_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 500 && pt_2 <= 1000)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 500 || pt_2 > 1000)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_emb_1000-inf_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 1000)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 1000)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_emb_1000-inf_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 1000)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < 1000)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_emb_30-35_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 30 && pt_2 <= 35)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 30 || pt_2 > 35)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_emb_30-35_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 30 && pt_2 <= 35)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 30 || pt_2 > 35)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_emb_35-40_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 35 && pt_2 <= 40)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 35 || pt_2 > 40)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_emb_35-40_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 35 && pt_2 <= 40)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 35 || pt_2 > 40)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_emb_40-500_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 40 && pt_2 <= 500)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 40 || pt_2 > 500)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_emb_40-500_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 40 && pt_2 <= 500)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 40 || pt_2 > 500)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_emb_500-1000_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 500 && pt_2 <= 1000)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 500 || pt_2 > 1000)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_emb_500-1000_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 500 && pt_2 <= 1000)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 500 || pt_2 > 1000)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_emb_1000-inf_EraUp", "taubyIsoIdWeight", Weight("(((pt_2 >= 1000)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 1000)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_emb_1000-inf_EraDown", "taubyIsoIdWeight", Weight("(((pt_2 >= 1000)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < 1000)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
         ]
 
 tau_id_eff_tt = [
-        ReplaceWeight("CMS_eff_t_dm0_EraUp", "taubyIsoIdWeight", Weight("(((decayMode_1==0)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!=0)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2==0)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!=0)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_dm0_EraDown", "taubyIsoIdWeight", Weight("(((decayMode_1==0)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!=0)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2==0)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!=0)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_dm1_EraUp", "taubyIsoIdWeight", Weight("(((decayMode_1==1)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!=1)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2==1)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!=1)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_dm1_EraDown", "taubyIsoIdWeight", Weight("(((decayMode_1==1)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!=1)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2==1)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!=1)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_dm10_EraUp", "taubyIsoIdWeight", Weight("(((decayMode_1==10)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!=10)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2==10)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!=10)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_dm10_EraDown", "taubyIsoIdWeight", Weight("(((decayMode_1==10)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!=10)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2==10)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!=10)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_dm11_EraUp", "taubyIsoIdWeight", Weight("(((decayMode_1==11)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2==11)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_dm11_EraDown", "taubyIsoIdWeight", Weight("(((decayMode_1==11)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2==11)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_dm0_EraUp", "taubyIsoIdWeight", Weight("(((decayMode_1==0)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!=0)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))*(((decayMode_2==0)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!=0)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_dm0_EraDown", "taubyIsoIdWeight", Weight("(((decayMode_1==0)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!=0)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))*(((decayMode_2==0)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!=0)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_dm1_EraUp", "taubyIsoIdWeight", Weight("(((decayMode_1==1)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!=1)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))*(((decayMode_2==1)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!=1)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_dm1_EraDown", "taubyIsoIdWeight", Weight("(((decayMode_1==1)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!=1)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))*(((decayMode_2==1)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!=1)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_dm10_EraUp", "taubyIsoIdWeight", Weight("(((decayMode_1==10)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!=10)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))*(((decayMode_2==10)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!=10)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_dm10_EraDown", "taubyIsoIdWeight", Weight("(((decayMode_1==10)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!=10)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))*(((decayMode_2==10)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!=10)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_dm11_EraUp", "taubyIsoIdWeight", Weight("(((decayMode_1==11)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))*(((decayMode_2==11)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_dm11_EraDown", "taubyIsoIdWeight", Weight("(((decayMode_1==11)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))*(((decayMode_2==11)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
         ]
 
 emb_tau_id_eff_tt = [
-        ReplaceWeight("CMS_eff_t_emb_dm0_EraUp", "taubyIsoIdWeight", Weight("(((decayMode_1==0)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!=0)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2==0)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!=0)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_emb_dm0_EraDown", "taubyIsoIdWeight", Weight("(((decayMode_1==0)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!=0)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2==0)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!=0)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_emb_dm1_EraUp", "taubyIsoIdWeight", Weight("(((decayMode_1==1)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!=1)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2==1)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!=1)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_emb_dm1_EraDown", "taubyIsoIdWeight", Weight("(((decayMode_1==1)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!=1)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2==1)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!=1)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_emb_dm10_EraUp", "taubyIsoIdWeight", Weight("(((decayMode_1==10)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!=10)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2==10)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!=10)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_emb_dm10_EraDown", "taubyIsoIdWeight", Weight("(((decayMode_1==10)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!=10)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2==10)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!=10)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_emb_dm11_EraUp", "taubyIsoIdWeight", Weight("(((decayMode_1==11)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2==11)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
-        ReplaceWeight("CMS_eff_t_emb_dm11_EraDown", "taubyIsoIdWeight", Weight("(((decayMode_1==11)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2==11)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_emb_dm0_EraUp", "taubyIsoIdWeight", Weight("(((decayMode_1==0)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!=0)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))*(((decayMode_2==0)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!=0)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_emb_dm0_EraDown", "taubyIsoIdWeight", Weight("(((decayMode_1==0)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!=0)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))*(((decayMode_2==0)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!=0)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_emb_dm1_EraUp", "taubyIsoIdWeight", Weight("(((decayMode_1==1)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!=1)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))*(((decayMode_2==1)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!=1)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_emb_dm1_EraDown", "taubyIsoIdWeight", Weight("(((decayMode_1==1)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!=1)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))*(((decayMode_2==1)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!=1)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_emb_dm10_EraUp", "taubyIsoIdWeight", Weight("(((decayMode_1==10)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!=10)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))*(((decayMode_2==10)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!=10)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_emb_dm10_EraDown", "taubyIsoIdWeight", Weight("(((decayMode_1==10)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!=10)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))*(((decayMode_2==10)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!=10)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_emb_dm11_EraUp", "taubyIsoIdWeight", Weight("(((decayMode_1==11)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))*(((decayMode_2==11)*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
+        ReplaceWeight("CMS_eff_t_emb_dm11_EraDown", "taubyIsoIdWeight", Weight("(((decayMode_1==11)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))*(((decayMode_2==11)*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))", "taubyIsoIdWeight")),
         ]
 
 # Jet to tau fake rate.
@@ -323,13 +339,13 @@ zll_et_fake_rate_2018 = [
         ]
 
 zll_mt_fake_rate_2016 = [*[AddWeight("CMS_fake_m_{}_2016Up".format(region), Weight("(1.0+{})".format(_mfake_dict["2016"][region]), "mFakeTau_reweight")) for region in _mfake_dict["2016"].keys()],
-                         *[AddWeight("CMS_fake_m_{}_2016Down".format(region), Weight("(1.0+{})".format(_mfake_dict["2016"][region]), "mFakeTau_reweight")) for region in _mfake_dict["2016"].keys()],
+                         *[AddWeight("CMS_fake_m_{}_2016Down".format(region), Weight("(1.0-{})".format(_mfake_dict["2016"][region]), "mFakeTau_reweight")) for region in _mfake_dict["2016"].keys()],
                          ]
 zll_mt_fake_rate_2017 = [*[AddWeight("CMS_fake_m_{}_2017Up".format(region), Weight("(1.0+{})".format(_mfake_dict["2017"][region]), "mFakeTau_reweight")) for region in _mfake_dict["2017"].keys()],
-                         *[AddWeight("CMS_fake_m_{}_2017Down".format(region), Weight("(1.0+{})".format(_mfake_dict["2017"][region]), "mFakeTau_reweight")) for region in _mfake_dict["2017"].keys()],
+                         *[AddWeight("CMS_fake_m_{}_2017Down".format(region), Weight("(1.0-{})".format(_mfake_dict["2017"][region]), "mFakeTau_reweight")) for region in _mfake_dict["2017"].keys()],
                          ]
 zll_mt_fake_rate_2018 = [*[AddWeight("CMS_fake_m_{}_2018Up".format(region), Weight("(1.0+{})".format(_mfake_dict["2018"][region]), "mFakeTau_reweight")) for region in _mfake_dict["2018"].keys()],
-                         *[AddWeight("CMS_fake_m_{}_2018Down".format(region), Weight("(1.0+{})".format(_mfake_dict["2018"][region]), "mFakeTau_reweight")) for region in _mfake_dict["2018"].keys()],
+                         *[AddWeight("CMS_fake_m_{}_2018Down".format(region), Weight("(1.0-{})".format(_mfake_dict["2018"][region]), "mFakeTau_reweight")) for region in _mfake_dict["2018"].keys()],
                          ]
 
 _lteffCutDEra = {
@@ -413,7 +429,7 @@ lep_trigger_eff_et_emb_2017 = [
         AddWeight("CMS_eff_trigger_emb_et_2017Down", Weight("(1.0*(pt_1<={pt})+0.98*(pt_1>{pt}))".format(pt=_lteffCutDEra["2017"]["et"]), "trg_et_eff_weight")),
         AddWeight("CMS_eff_xtrigger_l_emb_et_2017Up", Weight("(1.02*(pt_1<={pt})+1.0*(pt_1>{pt}))".format(pt=_lteffCutDEra["2017"]["et"]), "xtrg_et_eff_weight")),
         AddWeight("CMS_eff_xtrigger_l_emb_et_2017Down", Weight("(0.98*(pt_1<={pt})+1.0*(pt_1>{pt}))".format(pt=_lteffCutDEra["2017"]["et"]), "xtrg_et_eff_weight"))
-        ]
+]
 lep_trigger_eff_et_emb_2018 = [
         AddWeight("CMS_eff_trigger_emb_et_2018Up", Weight("(1.0*(pt_1<={pt})+1.02*(pt_1>{pt}))".format(pt=_lteffCutDEra["2018"]["et"]), "trg_et_eff_weight")),
         AddWeight("CMS_eff_trigger_emb_et_2018Down", Weight("(1.0*(pt_1<={pt})+0.98*(pt_1>{pt}))".format(pt=_lteffCutDEra["2018"]["et"]), "trg_et_eff_weight")),
@@ -443,7 +459,7 @@ _xtrg_lep_weight = {
         "et": "(crossTriggerDataEfficiencyWeight_1/crossTriggerMCEfficiencyWeight_1)",
         "mt": "(crossTriggerDataEfficiencyWeight_1/crossTriggerMCEfficiencyWeight_1)"}
 }
-_tau_trigger_wstring = "({lt_eff}+(pt_1<{ptcut})*(abs(eta_2)<2.1)*{xtrigger_leptonweight}*(((decayMode_2=={dm})*((crossTriggerDataEfficiencyWeight_tight_DeepTau_2/(crossTriggerMCEfficiencyWeight_tight_DeepTau_2*((pt_1<{ptcut})*(abs(eta_2)<2.1))+1.0*((pt_1>={ptcut})+(abs(eta_2)>=2.1))))*(1{operator}TMath::Sqrt(TMath::Power((crossTriggerDataEfficiencyWeight_tight_DeepTau_2-crossTriggerDataEfficiencyWeightDown_tight_DeepTau_2)/(crossTriggerDataEfficiencyWeight_tight_DeepTau_2*((pt_1<{ptcut})*(abs(eta_2)<2.1))+1.0*((pt_1>={ptcut})+(abs(eta_2)>=2.1))),2)+TMath::Power((crossTriggerMCEfficiencyWeight_tight_DeepTau_2-crossTriggerMCEfficiencyWeightDown_tight_DeepTau_2)/(crossTriggerMCEfficiencyWeight_tight_DeepTau_2*((pt_1<{ptcut})*(abs(eta_2)<2.1))+1.0*((pt_1>={ptcut})+(abs(eta_2)>=2.1))),2)))))+((decayMode_2!={dm})*(crossTriggerDataEfficiencyWeight_tight_DeepTau_2/(crossTriggerMCEfficiencyWeight_tight_DeepTau_2*((pt_1<{ptcut})*(abs(eta_2)<2.1))+1.0*((pt_1>={ptcut})+(abs(eta_2)>=2.1)))))))"
+_tau_trigger_wstring = "({lt_eff}+(pt_1<{ptcut})*(abs(eta_2)<2.1)*{xtrigger_leptonweight}*(((decayMode_2=={dm})*((crossTriggerDataEfficiencyWeight_medium_DeepTau_2/(crossTriggerMCEfficiencyWeight_medium_DeepTau_2*((pt_1<{ptcut})*(abs(eta_2)<2.1))+1.0*((pt_1>={ptcut})+(abs(eta_2)>=2.1))))*(1{operator}TMath::Sqrt(TMath::Power((crossTriggerDataEfficiencyWeight_medium_DeepTau_2-crossTriggerDataEfficiencyWeightDown_medium_DeepTau_2)/(crossTriggerDataEfficiencyWeight_medium_DeepTau_2*((pt_1<{ptcut})*(abs(eta_2)<2.1))+1.0*((pt_1>={ptcut})+(abs(eta_2)>=2.1))),2)+TMath::Power((crossTriggerMCEfficiencyWeight_medium_DeepTau_2-crossTriggerMCEfficiencyWeightDown_medium_DeepTau_2)/(crossTriggerMCEfficiencyWeight_medium_DeepTau_2*((pt_1<{ptcut})*(abs(eta_2)<2.1))+1.0*((pt_1>={ptcut})+(abs(eta_2)>=2.1))),2)))))+((decayMode_2!={dm})*(crossTriggerDataEfficiencyWeight_medium_DeepTau_2/(crossTriggerMCEfficiencyWeight_medium_DeepTau_2*((pt_1<{ptcut})*(abs(eta_2)<2.1))+1.0*((pt_1>={ptcut})+(abs(eta_2)>=2.1)))))))"
 tau_trigger_eff_et_2016 = [
         *[ReplaceWeight("CMS_eff_xtrigger_t_et_dm{dm}_2016Up".format(dm=dm),
                         "triggerweight",
@@ -546,7 +562,7 @@ _lteff_exp = {
         "et": "(pt_1>=26)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerEmbeddedEfficiencyWeightKIT_1)",
         "mt": "(pt_1>=23)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerEmbeddedEfficiencyWeightKIT_1)"},
     "2017": {
-        "et": "((pt_1>=28)*(((pt_1<33)*trigger_27_Weight_1+(pt_1>=33)*(pt_1<36)*trigger_27_32_Weight_1+(pt_1>=36)*trigger_27_32_35_Weight_1)*(abs(eta_1) < 1.5||pt_1>=40) + singleTriggerDataEfficiencyWeightKIT_1*(abs(eta_1)>=1.5)*(pt_1<40)))",
+        "et": "(pt_1>=28)",
         "mt": "(pt_1>=25 && pt_1<28)*(trigger_24_Weight_1)+(pt_1>=28)*(trigger_24_27_Weight_1)"},
     "2018": {
         "et": "(pt_1>=36)*trigger_32_35_Weight_1+(pt_1>=33)*(pt_1<36)*(trigger_32_Weight_1)",
@@ -563,8 +579,8 @@ _xtrg_lep_weight = {
         "et": "crossTriggerEmbeddedWeight_1",
         "mt": "crossTriggerEmbeddedWeight_1"}
 }
-_tau_trigger_wstring = "({lt_eff}+(pt_1<{ptcut})*(abs(eta_2)<2.1)*{xtrigger_leptonweight}*(((decayMode_2=={dm})*((crossTriggerDataEfficiencyWeight_tight_DeepTau_2/(crossTriggerEMBEfficiencyWeight_tight_DeepTau_2*((pt_1<{ptcut})*(abs(eta_2)<2.1))+1.0*((pt_1>={ptcut})+(abs(eta_2)>=2.1)))*(1{operator}TMath::Sqrt(TMath::Power((crossTriggerDataEfficiencyWeight_tight_DeepTau_2-crossTriggerDataEfficiencyWeightDown_tight_DeepTau_2)/(crossTriggerDataEfficiencyWeight_tight_DeepTau_2*(pt_1<{ptcut})*(abs(eta_2)<2.1)+1.0*((pt_1>={ptcut})+(abs(eta_2)>=2.1))),2)+TMath::Power((crossTriggerEMBEfficiencyWeight_tight_DeepTau_2-crossTriggerEMBEfficiencyWeightDown_tight_DeepTau_2)/(crossTriggerEMBEfficiencyWeight_tight_DeepTau_2*(pt_1<{ptcut})*(abs(eta_2)<2.1)+1.0*((pt_1>{ptcut})+(abs(eta_2)>=2.1))),2)))))+((decayMode_2!={dm})*(crossTriggerDataEfficiencyWeight_tight_DeepTau_2/(crossTriggerEMBEfficiencyWeight_tight_DeepTau_2*(pt_1<{ptcut})*(abs(eta_2)<2.1)+1.0*((pt_1>{ptcut})+(abs(eta_2)>=2.1))))))))"
-_tau_trigger_wstring_2017et = "{lt_eff}+(pt_1<{ptcut})*((abs(eta_1)>=1.5)*crossTriggerDataEfficiencyWeight_1*(((decayMode_2=={dm})*(crossTriggerDataEfficiencyWeight_tight_DeepTau_2{operator}(crossTriggerDataEfficiencyWeight_tight_DeepTau_2-crossTriggerDataEfficiencyWeightDown_tight_DeepTau_2)))+((decayMode_2!={dm})*crossTriggerDataEfficiencyWeight_tight_DeepTau_2))+(abs(eta_1)<1.5)*{xtrigger_leptonweight}*(((decayMode_2=={dm})*((crossTriggerDataEfficiencyWeight_tight_DeepTau_2/(crossTriggerEMBEfficiencyWeight_tight_DeepTau_2*(pt_1<{ptcut})*(abs(eta_1)<1.5)+1.0*((pt_1>={ptcut})+(abs(eta_1)>=1.5))))*(1{operator}TMath::Sqrt(TMath::Power((crossTriggerDataEfficiencyWeight_tight_DeepTau_2-crossTriggerDataEfficiencyWeightDown_tight_DeepTau_2)/(crossTriggerDataEfficiencyWeight_tight_DeepTau_2*(pt_1<{ptcut})*(abs(eta_1)<1.5)+1.0*((pt_1>={ptcut})+(abs(eta_1)>=1.5))),2)+TMath::Power((crossTriggerEMBEfficiencyWeight_tight_DeepTau_2-crossTriggerEMBEfficiencyWeightDown_tight_DeepTau_2)/(crossTriggerEMBEfficiencyWeight_tight_DeepTau_2*(pt_1<{ptcut})*(abs(eta_1)<1.5)+1.0*((pt_1>={ptcut})+(abs(eta_1)>=1.5))),2)))))+((decayMode_2!={dm})*(crossTriggerDataEfficiencyWeight_tight_DeepTau_2/(crossTriggerEMBEfficiencyWeight_tight_DeepTau_2*(pt_1<{ptcut})*(abs(eta_1)<1.5)+1.0*((pt_1>={ptcut})+(abs(eta_1)>=1.5)))))))"
+_tau_trigger_wstring = "({lt_eff}+(pt_1<{ptcut})*(abs(eta_2)<2.1)*{xtrigger_leptonweight}*(((decayMode_2=={dm})*((crossTriggerDataEfficiencyWeight_medium_DeepTau_2/(crossTriggerEMBEfficiencyWeight_medium_DeepTau_2*((pt_1<{ptcut})*(abs(eta_2)<2.1))+1.0*((pt_1>={ptcut})+(abs(eta_2)>=2.1)))*(1{operator}TMath::Sqrt(TMath::Power((crossTriggerDataEfficiencyWeight_medium_DeepTau_2-crossTriggerDataEfficiencyWeightDown_medium_DeepTau_2)/(crossTriggerDataEfficiencyWeight_medium_DeepTau_2*(pt_1<{ptcut})*(abs(eta_2)<2.1)+1.0*((pt_1>={ptcut})+(abs(eta_2)>=2.1))),2)+TMath::Power((crossTriggerEMBEfficiencyWeight_medium_DeepTau_2-crossTriggerEMBEfficiencyWeightDown_medium_DeepTau_2)/(crossTriggerEMBEfficiencyWeight_medium_DeepTau_2*(pt_1<{ptcut})*(abs(eta_2)<2.1)+1.0*((pt_1>{ptcut})+(abs(eta_2)>=2.1))),2)))))+((decayMode_2!={dm})*(crossTriggerDataEfficiencyWeight_medium_DeepTau_2/(crossTriggerEMBEfficiencyWeight_medium_DeepTau_2*(pt_1<{ptcut})*(abs(eta_2)<2.1)+1.0*((pt_1>{ptcut})+(abs(eta_2)>=2.1))))))))"
+_tau_trigger_wstring_2017et = "{lt_eff}+(pt_1<{ptcut})*((abs(eta_1)>=1.5)*crossTriggerDataEfficiencyWeight_1*(((decayMode_2=={dm})*(crossTriggerDataEfficiencyWeight_medium_DeepTau_2{operator}(crossTriggerDataEfficiencyWeight_medium_DeepTau_2-crossTriggerDataEfficiencyWeightDown_medium_DeepTau_2)))+((decayMode_2!={dm})*crossTriggerDataEfficiencyWeight_medium_DeepTau_2))+(abs(eta_1)<1.5)*{xtrigger_leptonweight}*(((decayMode_2=={dm})*((crossTriggerDataEfficiencyWeight_medium_DeepTau_2/(crossTriggerEMBEfficiencyWeight_medium_DeepTau_2*(pt_1<{ptcut})*(abs(eta_1)<1.5)+1.0*((pt_1>={ptcut})+(abs(eta_1)>=1.5))))*(1{operator}TMath::Sqrt(TMath::Power((crossTriggerDataEfficiencyWeight_medium_DeepTau_2-crossTriggerDataEfficiencyWeightDown_medium_DeepTau_2)/(crossTriggerDataEfficiencyWeight_medium_DeepTau_2*(pt_1<{ptcut})*(abs(eta_1)<1.5)+1.0*((pt_1>={ptcut})+(abs(eta_1)>=1.5))),2)+TMath::Power((crossTriggerEMBEfficiencyWeight_medium_DeepTau_2-crossTriggerEMBEfficiencyWeightDown_medium_DeepTau_2)/(crossTriggerEMBEfficiencyWeight_medium_DeepTau_2*(pt_1<{ptcut})*(abs(eta_1)<1.5)+1.0*((pt_1>={ptcut})+(abs(eta_1)>=1.5))),2)))))+((decayMode_2!={dm})*(crossTriggerDataEfficiencyWeight_medium_DeepTau_2/(crossTriggerEMBEfficiencyWeight_medium_DeepTau_2*(pt_1<{ptcut})*(abs(eta_1)<1.5)+1.0*((pt_1>={ptcut})+(abs(eta_1)>=1.5)))))))"
 
 tau_trigger_eff_et_emb_2016 = [
         *[ReplaceWeight("CMS_eff_xtrigger_t_et_dm{dm}_2016Up".format(dm=dm),
@@ -747,7 +763,8 @@ tau_trigger_eff_mt_emb_2018 = [
                                                            operator="-"), "triggerweight")) for dm in [0, 1, 10, 11]],
         ]
 
-_tau_tt_wstring = "(((decayMode_1=={dm})*((crossTriggerDataEfficiencyWeight_tight_DeepTau_1/crossTriggerMCEfficiencyWeight_tight_DeepTau_1)*(1{operator}TMath::Sqrt(TMath::Power((crossTriggerDataEfficiencyWeight_tight_DeepTau_1-crossTriggerDataEfficiencyWeightDown_tight_DeepTau_1)/crossTriggerDataEfficiencyWeight_tight_DeepTau_1,2)+TMath::Power((crossTriggerMCEfficiencyWeight_tight_DeepTau_1-crossTriggerMCEfficiencyWeightDown_tight_DeepTau_1)/crossTriggerMCEfficiencyWeight_tight_DeepTau_1,2))))+((decayMode_1!={dm})*(crossTriggerDataEfficiencyWeight_tight_DeepTau_1/crossTriggerMCEfficiencyWeight_tight_DeepTau_1)))*(((decayMode_2=={dm})*((crossTriggerDataEfficiencyWeight_tight_DeepTau_2/crossTriggerMCEfficiencyWeight_tight_DeepTau_2)*(1{operator}TMath::Sqrt(TMath::Power((crossTriggerDataEfficiencyWeight_tight_DeepTau_2-crossTriggerDataEfficiencyWeightDown_tight_DeepTau_2)/crossTriggerDataEfficiencyWeight_tight_DeepTau_2,2)+TMath::Power((crossTriggerMCEfficiencyWeight_tight_DeepTau_2-crossTriggerMCEfficiencyWeightDown_tight_DeepTau_2)/crossTriggerMCEfficiencyWeight_tight_DeepTau_2,2)))))+((decayMode_2!={dm})*(crossTriggerDataEfficiencyWeight_tight_DeepTau_2/crossTriggerMCEfficiencyWeight_tight_DeepTau_2))))"
+_tau_tt_wstring = "(((decayMode_1=={dm})*((crossTriggerDataEfficiencyWeight_medium_DeepTau_1/crossTriggerMCEfficiencyWeight_medium_DeepTau_1)*(1{operator}TMath::Sqrt(TMath::Power((crossTriggerDataEfficiencyWeight_medium_DeepTau_1-crossTriggerDataEfficiencyWeightDown_medium_DeepTau_1)/crossTriggerDataEfficiencyWeight_medium_DeepTau_1,2)+TMath::Power((crossTriggerMCEfficiencyWeight_medium_DeepTau_1-crossTriggerMCEfficiencyWeightDown_medium_DeepTau_1)/crossTriggerMCEfficiencyWeight_medium_DeepTau_1,2))))+((decayMode_1!={dm})*(crossTriggerDataEfficiencyWeight_medium_DeepTau_1/crossTriggerMCEfficiencyWeight_medium_DeepTau_1)))*(((decayMode_2=={dm})*((crossTriggerDataEfficiencyWeight_medium_DeepTau_2/crossTriggerMCEfficiencyWeight_medium_DeepTau_2)*(1{operator}TMath::Sqrt(TMath::Power((crossTriggerDataEfficiencyWeight_medium_DeepTau_2-crossTriggerDataEfficiencyWeightDown_medium_DeepTau_2)/crossTriggerDataEfficiencyWeight_medium_DeepTau_2,2)+TMath::Power((crossTriggerMCEfficiencyWeight_medium_DeepTau_2-crossTriggerMCEfficiencyWeightDown_medium_DeepTau_2)/crossTriggerMCEfficiencyWeight_medium_DeepTau_2,2)))))+((decayMode_2!={dm})*(crossTriggerDataEfficiencyWeight_medium_DeepTau_2/crossTriggerMCEfficiencyWeight_medium_DeepTau_2))))"
+
 tau_trigger_eff_tt = [
         *[ReplaceWeight("CMS_eff_trigger_tt_dm{dm}_EraUp".format(dm=dm),
                         "triggerweight",
@@ -816,95 +833,69 @@ top_pt = [
         ]
 
 _ff_variations_lt = [
-                     "ff_qcd_mvis_{ch}{era}{shift}",
-                     "ff_qcd_mvis_osss_{ch}{era}{shift}",
-                     "ff_corr_qcd_mvis_{ch}{era}{shift}",
-                     "ff_corr_qcd_mvis_osss_{ch}{era}{shift}",
-
-                     "ff_qcd_muiso_{ch}{era}{shift}",
-                     "ff_corr_qcd_muiso_{ch}{era}{shift}",
-
-                     "ff_qcd_dr0_njet0_morphed_stat_{ch}{era}{shift}",
-                     "ff_qcd_dr0_njet1_morphed_stat_{ch}{era}{shift}",
-                     "ff_qcd_dr0_njet2_morphed_stat_{ch}{era}{shift}",
-
-                     "ff_qcd_dr0_njet0_stat_{ch}{era}{shift}",
-                     "ff_qcd_dr0_njet1_stat_{ch}{era}{shift}",
-                     "ff_qcd_dr0_njet2_stat_{ch}{era}{shift}",
-
-                     "ff_qcd_mc_{ch}{era}{shift}",
-
-                     "ff_qcd_syst_{ch}{era}{shift}",
-
-                     "ff_w_lepPt_{ch}{era}{shift}",
-                     "ff_corr_w_lepPt_{ch}{era}{shift}",
-
-                     "ff_corr_w_mt_{ch}{era}{shift}",
-                     "ff_w_mt_{ch}{era}{shift}",
-
-                     "ff_w_syst_{ch}{era}{shift}",
-
-                     "ff_w_dr0_njet0_morphed_stat_{ch}{era}{shift}",
-                     "ff_w_dr0_njet1_morphed_stat_{ch}{era}{shift}",
-                     "ff_w_dr0_njet2_morphed_stat_{ch}{era}{shift}",
-                     "ff_w_dr1_njet0_morphed_stat_{ch}{era}{shift}",
-                     "ff_w_dr1_njet1_morphed_stat_{ch}{era}{shift}",
-                     "ff_w_dr1_njet2_morphed_stat_{ch}{era}{shift}",
-
-                     "ff_w_dr0_njet0_stat_{ch}{era}{shift}",
-                     "ff_w_dr0_njet1_stat_{ch}{era}{shift}",
-                     "ff_w_dr0_njet2_stat_{ch}{era}{shift}",
-                     "ff_w_dr1_njet0_stat_{ch}{era}{shift}",
-                     "ff_w_dr1_njet1_stat_{ch}{era}{shift}",
-                     "ff_w_dr1_njet2_stat_{ch}{era}{shift}",
-
-                     "ff_w_mc_{ch}{era}{shift}",
-
-                     "ff_frac_w_{ch}{era}{shift}",
-
-                     "ff_corr_tt_syst_{ch}{era}{shift}",
-                     "ff_tt_morphed_{ch}{era}{shift}",
-                     "ff_tt_sf_{ch}{era}{shift}",
-
-                     "ff_tt_dr0_njet0_morphed_stat_{ch}{era}{shift}",
-                     "ff_tt_dr0_njet1_morphed_stat_{ch}{era}{shift}",
-
-                     "ff_tt_stat_{ch}{era}{shift}",
+                # "ff_qcd{ch}_syst{era}{shift}",
+                # "ff_qcd_dm0_njet0{ch}_stat{era}{shift}",
+                # "ff_qcd_dm0_njet1{ch}_stat{era}{shift}",
+                # "ff_w_syst{era}{shift}",
+                # "ff_w_dm0_njet0{ch}_stat{era}{shift}",
+                # "ff_w_dm0_njet1{ch}_stat{era}{shift}",
+                # "ff_tt_syst{era}{shift}",
+                # "ff_tt_stat{era}{shift}",
+                "ff_tt_morphed_{ch}{era}{shift}",
+                "ff_tt_sf_{ch}{era}{shift}",
+                "ff_corr_tt_syst_{ch}{era}{shift}",
+                "ff_frac_w_{ch}{era}{shift}",
+                "ff_qcd_dm0_njet0_morphed_stat_{ch}{era}{shift}", 
+                "ff_qcd_dm0_njet1_morphed_stat_{ch}{era}{shift}", 
+                "ff_qcd_dm0_njet2_morphed_stat_{ch}{era}{shift}", 
+                "ff_w_dm0_njet0_morphed_stat_{ch}{era}{shift}", 
+                "ff_w_dm0_njet1_morphed_stat_{ch}{era}{shift}", 
+                "ff_w_dm0_njet2_morphed_stat_{ch}{era}{shift}",
+                "ff_tt_dm0_njet0_morphed_stat_{ch}{era}{shift}", 
+                "ff_tt_dm0_njet1_morphed_stat_{ch}{era}{shift}",
+                "ff_w_lepPt_{ch}{era}{shift}",
+                "ff_corr_w_lepPt_{ch}{era}{shift}",
+                "ff_w_mc_{ch}{era}{shift}",
+                "ff_corr_w_mt_{ch}{era}{shift}",
+                "ff_w_mt_{ch}{era}{shift}",
+                "ff_qcd_mvis_{ch}{era}{shift}",
+                "ff_qcd_mvis_osss_{ch}{era}{shift}",
+                "ff_corr_qcd_mvis_{ch}{era}{shift}",
+                "ff_corr_qcd_mvis_osss_{ch}{era}{shift}",
+                "ff_qcd_muiso_{ch}{era}{shift}",
+                "ff_corr_qcd_muiso_{ch}{era}{shift}",
+                "ff_qcd_mc_{ch}{era}{shift}",
 ]
 #  Variations on the jet backgrounds estimated with the fake factor method.
 ff_variations_lt = [
-        ReplaceCutAndAddWeight("anti_iso_CMS_{syst}".format(syst=syst.format(shift=shift.capitalize(), era="Era", ch="Channel_").replace("w_dr0", "w_lowdR").replace("w_dr1", "w_highdR").replace("_dr0", "")), "tau_iso",
-                               Cut("byMediumDeepTau2017v2p1VSjet_2<0.5&&byVLooseDeepTau2017v2p1VSjet_2>0.5", "tau_anti_iso"),
+        ReplaceCutAndAddWeight("anti_iso_CMS_{syst}".format(syst=syst.format(shift=shift.capitalize(), era="Era", ch="Channel_").replace("w_dr0", "w_lowdR").replace("w_dr1", "w_highdR").replace("_dm0", "")), "tau_iso",
+                               Cut("byMediumDeepTau2017v2p1VSjet_2<0.5&&byVVVLooseDeepTau2017v2p1VSjet_2>0.5", "tau_anti_iso"),
                                Weight("ff2_{syst}".format(syst=syst.format(shift=shift, era="", ch="")), "fake_factor")
                                ) for shift in ["up", "down"] for syst in _ff_variations_lt
         ]
 
 ff_variations_tt = [
-        ReplaceCutAndAddWeight("anti_iso_CMS_{syst}".format(syst=syst.format(shift=shift.capitalize(), era="_Era", ch="_tt").replace("dr0_", "")), "tau_iso",
-                               Cut("(byMediumDeepTau2017v2p1VSjet_2>0.5&&byMediumDeepTau2017v2p1VSjet_1<0.5&&byVLooseDeepTau2017v2p1VSjet_1>0.5)||(byMediumDeepTau2017v2p1VSjet_1>0.5&&byMediumDeepTau2017v2p1VSjet_2<0.5&&byVLooseDeepTau2017v2p1VSjet_2>0.5)", "tau_anti_iso"),
+        ReplaceCutAndAddWeight("anti_iso_CMS_{syst}".format(syst=syst.format(shift=shift.capitalize(), era="_Era", ch="_tt").replace("dm0_", "")), "tau_iso",
+                               Cut("(byMediumDeepTau2017v2p1VSjet_2>0.5&&byMediumDeepTau2017v2p1VSjet_1<0.5&&byVVVLooseDeepTau2017v2p1VSjet_1>0.5)||(byMediumDeepTau2017v2p1VSjet_1>0.5&&byMediumDeepTau2017v2p1VSjet_2<0.5&&byVVVLooseDeepTau2017v2p1VSjet_2>0.5)", "tau_anti_iso"),
                                Weight("(0.5*ff1_{syst}*(byMediumDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_{syst}*(byMediumDeepTau2017v2p1VSjet_2<0.5))".format(syst=syst.format(shift="_"+shift, era="", ch="")), "fake_factor")
-                               ) for shift in ["up", "down"] for syst in ["ff_qcd_dr0_njet0_morphed_stat{ch}{era}{shift}",
-                                                                          "ff_qcd_dr0_njet1_morphed_stat{ch}{era}{shift}",
-                                                                          "ff_qcd_dr0_njet2_morphed_stat{ch}{era}{shift}",
-
-                                                                          "ff_qcd_dr0_njet0_stat{ch}{era}{shift}",
-                                                                          "ff_qcd_dr0_njet1_stat{ch}{era}{shift}",
-                                                                          "ff_qcd_dr0_njet2_stat{ch}{era}{shift}",
-
-                                                                          "ff_qcd_syst{ch}{era}{shift}",
-
-                                                                          "ff_qcd_mvis{ch}{era}{shift}",
-                                                                          "ff_qcd_mvis_osss{ch}{era}{shift}",
-                                                                          "ff_corr_qcd_mvis{ch}{era}{shift}",
-                                                                          "ff_corr_qcd_mvis_osss{ch}{era}{shift}",
-
-                                                                          "ff_qcd_tau2_pt{ch}{era}{shift}",
-                                                                          "ff_corr_qcd_tau2_pt{ch}{era}{shift}",
-
-                                                                          "ff_qcd_mc{ch}{era}{shift}",
-
-                                                                          "ff_w_syst{ch}{era}{shift}",
-                                                                          "ff_tt_syst{ch}{era}{shift}",
+                               ) for shift in ["up", "down"] for syst in [                
+                                        # "ff_qcd_syst{ch}{era}{shift}",
+                                        # "ff_qcd_dm0_njet0{ch}_stat{era}{shift}",
+                                        # "ff_qcd_dm0_njet1{ch}_stat{era}{shift}",
+                                        "ff_qcd_dm0_njet0_morphed_stat{ch}{era}{shift}", 
+                                        "ff_qcd_dm0_njet1_morphed_stat{ch}{era}{shift}", 
+                                        "ff_qcd_dm0_njet2_morphed_stat{ch}{era}{shift}",
+                                        "ff_w_syst{ch}{era}{shift}",
+                                        "ff_tt_syst{ch}{era}{shift}",
+                                        # "ff_w_frac_syst{ch}{era}{shift}",
+                                        # "ff_tt_frac_syst{ch}{era}{shift}",
+                                        "ff_qcd_mvis{ch}{era}{shift}",
+                                        "ff_qcd_mvis_osss{ch}{era}{shift}",
+                                        "ff_corr_qcd_mvis{ch}{era}{shift}",
+                                        "ff_corr_qcd_mvis_osss{ch}{era}{shift}",
+                                        "ff_qcd_tau2_pt{ch}{era}{shift}",
+                                        "ff_corr_qcd_tau2_pt{ch}{era}{shift}",
+                                        "ff_qcd_mc{ch}{era}{shift}",
                                                                           ]
         ]
 
