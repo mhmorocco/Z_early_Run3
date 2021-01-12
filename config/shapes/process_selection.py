@@ -702,9 +702,21 @@ def ZH_process_selection(channel, era):
                      cuts = [("(htxs_stage1p1cat>=400)&&(htxs_stage1p1cat<=405)", "htxs_match")])
 
 
+
 def ttH_process_selection(channel, era):
-    return Selection(name = "ttH125",
-                     weights = HTT_process_selection(channel, era).weights)
+    tth_weights = HTT_process_selection(channel, era).weights
+    if "2017" in era:
+        tth_weights = HTT_base_process_selection(channel, era).weights + [
+                ("4.6053649e-8", "numberGeneratedEventsWeight"),
+                ("crossSectionPerEventWeight", "crossSectionPerEventWeight"),
+        ]
+    if "2018" in era:
+        tth_weights = HTT_base_process_selection(channel, era).weights + [
+                ("4.569757e-8", "numberGeneratedEventsWeight"),
+                ("crossSectionPerEventWeight", "crossSectionPerEventWeight"),
+        ]
+    return Selection(name = "ttH125", weights=tth_weights)
+
 
 
 def ggHWW_process_selection(channel, era):
