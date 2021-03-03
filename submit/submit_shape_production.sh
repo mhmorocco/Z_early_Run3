@@ -15,8 +15,8 @@ then
     CONTROL_ARG="--control-plots"
 fi
 
-source utils/setup_susy_samples.sh $ERA
-source utils/setup_samples.sh $ERA
+source utils/setup_nmssm_samples.sh 
+source utils/setup_samples.sh $ERA $CHANNEL
 source utils/setup_root.sh
 source utils/bashFunctionCollection.sh
 
@@ -24,43 +24,105 @@ IFS="," read -a PROCS_ARR <<< $PROCESSES
 PROCESSES=""
 for PROC in ${PROCS_ARR[@]};
 do
-    if [[ "$PROC" =~ "backgrounds" ]]
+    if [[ "$PROC" =~ "backgrounds1" ]]
     then
-        BKG_PROCS="data,emb,ztt,zl,zj,ttt,ttl,ttj,vvt,vvl,vvj,w"
-        PROCESSES="$PROCESSES,$BKG_PROCS"
+        BKG_PROCS1="data,emb"
+        PROCESSES="$PROCESSES,$BKG_PROCS1"    
+    elif [[ "$PROC" =~ "backgrounds2" ]]
+    then
+        BKG_PROCS2="ttt,ttl,ttj"
+        PROCESSES="$PROCESSES,$BKG_PROCS2"    
+    elif [[ "$PROC" =~ "backgrounds3" ]]
+    then
+        BKG_PROCS1="ztt,zl,zj"
+        PROCESSES="$PROCESSES,$BKG_PROCS3"
+    elif [[ "$PROC" =~ "backgrounds4" ]]
+    then
+        BKG_PROCS2="vvt,vvl,vvj,w"
+        PROCESSES="$PROCESSES,$BKG_PROCS4" 
     elif [[ "$PROC" =~ "sm_signals" ]]
     then
-        SIG_PROCS="ggh,qqh,zh,wh,tth,gghww,qqhww,whww,zhww"
+        SIG_PROCS="ggh,qqh,tth,vh"
         PROCESSES="$PROCESSES,$SIG_PROCS"
-    elif [[ "$PROC" =~ "mssm_ggh_split1" ]]
+    elif [[ "$PROC" =~ "nmssm_split1" ]]
     then
-        PROCESSES="$PROCESSES,$GGH_SAMPLES_SPLIT1"
-    elif [[ "$PROC" =~ "mssm_ggh_split2" ]]
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT1"
+    elif [[ "$PROC" =~ "nmssm_split2" ]]
     then
-        PROCESSES="$PROCESSES,$GGH_SAMPLES_SPLIT2"
-    elif [[ "$PROC" =~ "mssm_ggh_split3" ]]
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT2"
+    elif [[ "$PROC" =~ "nmssm_split3" ]]
     then
-        PROCESSES="$PROCESSES,$GGH_SAMPLES_SPLIT3"
-    elif [[ "$PROC" =~ "mssm_ggh_split4" ]]
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT3"
+    elif [[ "$PROC" =~ "nmssm_split4" ]]
     then
-        PROCESSES="$PROCESSES,$GGH_SAMPLES_SPLIT4"
-    elif [[ "$PROC" =~ "mssm_ggh_split5" ]]
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT4"
+    elif [[ "$PROC" =~ "nmssm_split5" ]]
     then
-        PROCESSES="$PROCESSES,$GGH_SAMPLES_SPLIT5"
-    elif [[ "$PROC" == "mssm_bbh" ]]
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT5"
+    elif [[ "$PROC" =~ "nmssm_split6" ]]
     then
-        PROCESSES="$PROCESSES,$BBH_SAMPLES"
-    elif [[ "$PROC" =~ "mssm_bbh_nlo_split1" ]]
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT6"
+    elif [[ "$PROC" =~ "nmssm_split7" ]]
     then
-        PROCESSES="$PROCESSES,$BBH_NLO_SAMPLES_SPLIT1"
-    elif [[ "$PROC" =~ "mssm_bbh_nlo_split2" ]]
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT7"
+    elif [[ "$PROC" =~ "nmssm_split8" ]]
     then
-        PROCESSES="$PROCESSES,$BBH_NLO_SAMPLES_SPLIT2"
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT8"
+    elif [[ "$PROC" =~ "nmssm_split9" ]]
+    then
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT9"
+    elif [[ "$PROC" =~ "nmssm_split_10" ]]
+    then
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT10"
+    elif [[ "$PROC" =~ "nmssm_split_11" ]]
+    then
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT11"
+    elif [[ "$PROC" =~ "nmssm_split_12" ]]
+    then
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT12"
+    elif [[ "$PROC" =~ "nmssm_split_13" ]]
+    then
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT13"
+    elif [[ "$PROC" =~ "nmssm_split_14" ]]
+    then
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT14"
+    elif [[ "$PROC" =~ "nmssm_split_15" ]]
+    then
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT15"
+    elif [[ "$PROC" =~ "nmssm_split_16" ]]
+    then
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT16"
+    elif [[ "$PROC" =~ "nmssm_split_17" ]]
+    then
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT17"
+    elif [[ "$PROC" =~ "nmssm_split_18" ]]
+    then
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT18"
+    elif [[ "$PROC" =~ "nmssm_split_19" ]]
+    then
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT19"
+    elif [[ "$PROC" =~ "nmssm_split_20" ]]
+    then
+        PROCESSES="$PROCESSES,$NMSSM_SPLIT20"
+    elif [[ "$PROC" =~ "nmssm_mH1000" ]]
+    then
+        PROCESSES="$PROCESSES,$NMSSM_mH1000"
+    elif [[ "$PROC" =~ "all" ]]
+    then
+        echo "all"
+        BKG_PROCS1="data,emb"
+        BKG_PROCS2="ttt,ttl,ttj"
+        BKG_PROCS3="ztt,zl,zj"
+        BKG_PROCS4="vvt,vvl,vvj,w"
+        SIG_PROCS="ggh,qqh,tth,vh"
+        PROCESSES="$BKG_PROCS1,$BKG_PROCS2,$BKG_PROCS3,$BKG_PROCS4,$SIG_PROCS,$NMSSM_SPLIT1,$NMSSM_SPLIT2,$NMSSM_SPLIT3,$NMSSM_SPLIT4,$NMSSM_SPLIT5,$NMSSM_SPLIT6,$NMSSM_SPLIT7,$NMSSM_SPLIT8,$NMSSM_SPLIT9,$NMSSM_SPLIT10,$NMSSM_SPLIT11,$NMSSM_SPLIT12,$NMSSM_SPLIT13,$NMSSM_SPLIT14,$NMSSM_SPLIT15,$NMSSM_SPLIT16,$NMSSM_SPLIT17,$NMSSM_SPLIT18,$NMSSM_SPLIT19,$NMSSM_SPLIT20"
+        echo $PROCESSES
     else
         echo "[INFO] Add selection of single process $PROC"
         PROCESSES="$PROCESSES,$PROC"
     fi
 done
+
 # Remove introduced leading comma again.
 PROCESSES=$(sort_string ${PROCESSES#,})
 
@@ -71,30 +133,33 @@ then
 elif [[ "$SUBMIT_MODE" == "singlegraph" ]]
 then
     echo "[INFO] Preparing graph for processes $PROCESSES for submission..."
-    OUTPUT=output/submit_files/${ERA}-${CHANNEL}-${PROCESSES}-${CONTROL}-${TAG}
+    OUTPUT=output/submit_files/${ERA}-${CHANNEL}-${PROCS_ARR[@]}-${CONTROL}-${TAG}
     [[ ! -d $OUTPUT ]] && mkdir -p $OUTPUT
-    python shapes/produce_shapes.py --channels $CHANNEL \
+    echo $OUTPUT
+    echo $PROCESSES
+    python shapes/produce_shapes_condor.py --channels $CHANNEL \
         			    --output-file dummy.root \
         			    --directory $ARTUS_OUTPUTS \
-                                    --et-friend-directory $ARTUS_FRIENDS_ET $ARTUS_FRIENDS_FAKE_FACTOR \
-                                    --mt-friend-directory $ARTUS_FRIENDS_MT $ARTUS_FRIENDS_FAKE_FACTOR \
-                                    --tt-friend-directory $ARTUS_FRIENDS_TT $ARTUS_FRIENDS_FAKE_FACTOR \
-                                    --em-friend-directory $ARTUS_FRIENDS_EM \
+                                    --et-friend-directory $SVFit_Friends $NNScore_Friends $FF_Friends $HHKinFit_Friends \
+                                    --mt-friend-directory $SVFit_Friends $NNScore_Friends $FF_Friends $HHKinFit_Friends \
+                                    --tt-friend-directory $SVFit_Friends $NNScore_Friends $FF_Friends $HHKinFit_Friends \
                                     --era $ERA \
+                                    --proc_arr ${PROCS_ARR[@]} \
                                     --optimization-level 1 \
                                     --process-selection $PROCESSES \
                                     --only-create-graphs \
                                     --graph-dir $OUTPUT \
+                                    --tag $TAG
                                     $CONTROL_ARG
-    # Set output graph file name produced during graph creation.
-    GRAPH_FILE=${OUTPUT}/analysis_unit_graphs-${ERA}-${CHANNEL}-${PROCESSES}.pkl
-    [[ $CONTROL == 1 ]] && GRAPH_FILE=${OUTPUT}/control_unit_graphs-${ERA}-${CHANNEL}-${PROCESSES}.pkl
-    # Prepare the jdl file for single core jobs.
+    # # Set output graph file name produced during graph creation.
+    GRAPH_FILE=${OUTPUT}/analysis_unit_graphs-${TAG}-${ERA}-${CHANNEL}-${PROCS_ARR[@]}.pkl
+    [[ $CONTROL == 1 ]] && GRAPH_FILE=${OUTPUT}/control_unit_graphs-${ERA}-${CHANNEL}-${PROCS_ARR[@]}.pkl
+    # # Prepare the jdl file for single core jobs.
     echo "[INFO] Creating the logging direcory for the jobs..."
     GF_NAME=$(basename $GRAPH_FILE)
-    if [[ ! -d log/condorShapes/${GF_NAME%.pkl}/ ]]
+    if [[ ! -d log/condorShapes/${TAG}/${GF_NAME%.pkl}/ ]]
     then
-        mkdir -p log/condorShapes/${GF_NAME%.pkl}/
+        mkdir -p log/condorShapes/${TAG}/${GF_NAME%.pkl}/
     fi
     if [[ ! -d log/${GF_NAME%.pkl}/ ]]
     then
@@ -103,26 +168,26 @@ then
 
     echo "[INFO] Preparing submission file for single core jobs for variation pipelines..."
     cp submit/produce_shapes_cc7.jdl $OUTPUT
-    echo "output = log/condorShapes/${GF_NAME%.pkl}/\$(cluster).\$(Process).out" >> $OUTPUT/produce_shapes_cc7.jdl
-    echo "error = log/condorShapes/${GF_NAME%.pkl}/\$(cluster).\$(Process).err" >> $OUTPUT/produce_shapes_cc7.jdl
-    echo "log = log/condorShapes/${GF_NAME%.pkl}/\$(cluster).\$(Process).log" >> $OUTPUT/produce_shapes_cc7.jdl
+    echo "output = log/condorShapes/${TAG}/${GF_NAME%.pkl}/\$(cluster).\$(Process).out" >> $OUTPUT/produce_shapes_cc7.jdl
+    echo "error = log/condorShapes/${TAG}/${GF_NAME%.pkl}/\$(cluster).\$(Process).err" >> $OUTPUT/produce_shapes_cc7.jdl
+    echo "log = log/condorShapes/${TAG}/${GF_NAME%.pkl}/\$(cluster).\$(Process).log" >> $OUTPUT/produce_shapes_cc7.jdl
     echo "queue a3,a2,a1 from $OUTPUT/arguments.txt" >> $OUTPUT/produce_shapes_cc7.jdl
     
-    # Prepare the multicore jdl.
+    # # Prepare the multicore jdl.
     echo "[INFO] Preparing submission file for multi core jobs for nominal pipeline..."
     cp submit/produce_shapes_cc7.jdl $OUTPUT/produce_shapes_cc7_multicore.jdl
     # Replace the values in the config which differ for multicore jobs.
-    sed -i '/^RequestMemory/c\RequestMemory = 10000' $OUTPUT/produce_shapes_cc7_multicore.jdl
+    sed -i '/^RequestMemory/c\RequestMemory = 5000' $OUTPUT/produce_shapes_cc7_multicore.jdl
     sed -i '/^RequestCpus/c\RequestCpus = 8' $OUTPUT/produce_shapes_cc7_multicore.jdl
     sed -i '/^arguments/c\arguments = $(a1) $(a2) $(a3) $(a4)' ${OUTPUT}/produce_shapes_cc7_multicore.jdl
     # Add log file locations to output file.
-    echo "output = log/condorShapes/${GF_NAME%.pkl}/multicore.\$(cluster).\$(Process).out" >> $OUTPUT/produce_shapes_cc7_multicore.jdl
-    echo "error = log/condorShapes/${GF_NAME%.pkl}/multicore.\$(cluster).\$(Process).err" >> $OUTPUT/produce_shapes_cc7_multicore.jdl
-    echo "log = log/condorShapes/${GF_NAME%.pkl}/multicore.\$(cluster).\$(Process).log" >> $OUTPUT/produce_shapes_cc7_multicore.jdl
+    echo "output = log/condorShapes/${TAG}/${GF_NAME%.pkl}/multicore.\$(cluster).\$(Process).out" >> $OUTPUT/produce_shapes_cc7_multicore.jdl
+    echo "error = log/condorShapes/${TAG}/${GF_NAME%.pkl}/multicore.\$(cluster).\$(Process).err" >> $OUTPUT/produce_shapes_cc7_multicore.jdl
+    echo "log = log/condorShapes/${TAG}/${GF_NAME%.pkl}/multicore.\$(cluster).\$(Process).log" >> $OUTPUT/produce_shapes_cc7_multicore.jdl
     echo "queue a3,a2,a4,a1 from $OUTPUT/arguments_multicore.txt" >> $OUTPUT/produce_shapes_cc7_multicore.jdl
 
     # Assemble the arguments.txt file used in the submission
-    python submit/prepare_args_file.py --graph-file $GRAPH_FILE --output-dir $OUTPUT
+    python submit/prepare_args_file.py --graph-file $GRAPH_FILE --output-dir $OUTPUT --pack-multiple-pipelines 20
     echo "[INFO] Submit shape production with 'condor_submit $OUTPUT/produce_shapes_cc7.jdl' and 'condor_submit $OUTPUT/produce_shapes_cc7_multicore.jdl'"
     condor_submit $OUTPUT/produce_shapes_cc7.jdl
     condor_submit $OUTPUT/produce_shapes_cc7_multicore.jdl
