@@ -15,11 +15,40 @@ def parse_args():
     return parser.parse_args()
 
 
+def calculate_range(range_str):
+    ran = list(map(int, range_str.split("_")))
+    ran[-1] += 1
+    return ran
+
+
+def check_output_files(era, channel, process_string, control_arg):
+    out_graph_ranges = list(fi.split("-")[-1].split(".root")[0]
+                                for fi in os.listdir(
+                                    os.path.join(
+                                                 "output/shapes",
+                                                 "{}_unit_graphs-{}-{}-all".format(
+                                                     control_arg,
+                                                     era,
+                                                     channel,
+                                                     )))) #process_string
+    out_nums = [list(range(*calculate_range(out_graphs)))
+                        if "_" in out_graphs else int(out_graphs)
+                        for out_graphs in out_graph_ranges]
+    # Flatten the ouput list
+    output_nums = []
+    for entry in out_nums:
+        if isinstance(entry, list):
+            output_nums.extend(entry)
+        else:
+            output_nums.append(entry)
+    return len(output_nums), set(output_nums)
+
+
 def main(args):
     proc_dict = {
             "bkg": ["data,emb,ttj,ttl,ttt,vvj,vvl,vvt,w,zj,zl,ztt"],
             "sm_signals": ["ggh,gghww,qqh,qqhww,tth,wh,whww,zh,zhww"],
-            "mssm_bbh": [os.environ["BBH_NLO_SAMPLES_SPLIT{}".format(i)] for i in range(1,3)],
+            "mssm_bbh": [os.environ["BBH_SAMPLES_SPLIT{}".format(i)] for i in range(1,3)],
             "mssm_ggh": [os.environ["GGH_SAMPLES_SPLIT{}".format(i)] for i in range(1,6)],
     }
     for ch in args.channels:
@@ -32,37 +61,20 @@ def main(args):
                 # Sort proc string for correct matching
                 proc_str = ",".join(sorted(proc_str.split(",")))
                 with open(os.path.join("output/submit_files",
-                                       "{}-{}-{}-0-{}".format(args.era, ch, proc_str, args.tag),
-                                       "{}_unit_graphs-{}-{}-{}.pkl".format(c_arg, args.era, ch, proc_str)),
+                                       "{}-{}-{}-{}".format(args.era, ch, proc_str, args.tag),
+                                       "{}_unit_graphs-{}-{}-all.pkl".format(c_arg, args.era, ch, proc_str)),
                           "rb") as f:
                     num_graphs = len(pickle.load(f))
                 # Check number of output files.
-                num_outputs = len(
-                        os.listdir(
-                            os.path.join("output/shapes",
-                                         "{}_unit_graphs-{}-{}-{}".format(
-                                                                        c_arg,
-                                                                        args.era,
-                                                                        ch,
-                                                                        proc_str)
-                                         )))
+                num_outputs, output_nums = check_output_files(args.era, ch, proc_str, c_arg)
+
                 print("[INFO] Checking outputs for channel {} and processes {}"
                         .format( ch, proc_str))
                 if num_graphs != num_outputs:
                     print("\033[93m[WARNING] Outputs missing for channel {}"
                           " and processes {}\033[0m".format(ch, proc_str))
                     # For deviations check which graphs are missing.
-                    output_nums = set(
-                            fi.split("-")[-1].split(".root")[0]
-                                for fi in os.listdir(
-                                    os.path.join(
-                                                 "output/shapes",
-                                                 "{}_unit_graphs-{}-{}-{}".format(
-                                                     c_arg,
-                                                     args.era,
-                                                     ch,
-                                                     proc_str))))
-                    print("Missing outputs are {}".format(sorted(set(map(str, range(num_graphs))) - output_nums)))
+                    print("Missing outputs are {}".format(sorted(set(range(num_graphs)) - output_nums)))
     return
 
 
