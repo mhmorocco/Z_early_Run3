@@ -213,153 +213,156 @@ discr_str = ("(0.5"
 fine_binning = [0.0, 0.3, 0.4, 0.45, 0.5, 0.55,  0.6, 0.65, 0.7,
                 0.75, 0.8, 0.85, 0.9, 0.92, 0.94, 0.96, 0.98, 1.]
 fine_binning=[0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0]
-et_hist = Histogram("et_max_score", "et_max_score", fine_binning)
-mt_hist = Histogram("mt_max_score", "mt_max_score", fine_binning)
-tt_hist = Histogram("tt_max_score", "tt_max_score", fine_binning)
-em_hist = Histogram("em_max_score", "em_max_score", fine_binning)
+# et_hist = Histogram("et_max_score", "et_max_score", fine_binning)
+# mt_hist = Histogram("mt_max_score", "mt_max_score", fine_binning)
+# tt_hist = Histogram("tt_max_score", "tt_max_score", fine_binning)
+# em_hist = Histogram("em_max_score", "em_max_score", fine_binning)
+et_hist = Histogram("et_summed_score", "et_summed_score", fine_binning)
+mt_hist = Histogram("mt_summed_score", "mt_summed_score", fine_binning)
+tt_hist = Histogram("tt_summed_score", "tt_summed_score", fine_binning)
+em_hist = Histogram("em_summed_score", "em_summed_score", fine_binning)
 
-
-nn_categorization = {
-        "et": [
-            (Selection(name="emb",  cuts=[("et_max_index=={index}".format(index=2), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [et_hist]),
-            (Selection(name="tt",   cuts=[("et_max_index=={index}".format(index=3), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [et_hist]),
-            (Selection(name="misc", cuts=[("et_max_index=={index}".format(index=4), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [et_hist]),
-            (Selection(name="zll",  cuts=[("et_max_index=={index}".format(index=5), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [et_hist]),
-            (Selection(name="ff",   cuts=[("et_max_index=={index}".format(index=6), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [et_hist]),
-            (Selection(name="xxh",  cuts=[("(et_max_index=={index1}||et_max_index=={index2})".format(index1=0, index2=1), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [Histogram("stxs_stage0_2Ddiscr", discr_str.format(channel="et"), list(range(29)))]),
-            # Pure MSSM analysis categories.
-            (Selection(name="Nbtag0_MTLt40",             cuts = [("nbtag==0&&mt_1_puppi<40", "category_selection")]),
-                    [mt_tot_hist]),
-            (Selection(name="Nbtag0_MT40To70",           cuts = [("nbtag==0&&mt_1_puppi>=40&&mt_1_puppi<70", "category_selection")]),
-                    [mt_tot_hist]),
-            # MSSM and SM analysis categories
-            (Selection(name="Nbtag0_MTLt40_MHGt250",     cuts = [("nbtag==0&&mt_1_puppi<40&&m_sv_puppi>=250", "category_selection")]),
-                    [mt_tot_hist]),
-            (Selection(name="Nbtag0_MT40To70_MHGt250",   cuts = [("nbtag==0&&mt_1_puppi>=40&&mt_1_puppi<70&&m_sv_puppi", "category_selection")]),
-                    [mt_tot_hist]),
-            (Selection(name="NbtagGt1_MTLt40",           cuts = [("nbtag>=1&&mt_1_puppi<40", "category_selection")]),
-                    [mt_tot_hist]),
-            (Selection(name="NbtagGt1_MT40To70",         cuts = [("nbtag>=1&&mt_1_puppi>=40&&mt_1_puppi<70", "category_selection")]),
-                    [mt_tot_hist]),
-            # Control region.
-            (Selection(name="MTGt70",                    cuts = [("mt_1_puppi>=70", "category_selection")]),
-                    [mt_tot_hist]),
-        ],
-        "mt": [
-            (Selection(name="emb",  cuts=[("mt_max_index=={index}".format(index=2), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [mt_hist]),
-            (Selection(name="tt",   cuts=[("mt_max_index=={index}".format(index=3), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [mt_hist]),
-            (Selection(name="misc", cuts=[("mt_max_index=={index}".format(index=4), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [mt_hist]),
-            (Selection(name="zll",  cuts=[("mt_max_index=={index}".format(index=5), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [mt_hist]),
-            (Selection(name="ff",   cuts=[("mt_max_index=={index}".format(index=6), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [mt_hist]),
-            (Selection(name="xxh",  cuts=[("(mt_max_index=={index1}||mt_max_index=={index2})".format(index1=0, index2=1), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [Histogram("stxs_stage0_2Ddiscr", discr_str.format(channel="mt"), list(range(29)))]),
-            # Pure MSSM analysis categories.
-            (Selection(name="Nbtag0_MTLt40",             cuts = [("nbtag==0&&mt_1_puppi<40", "category_selection")]),
-                    [mt_tot_hist]),
-            (Selection(name="Nbtag0_MT40To70",           cuts = [("nbtag==0&&mt_1_puppi>=40&&mt_1_puppi<70", "category_selection")]),
-                    [mt_tot_hist]),
-            # MSSM and SM analysis categories
-            (Selection(name="Nbtag0_MTLt40_MHGt250",     cuts = [("nbtag==0&&mt_1_puppi<40&&m_sv_puppi>=250", "category_selection")]),
-                    [mt_tot_hist]),
-            (Selection(name="Nbtag0_MT40To70_MHGt250",   cuts = [("nbtag==0&&mt_1_puppi>=40&&mt_1_puppi<70&&m_sv_puppi", "category_selection")]),
-                    [mt_tot_hist]),
-            (Selection(name="NbtagGt1_MTLt40",           cuts = [("nbtag>=1&&mt_1_puppi<40", "category_selection")]),
-                    [mt_tot_hist]),
-            (Selection(name="NbtagGt1_MT40To70",         cuts = [("nbtag>=1&&mt_1_puppi>=40&&mt_1_puppi<70", "category_selection")]),
-                    [mt_tot_hist]),
-            # Control region.
-            (Selection(name="MTGt70",                    cuts = [("mt_1_puppi>=70", "category_selection")]),
-                    [mt_tot_hist]),
-        ],
-        "tt": [
-            (Selection(name="emb",  cuts=[("tt_max_index=={index}".format(index=2), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [tt_hist]),
-            (Selection(name="misc", cuts=[("tt_max_index=={index}".format(index=3), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [tt_hist]),
-            (Selection(name="ff",   cuts=[("tt_max_index=={index}".format(index=4), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [tt_hist]),
-            (Selection(name="xxh",  cuts=[("(tt_max_index=={index1}||tt_max_index=={index2})".format(index1=0, index2=1), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [Histogram("stxs_stage0_2Ddiscr", discr_str.format(channel="tt"), list(range(29)))]),
-            # Pure MSSM analysis categories.
-            (Selection(name="Nbtag0",                                    cuts=[("nbtag==0", "category_selection")]),
-                    [mt_tot_hist]),
-            # MSSM and SM analysis categories.
-            (Selection(name="Nbtag0_MHGt250",                            cuts=[("nbtag==0&&m_sv_puppi>=250", "category_selection")]),
-                    [mt_tot_hist]),
-            (Selection(name="NbtagGt1",                                  cuts=[("nbtag>=1", "category_selection")]),
-                    [mt_tot_hist]),        
-        ],
-        "em": [
-            (Selection(name="emb",  cuts=[("em_max_index=={index}".format(index=2), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [em_hist]),
-            (Selection(name="tt",   cuts=[("em_max_index=={index}".format(index=3), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [em_hist]),
-            (Selection(name="db",   cuts=[("em_max_index=={index}".format(index=4), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [em_hist]),
-            (Selection(name="misc", cuts=[("em_max_index=={index}".format(index=5), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [em_hist]),
-            (Selection(name="ss",   cuts=[("em_max_index=={index}".format(index=6), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [em_hist]),
-            (Selection(name="xxh",  cuts=[("(em_max_index=={index1}||em_max_index=={index2})".format(index1=0, index2=1), "category_selection"),
-                                         ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
-                    [Histogram("stxs_stage0_2Ddiscr", discr_str.format(channel="em"), list(range(29)))]),
-            # Pure MSSM analysis categories.
-            (Selection(name="Nbtag0_DZetam35Tom10",          cuts=[("nbtag==0&&pZetaPuppiMissVis>=-35&&pZetaPuppiMissVis<-10", "category_selection")]),
-                    [mt_tot_hist]),
-            (Selection(name="Nbtag0_DZetam10To30",           cuts=[("nbtag==0&&pZetaPuppiMissVis>=-10&&pZetaPuppiMissVis<30", "category_selection")]),
-                    [mt_tot_hist]),
-            (Selection(name="Nbtag0_DZetaGt30",              cuts=[("nbtag==0&&pZetaPuppiMissVis>=30", "category_selection")]),
-                    [mt_tot_hist]),
-            # MSSM and SM analysis categories.
-            (Selection(name="Nbtag0_DZetam35Tom10_MHGt250",  cuts=[("nbtag==0&&pZetaPuppiMissVis>=-35&&pZetaPuppiMissVis<-10&&m_sv_puppi>=250", "category_selection")]),
-                    [mt_tot_hist]),
-            (Selection(name="Nbtag0_DZetam10To30_MHGt250",   cuts=[("nbtag==0&&pZetaPuppiMissVis>=-10&&pZetaPuppiMissVis<30&&m_sv_puppi>=250", "category_selection")]),
-                    [mt_tot_hist]),
-            (Selection(name="Nbtag0_DZetaGt30_MHGt250",      cuts=[("nbtag==0&&pZetaPuppiMissVis>=30&&m_sv_puppi>=250", "category_selection")]),
-                    [mt_tot_hist]),
-            (Selection(name="NbtagGt1_DZetam35Tom10",        cuts=[("nbtag>=1&&pZetaPuppiMissVis>=-35&&pZetaPuppiMissVis<-10", "category_selection")]),
-                    [mt_tot_hist]),
-            (Selection(name="NbtagGt1_DZetam10To30",         cuts=[("nbtag>=1&&pZetaPuppiMissVis>=-10&&pZetaPuppiMissVis<30", "category_selection")]),
-                    [mt_tot_hist]),
-            (Selection(name="NbtagGt1_DZetaGt30",            cuts=[("nbtag>=1&&pZetaPuppiMissVis>=30", "category_selection")]),
-                    [mt_tot_hist]),
-            # Control regions.
-            (Selection(name="DZetaLtm35",                    cuts=[("pZetaPuppiMissVis<-35", "category_selection")]),
-                    [mt_tot_hist]),
-        ],
-}
+# nn_categorization = {
+#         "et": [
+#             (Selection(name="emb",  cuts=[("et_max_index=={index}".format(index=2), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [et_hist]),
+#             (Selection(name="tt",   cuts=[("et_max_index=={index}".format(index=3), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [et_hist]),
+#             (Selection(name="misc", cuts=[("et_max_index=={index}".format(index=4), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [et_hist]),
+#             (Selection(name="zll",  cuts=[("et_max_index=={index}".format(index=5), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [et_hist]),
+#             (Selection(name="ff",   cuts=[("et_max_index=={index}".format(index=6), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [et_hist]),
+#             (Selection(name="xxh",  cuts=[("(et_max_index=={index1}||et_max_index=={index2})".format(index1=0, index2=1), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [Histogram("stxs_stage0_2Ddiscr", discr_str.format(channel="et"), list(range(29)))]),
+#             # Pure MSSM analysis categories.
+#             (Selection(name="Nbtag0_MTLt40",             cuts = [("nbtag==0&&mt_1_puppi<40", "category_selection")]),
+#                     [mt_tot_hist]),
+#             (Selection(name="Nbtag0_MT40To70",           cuts = [("nbtag==0&&mt_1_puppi>=40&&mt_1_puppi<70", "category_selection")]),
+#                     [mt_tot_hist]),
+#             # MSSM and SM analysis categories
+#             (Selection(name="Nbtag0_MTLt40_MHGt250",     cuts = [("nbtag==0&&mt_1_puppi<40&&m_sv_puppi>=250", "category_selection")]),
+#                     [mt_tot_hist]),
+#             (Selection(name="Nbtag0_MT40To70_MHGt250",   cuts = [("nbtag==0&&mt_1_puppi>=40&&mt_1_puppi<70&&m_sv_puppi", "category_selection")]),
+#                     [mt_tot_hist]),
+#             (Selection(name="NbtagGt1_MTLt40",           cuts = [("nbtag>=1&&mt_1_puppi<40", "category_selection")]),
+#                     [mt_tot_hist]),
+#             (Selection(name="NbtagGt1_MT40To70",         cuts = [("nbtag>=1&&mt_1_puppi>=40&&mt_1_puppi<70", "category_selection")]),
+#                     [mt_tot_hist]),
+#             # Control region.
+#             (Selection(name="MTGt70",                    cuts = [("mt_1_puppi>=70", "category_selection")]),
+#                     [mt_tot_hist]),
+#         ],
+#         "mt": [
+#             (Selection(name="emb",  cuts=[("mt_max_index=={index}".format(index=2), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [mt_hist]),
+#             (Selection(name="tt",   cuts=[("mt_max_index=={index}".format(index=3), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [mt_hist]),
+#             (Selection(name="misc", cuts=[("mt_max_index=={index}".format(index=4), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [mt_hist]),
+#             (Selection(name="zll",  cuts=[("mt_max_index=={index}".format(index=5), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [mt_hist]),
+#             (Selection(name="ff",   cuts=[("mt_max_index=={index}".format(index=6), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [mt_hist]),
+#             (Selection(name="xxh",  cuts=[("(mt_max_index=={index1}||mt_max_index=={index2})".format(index1=0, index2=1), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [Histogram("stxs_stage0_2Ddiscr", discr_str.format(channel="mt"), list(range(29)))]),
+#             # Pure MSSM analysis categories.
+#             (Selection(name="Nbtag0_MTLt40",             cuts = [("nbtag==0&&mt_1_puppi<40", "category_selection")]),
+#                     [mt_tot_hist]),
+#             (Selection(name="Nbtag0_MT40To70",           cuts = [("nbtag==0&&mt_1_puppi>=40&&mt_1_puppi<70", "category_selection")]),
+#                     [mt_tot_hist]),
+#             # MSSM and SM analysis categories
+#             (Selection(name="Nbtag0_MTLt40_MHGt250",     cuts = [("nbtag==0&&mt_1_puppi<40&&m_sv_puppi>=250", "category_selection")]),
+#                     [mt_tot_hist]),
+#             (Selection(name="Nbtag0_MT40To70_MHGt250",   cuts = [("nbtag==0&&mt_1_puppi>=40&&mt_1_puppi<70&&m_sv_puppi", "category_selection")]),
+#                     [mt_tot_hist]),
+#             (Selection(name="NbtagGt1_MTLt40",           cuts = [("nbtag>=1&&mt_1_puppi<40", "category_selection")]),
+#                     [mt_tot_hist]),
+#             (Selection(name="NbtagGt1_MT40To70",         cuts = [("nbtag>=1&&mt_1_puppi>=40&&mt_1_puppi<70", "category_selection")]),
+#                     [mt_tot_hist]),
+#             # Control region.
+#             (Selection(name="MTGt70",                    cuts = [("mt_1_puppi>=70", "category_selection")]),
+#                     [mt_tot_hist]),
+#         ],
+#         "tt": [
+#             (Selection(name="emb",  cuts=[("tt_max_index=={index}".format(index=2), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [tt_hist]),
+#             (Selection(name="misc", cuts=[("tt_max_index=={index}".format(index=3), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [tt_hist]),
+#             (Selection(name="ff",   cuts=[("tt_max_index=={index}".format(index=4), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [tt_hist]),
+#             (Selection(name="xxh",  cuts=[("(tt_max_index=={index1}||tt_max_index=={index2})".format(index1=0, index2=1), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [Histogram("stxs_stage0_2Ddiscr", discr_str.format(channel="tt"), list(range(29)))]),
+#             # Pure MSSM analysis categories.
+#             (Selection(name="Nbtag0",                                    cuts=[("nbtag==0", "category_selection")]),
+#                     [mt_tot_hist]),
+#             # MSSM and SM analysis categories.
+#             (Selection(name="Nbtag0_MHGt250",                            cuts=[("nbtag==0&&m_sv_puppi>=250", "category_selection")]),
+#                     [mt_tot_hist]),
+#             (Selection(name="NbtagGt1",                                  cuts=[("nbtag>=1", "category_selection")]),
+#                     [mt_tot_hist]),        
+#         ],
+#         "em": [
+#             (Selection(name="emb",  cuts=[("em_max_index=={index}".format(index=2), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [em_hist]),
+#             (Selection(name="tt",   cuts=[("em_max_index=={index}".format(index=3), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [em_hist]),
+#             (Selection(name="db",   cuts=[("em_max_index=={index}".format(index=4), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [em_hist]),
+#             (Selection(name="misc", cuts=[("em_max_index=={index}".format(index=5), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [em_hist]),
+#             (Selection(name="ss",   cuts=[("em_max_index=={index}".format(index=6), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [em_hist]),
+#             (Selection(name="xxh",  cuts=[("(em_max_index=={index1}||em_max_index=={index2})".format(index1=0, index2=1), "category_selection"),
+#                                          ("nbtag==0&&m_sv_puppi<250", "mssm_veto")]),
+#                     [Histogram("stxs_stage0_2Ddiscr", discr_str.format(channel="em"), list(range(29)))]),
+#             # Pure MSSM analysis categories.
+#             (Selection(name="Nbtag0_DZetam35Tom10",          cuts=[("nbtag==0&&pZetaPuppiMissVis>=-35&&pZetaPuppiMissVis<-10", "category_selection")]),
+#                     [mt_tot_hist]),
+#             (Selection(name="Nbtag0_DZetam10To30",           cuts=[("nbtag==0&&pZetaPuppiMissVis>=-10&&pZetaPuppiMissVis<30", "category_selection")]),
+#                     [mt_tot_hist]),
+#             (Selection(name="Nbtag0_DZetaGt30",              cuts=[("nbtag==0&&pZetaPuppiMissVis>=30", "category_selection")]),
+#                     [mt_tot_hist]),
+#             # MSSM and SM analysis categories.
+#             (Selection(name="Nbtag0_DZetam35Tom10_MHGt250",  cuts=[("nbtag==0&&pZetaPuppiMissVis>=-35&&pZetaPuppiMissVis<-10&&m_sv_puppi>=250", "category_selection")]),
+#                     [mt_tot_hist]),
+#             (Selection(name="Nbtag0_DZetam10To30_MHGt250",   cuts=[("nbtag==0&&pZetaPuppiMissVis>=-10&&pZetaPuppiMissVis<30&&m_sv_puppi>=250", "category_selection")]),
+#                     [mt_tot_hist]),
+#             (Selection(name="Nbtag0_DZetaGt30_MHGt250",      cuts=[("nbtag==0&&pZetaPuppiMissVis>=30&&m_sv_puppi>=250", "category_selection")]),
+#                     [mt_tot_hist]),
+#             (Selection(name="NbtagGt1_DZetam35Tom10",        cuts=[("nbtag>=1&&pZetaPuppiMissVis>=-35&&pZetaPuppiMissVis<-10", "category_selection")]),
+#                     [mt_tot_hist]),
+#             (Selection(name="NbtagGt1_DZetam10To30",         cuts=[("nbtag>=1&&pZetaPuppiMissVis>=-10&&pZetaPuppiMissVis<30", "category_selection")]),
+#                     [mt_tot_hist]),
+#             (Selection(name="NbtagGt1_DZetaGt30",            cuts=[("nbtag>=1&&pZetaPuppiMissVis>=30", "category_selection")]),
+#                     [mt_tot_hist]),
+#             # Control regions.
+#             (Selection(name="DZetaLtm35",                    cuts=[("pZetaPuppiMissVis<-35", "category_selection")]),
+#                     [mt_tot_hist]),
+#         ],
+# }
 
 #classdict for NMSSM Index
 def nmssm_cat(channel,cdict):
@@ -370,6 +373,7 @@ def nmssm_cat(channel,cdict):
                 classdict = {}
                 for nnclass in set(confdict["classes"]):
                         classdict[nnclass] = confdict["classes"].index(nnclass)
+
                 return classdict
         def hist():
                 if channel=="et":
@@ -379,6 +383,7 @@ def nmssm_cat(channel,cdict):
                 else:
                         return tt_hist
         classdict=readclasses()
+        print(classdict)
         nmssm_categorization={"{ch}".format(ch=channel) : []}
         catsL_=nmssm_categorization["{ch}".format(ch=channel)]
         for label in classdict.keys():               
