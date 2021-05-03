@@ -34,11 +34,11 @@ do
         PROCESSES="$PROCESSES,$BKG_PROCS2"    
     elif [[ "$PROC" =~ "backgrounds3" ]]
     then
-        BKG_PROCS1="ztt,zl,zj"
+        BKG_PROCS3="ztt,zl,zj"
         PROCESSES="$PROCESSES,$BKG_PROCS3"
     elif [[ "$PROC" =~ "backgrounds4" ]]
     then
-        BKG_PROCS2="vvt,vvl,vvj,w"
+        BKG_PROCS4="vvt,vvl,vvj,w"
         PROCESSES="$PROCESSES,$BKG_PROCS4" 
     elif [[ "$PROC" =~ "sm_signals" ]]
     then
