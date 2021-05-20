@@ -254,7 +254,10 @@ Furthermore, the variables that were used to train on are defined as
 
 
 ## 5. Apply ML model
-
+First of all we need to update the datasets.json file via:
+```bash
+cp -r /work/rschmieder/friendtree_producer/CMSSW_10_2_14/src/HiggsAnalysis/friend-tree-producer/data/input_params/datasets.json PATH_TO_YOUR_FRIENDTREE_PRODUCER/CMSSW_10_2_14/src/HiggsAnalysis/friend-tree-producer/data/input_params/datasets.json
+```
 To apply it we use the friend tree producer from step 2, and run e.g. the command
 ```bash
 job_management.py --command submit --executable NNScore --custom_workdir_path /ceph/${USER}/nmssm/temp  --input_ntuples_directory /ceph/jbechtel/nmssm/ntuples/2016/tt/   --batch_cluster etp7 --events_per_job 20000 --cores 24 --restrict_to_channels tt  --friend_ntuples_directories /ceph/jbechtel/nmssm/ntuples/2016/tt/FakeFactors_nmssm/ /ceph/jbechtel/nmssm/ntuples/2016/tt/HHKinFit/ /ceph/jbechtel/nmssm/ntuples/2016/tt/SVFit/  --conditional --extra-parameters "--lwtnn_config /PATH/TO/ML/OUTPUT/FOLDER/"
