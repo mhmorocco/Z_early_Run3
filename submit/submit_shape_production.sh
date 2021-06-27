@@ -6,7 +6,7 @@ PROCESSES=$3
 SUBMIT_MODE=$4
 TAG=$5
 CONTROL=$6
-
+CD="/work/rschmieder/nmssm_condor_analysis/sm-htt-analysis/output/ml/10_onenet/all_eras_et/dataset_config.yaml"
 [[ ! -z $1 && ! -z $2 && ! -z $3 && ! -z $4  && ! -z $5 ]] || ( echo "[ERROR] Number of given parameters is to small."; exit 1 )
 [[ ! -z $6 ]] || CONTROL=0
 CONTROL_ARG=""
@@ -149,6 +149,7 @@ then
                                     --process-selection $PROCESSES \
                                     --only-create-graphs \
                                     --graph-dir $OUTPUT \
+                                    --classdict $CD\
                                     --tag $TAG
                                     $CONTROL_ARG
     # # Set output graph file name produced during graph creation.

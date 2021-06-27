@@ -115,6 +115,7 @@ def replace_negative_entries_and_renormalize(histogram, tolerance):
 
 
 def fake_factor_estimation(rootfile, channel, selection, variable, variation="Nominal", is_embedding=True):
+    
     if is_embedding:
         procs_to_subtract = ["EMB", "ZL", "TTL", "VVL"]
     else:
@@ -126,6 +127,7 @@ def fake_factor_estimation(rootfile, channel, selection, variable, variation="No
                                                 selection="-" + selection if selection != "" else "",
                                                 variation=variation,
                                                 variable=variable)))
+        
     base_hist = rootfile.Get(_name_string.format(
                                 dataset="data",
                                 channel=channel,
@@ -141,7 +143,7 @@ def fake_factor_estimation(rootfile, channel, selection, variable, variation="No
                                                 process="-" + _process_map[proc],
                                                 selection="-" + selection if selection != "" else "",
                                                 variation=variation,
-                                                variable=variable)))
+                                                variable=variable)))                                 
         base_hist.Add(rootfile.Get(_name_string.format(
                                         dataset=_dataset_map[proc],
                                         channel=channel,
@@ -149,6 +151,7 @@ def fake_factor_estimation(rootfile, channel, selection, variable, variation="No
                                         selection="-" + selection if selection !="" else "",
                                         variation=variation,
                                         variable=variable)), -1.0)
+    
     proc_name = "jetFakes" if is_embedding else "jetFakesMC"
     if variation in ["anti_iso"]:
         ff_variation = "Nominal"
@@ -277,7 +280,6 @@ def abcd_estimation(rootfile, channel, selection, variable,
     bin_n1=data_c.GetBinContent(data_c.GetNbinsX()+1)
     bin_n=data_c.GetBinContent(data_c.GetNbinsX())
     data_c.SetBinContent(data_c.GetNbinsX(),bin_n+bin_n1)
-    #print(variable, "data_c",bin_zero)
     data_c.SetBinContent(1,bin_zero+bin_one)
     data_yield_C=data_c.Integral()
     bkg_yield_C=0.
@@ -306,6 +308,7 @@ def abcd_estimation(rootfile, channel, selection, variable,
                                 variation=variation,
                                 variable=variable
         ))
+
     bin_zero=data_d.GetBinContent(0)
     bin_one=data_d.GetBinContent(1)
     data_d.SetBinContent(1,bin_zero+bin_one)
@@ -410,14 +413,13 @@ def main(args):
     for key in input_file.GetListOfKeys():
         logger.debug("Processing histogram %s",key.GetName())
         dataset, selection, variation, variable = key.GetName().split("#")
-        #if variable not in ["bcsv_2","bpt_bReg_2","bm_bReg_2"]:
-        if "anti_iso" in variation or "same_sign" in variation:
+        if "anti_iso" in variation or "same_sign" in variation:            
             sel_split = selection.split("-", maxsplit=1)
             # Set category to default since not present in control plots.
             category = ""
             # Treat data hists seperately because only channel selection is applied to data.
             if "data" in dataset:
-                channel = sel_split[0]
+                channel = sel_split[0]                
                 # Set category label for analysis categories.
                 if len(sel_split) > 1:
                     category = sel_split[1]
@@ -506,37 +508,9 @@ def main(args):
                 for variation in ff_inputs[ch][cat][var]:
                     estimated_hist = fake_factor_estimation(input_file, ch, cat, var, variation=variation)
                     estimated_hist.Write()
-                    estimated_hist = fake_factor_estimation(input_file, ch, cat, var, variation=variation, is_embedding=False)
-                    estimated_hist.Write()
     logger.info("Starting estimations for the QCD mulitjet process.")
     logger.debug("%s", json.dumps(qcd_inputs, sort_keys=True, indent=4))
-    for ch in qcd_inputs:
-        for cat in qcd_inputs[ch]:
-            logger.info("Do estimation for category %s", cat)
-            for var in qcd_inputs[ch][cat]:
-                for variation in qcd_inputs[ch][cat][var]:
-                    if ch in ["et", "mt", "em"]:
-                        if args.era == "2016":
-                            extrapolation_factor = 1.17
-                        else:
-                            extrapolation_factor = 1.0
-                        estimated_hist = qcd_estimation(input_file, ch, cat, var,
-                                                        variation=variation,
-                                                        extrapolation_factor=extrapolation_factor)
-                        estimated_hist.Write()
-                        estimated_hist = qcd_estimation(input_file, ch, cat, var,
-                                                        variation=variation,
-                                                        is_embedding=False,
-                                                        extrapolation_factor=extrapolation_factor)
-                        estimated_hist.Write()
-                    else:
-                        estimated_hist = abcd_estimation(input_file, ch, cat, var,
-                                                        variation=variation)
-                        estimated_hist.Write()
-                        estimated_hist = abcd_estimation(input_file, ch, cat, var,
-                                                        variation=variation,
-                                                        is_embedding=False)
-                        estimated_hist.Write()
+
     if args.emb_tt:
         logger.info("Producing embedding ttbar variations.")
         logger.debug("%s", json.dumps(emb_categories, sort_keys=True, indent=4))

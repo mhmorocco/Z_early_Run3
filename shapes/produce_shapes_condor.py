@@ -14,8 +14,7 @@ from config.shapes.file_names import files
 from config.shapes.process_selection import DY_process_selection, TT_process_selection, VV_process_selection, W_process_selection, ZTT_process_selection, ZL_process_selection, ZJ_process_selection, TTT_process_selection, TTL_process_selection, TTJ_process_selection, VVT_process_selection, VVJ_process_selection, VVL_process_selection, ggH125_process_selection, qqH125_process_selection, ZTT_embedded_process_selection, ZH_process_selection, WH_process_selection, ggHWW_process_selection, qqHWW_process_selection, ZHWW_process_selection, WHWW_process_selection, ttH_process_selection, VH_process_selection
 #from config.shapes.process_selection import SUSYbbH_process_selection, SUSYggH_process_selection, SUSYggH_Ai_contribution_selection, SUSYggH_At_contribution_selection, SUSYggH_Ab_contribution_selection, SUSYggH_Hi_contribution_selection, SUSYggH_Ht_contribution_selection, SUSYggH_Hb_contribution_selection, SUSYggH_hi_contribution_selection, SUSYggH_ht_contribution_selection, SUSYggH_hb_contribution_selection
 from config.shapes.process_selection import NMSSM_process_selection
-# from config.shapes.category_selection import categorization
-from config.shapes.category_selection import  categorization #nn_categorization,
+
 # Variations for estimation of fake processes
 from config.shapes.variations import same_sign, same_sign_em, anti_iso_lt, anti_iso_tt, abcd_method
 # Energy scale uncertainties
@@ -176,18 +175,13 @@ def parse_arguments():
         type=str,
         help="tag"
     )
-    # parser.add_argument(
-    #     "--heavy_mass",
-    #     required=True,
-    #     type=str,
-    #     help="Heavy mass NMSSM Higgs Boson."
-    # )
-    # parser.add_argument(
-    #     "--light_mass",
-    #     required=True,
-    #     type=str,
-    #     help="light mass NMSSM Higgs Boson."
-    # )
+    parser.add_argument(
+        "--classdict",
+        default=None,
+        type=str,
+        help="path to config file from NN training to extract the classes"
+    )
+
     return parser.parse_args()
 
 #load NMSSM mass_dict
@@ -201,7 +195,7 @@ def light_masses(heavy_mass):
 
 def main(args): 
 #if nmssm_categorization, otherwise outcommend the following 3 lines:
-    classdict="/work/rschmieder/nmssm_analysis/sm-htt-analysis/output/ml/68_onenet/all_eras_{ch}/dataset_config.yaml".format(ch=args.channels[0])
+    classdict=classdict=args.classdict
     from config.shapes.category_selection import nmssm_cat
     categorization=nmssm_cat(args.channels[0], classdict)
 
@@ -448,9 +442,10 @@ def main(args):
 
     um = UnitManager()
 
+    #available sm processes are: {"data", "emb", "ztt", "zl", "zj", "ttt", "ttl", "ttj", "vvt", "vvl", "vvj", "w", "ggh", "qqh","vh","tth"}
+    #necessary processes for analysis with emb and ff method are: {"data", "emb", "zl", "ttl","ttt", "vvl","ttt" "ggh", "qqh","vh","tth"}
     if args.process_selection is None:
-        procS = {"data", "emb", "ztt", "zl", "zj", "ttt", "ttl", "ttj", "vvt", "vvl", "vvj", "w",
-                 "ggh", "qqh","vh","tth"} \
+        procS = {"data", "emb", "zl", "ttl", "ttt", "vvl", "ggh", "qqh","vh","tth"} \
                 | set("NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass) for heavy_mass in mass_dict["heavy_mass"] for light_mass in light_masses(heavy_mass) if light_mass+125<heavy_mass)
     elif "nmssm" in args.process_selection:
         procS = set("NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass) for heavy_mass in mass_dict["heavy_mass"] for light_mass in light_masses(heavy_mass) if light_mass+125<heavy_mass)

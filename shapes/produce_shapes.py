@@ -180,17 +180,7 @@ def parse_arguments():
 
 #load NMSSM mass_dict
 mass_dict= yaml.load(open("shapes/mass_dict_nmssm.yaml"), Loader=yaml.Loader)["analysis"]
-mass_dict= {
-                "heavy_mass": [1000],
-                "light_mass_coarse": [60, 70, 80, 90, 100, 120, 150, 170, 190, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800],
-                "light_mass_fine": [60, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 150, 170, 190, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850],
-            }
 
-mass_dict= {
-                "heavy_mass": [1000],
-                "light_mass_coarse": [60, 70, 80, 90, 100, 120, 150, 170, 190, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800],
-                "light_mass_fine": [60,850],
-            }
 def light_masses(heavy_mass):
         if heavy_mass > 1001:
             return mass_dict["light_mass_coarse"]
@@ -446,15 +436,16 @@ def main(args):
 
     um = UnitManager()
 
+    #available sm processes are: {"data", "emb", "ztt", "zl", "zj", "ttt", "ttl", "ttj", "vvt", "vvl", "vvj", "w", "ggh", "qqh","vh","tth"}
+    #necessary processes for analysis with emb and ff method are: {"data", "emb", "zl", "ttl","ttt", "vvl","ttt" "ggh", "qqh","vh","tth"}
     if args.process_selection is None:
-        procS = {"data", "emb", "ztt", "zl", "zj", "ttt", "ttl", "ttj", "vvt", "vvl", "vvj", "w",
-                 "ggh", "qqh","vh","tth"} \
+        procS = {"data", "emb", "zl", "ttl", "ttt", "vvl", "ggh", "qqh","vh","tth"} \
                 | set("NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass) for heavy_mass in mass_dict["heavy_mass"] for light_mass in light_masses(heavy_mass) if light_mass+125<heavy_mass)
     elif "nmssm" in args.process_selection:
         procS = set("NMSSM_{heavy_mass}_125_{light_mass}".format(heavy_mass=heavy_mass, light_mass=light_mass) for heavy_mass in mass_dict["heavy_mass"] for light_mass in light_masses(heavy_mass) if light_mass+125<heavy_mass)
     else:
         procS = args.process_selection
-
+        
     print("Processes to be computed: ", procS)
     dataS = {"data"} & procS
     embS = {"emb"} & procS

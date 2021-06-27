@@ -5,7 +5,6 @@ import Dumbledraw.dumbledraw as dd
 import Dumbledraw.rootfile_parser_inputshapes as rootfile_parser
 import Dumbledraw.styles as styles
 import ROOT
-
 import argparse
 import copy
 import yaml
@@ -62,6 +61,20 @@ def parse_arguments():
         type=str,
         default=None,
         help="Draw variation of jetFakes or QCD in derivation region.")
+    parser.add_argument(
+        "--blinded",
+        action="store_true",
+        help="if true, no data is plottet")
+    parser.add_argument(
+        "--tag",
+        type=str,
+        default=None,
+        help="plots are stored in plots/tag/")
+    parser.add_argument(
+        "--light_mass",
+        type=int,
+        default=None,
+        help="considered light mass")
 
     return parser.parse_args()
 
@@ -80,11 +93,10 @@ def setup_logging(output_file, level=logging.DEBUG):
 
 
 def main(info):
-
     #add NMSSM masses to plot
-    mass_dict= yaml.load(open("shapes/mass_dict_nmssm.yaml"), Loader=yaml.Loader)["plots"]
-
     args = info["args"]
+    mass_dict= yaml.load(open("shapes/mass_dict_nmssm.yaml"), Loader=yaml.Loader)["plots"]
+    
     variable = info["variable"]
     channel = info["channel"]
     channel_dict = {
@@ -226,16 +238,23 @@ def main(info):
     plot.add_hist(rootfile.get(channel, "data", args.category_postfix,shape_type=stype), "data_obs")
     data_norm = plot.subplot(0).get_hist("data_obs").Integral()
     plot.subplot(0).get_hist("data_obs").GetXaxis().SetMaxDigits(4)
-    plot.subplot(0).setGraphStyle("data_obs", "e0")
-    plot.subplot(0).setGraphStyle("data_obs", "e0")
+    if args.blinded:
+        plot.subplot(0).setGraphStyle("data_obs", "e0",markersize=0,linewidth=0)
+        plot.subplot(0).setGraphStyle("data_obs", "e0",markersize=0,linewidth=0)
+    else:
+        plot.subplot(0).setGraphStyle("data_obs", "e0")
+        plot.subplot(0).setGraphStyle("data_obs", "e0")
     if args.linear:
         pass
     else:
-        plot.subplot(1).setGraphStyle("data_obs", "e0")
+        if args.blinded:
+            plot.subplot(1).setGraphStyle("data_obs", "e0",markersize=0,linewidth=0)
+        else:
+            plot.subplot(1).setGraphStyle("data_obs", "e0")
     
     NMSSM_rfile_dict={}
     NMSSM_bkg_dict={}
-
+    
     if "mm" not in channel:
         # get signal histograms
         for heavy_mass in mass_dict["heavy_mass"]:
@@ -250,7 +269,7 @@ def main(info):
         for i in plot_idx_to_add_signal:
             for nmssm_signals in NMSSM_rfile_dict:
                 if NMSSM_rfile_dict[nmssm_signals].Integral() > 0:
-                    NMSSM_scale = 10
+                    NMSSM_scale = 0.01
                 else:
                     NMSSM_scale = 0.0                        
                 if i in [0,1]: 
@@ -259,7 +278,6 @@ def main(info):
                     nmssm_signals)
                 plot.subplot(i).add_hist(NMSSM_rfile_dict[nmssm_signals], 
                     nmssm_signals+"_top")
-
     if "mm" not in channel:
         for nmssm_signals in NMSSM_rfile_dict:
             plot.subplot(0 if args.linear else 1).setGraphStyle(
@@ -288,6 +306,8 @@ def main(info):
                         "hist", linecolor=0)
         plot.subplot(2).normalize([
                         "total_bkg", "data_obs"] + NMSSM_bkg_dict.keys()+NMSSM_top_bkg, "total_bkg")
+        if args.blinded:
+            plot.subplot(2).setGraphStyle("data_obs", "e0",markersize=0,linewidth=0)
     else:
         plot.subplot(2).normalize(["total_bkg", "data_obs"], "total_bkg")
 
@@ -312,7 +332,7 @@ def main(info):
             1.0,
             1000 * plot.subplot(0).get_hist("data_obs").GetMaximum())
 
-    plot.subplot(2).setYlims(0.75, 1.45)
+    plot.subplot(2).setYlims(0.75, 1.55)
     if channel == "mm":
         plot.subplot(0).setLogY()
         plot.subplot(0).setYlims(1, 10**10)
@@ -392,7 +412,7 @@ def main(info):
     plot.legend(0).Draw()
     plot.legend(1).setAlpha(0.0)
     plot.legend(1).Draw()
-
+    
     for i in range(2):
         plot.add_legend(
             reference_subplot=2, pos=1, width=0.6, height=0.03)
@@ -408,7 +428,6 @@ def main(info):
     plot.legend(2).Draw()
     plot.legend(3).setAlpha(0.0)
     plot.legend(3).Draw()
-    
     #draw scale text
     signal_cs=NMSSM_scale*0.1
     plot.DrawText(0.16, 0.8, "\sigma_{\mathrm{signal}}=%s\,\mathrm{pb}" %signal_cs,textsize=0.024)
@@ -428,7 +447,6 @@ def main(info):
     plot.DrawChannelCategoryLabel(
         "%s, %s" % (channel_dict[channel], "{cat}".format(cat=args.category_postfix)),
         begin_left=posChannelCategoryLabelLeft)
-
     # save plot
     if not args.embedding and not args.fake_factor:
         postfix = "fully_classic"
@@ -441,13 +459,15 @@ def main(info):
     if args.draw_jet_fake_variation is not None:
         postfix = postfix + "_" + args.draw_jet_fake_variation
 
-    if not os.path.exists("plots/%s_plots_%s"%(args.era,postfix)):
-        os.mkdir("plots/%s_plots_%s"%(args.era,postfix))
-    if not os.path.exists("plots/%s_plots_%s/%s"%(args.era,postfix,channel)):
-        os.mkdir("plots/%s_plots_%s/%s"%(args.era,postfix,channel))
-    print "Trying to save the created plot"
-    plot.save("plots/%s_plots_%s/%s/%s_%s_%s_%s.%s" % (args.era, postfix, channel, args.era, channel, variable, args.category_postfix, "pdf"))
-    plot.save("plots/%s_plots_%s/%s/%s_%s_%s_%s.%s" % (args.era, postfix, channel, args.era, channel, variable, args.category_postfix, "png"))
+    if not os.path.exists("plots/%s"%(args.tag)):
+        os.mkdir("plots/%s"%(args.tag))
+    if not os.path.exists("plots/%s/%s_plots_%s"%(args.tag,args.era,postfix)):
+        os.mkdir("plots/%s/%s_plots_%s"%(args.tag,args.era,postfix))
+    if not os.path.exists("plots/%s/%s_plots_%s/%s"%(args.tag,args.era,postfix,channel)):
+        os.mkdir("plots/%s/%s_plots_%s/%s"%(args.tag,args.era,postfix,channel))
+
+    plot.save("plots/%s/%s_plots_%s/%s/%s_%s_%s_%s.%s" % (args.tag,args.era, postfix, channel, args.era, channel, variable, args.category_postfix, "pdf"))
+    plot.save("plots/%s/%s_plots_%s/%s/%s_%s_%s_%s.%s" % (args.tag,args.era, postfix, channel, args.era, channel, variable, args.category_postfix, "png"))
 
 
 if __name__ == "__main__":
@@ -465,12 +485,7 @@ if __name__ == "__main__":
         postfix = "classic_ff"
     if args.embedding and args.fake_factor:
         postfix = "emb_ff"
-
-    if not os.path.exists("%s_plots_%s"%(args.era,postfix)):
-        os.mkdir("%s_plots_%s"%(args.era,postfix))
     for ch in channels:
-        if not os.path.exists("%s_plots_%s/%s"%(args.era,postfix,ch)):
-            os.mkdir("%s_plots_%s/%s"%(args.era,postfix,ch))
         for v in variables:
             infolist.append({"args" : args, "channel" : ch, "variable" : v})
     pool = Pool(1)
