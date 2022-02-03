@@ -132,6 +132,12 @@ def parse_arguments():
         help="ROOT file where shapes will be stored."
     )
     parser.add_argument(
+        "--NN_config",
+        required=True,
+        type=str,
+        help="Path to the config file from your NN training"
+    )
+    parser.add_argument(
         "--control-plots",
         action="store_true",
         help="Produce shapes for control plots. Default is production of analysis shapes."
@@ -164,18 +170,6 @@ def parse_arguments():
         action="store_true",
         help="Enables check for double actions during booking. Takes long for all variations."
     )
-    # parser.add_argument(
-    #     "--heavy_mass",
-    #     required=True,
-    #     type=str,
-    #     help="Heavy mass NMSSM Higgs Boson."
-    # )
-    # parser.add_argument(
-    #     "--light_mass",
-    #     required=True,
-    #     type=str,
-    #     help="light mass NMSSM Higgs Boson."
-    #)
     return parser.parse_args()
 
 #load NMSSM mass_dict
@@ -189,7 +183,7 @@ def light_masses(heavy_mass):
 
 def main(args): 
 #if nmssm_categorization, otherwise outcommend the following 3 lines:
-    classdict="/work/rschmieder/nmssm_condor_analysis/sm-htt-analysis/output/ml/parametrized_nn_mH1000/all_eras_{ch}/dataset_config.yaml".format(ch=args.channels[0])
+    classdict=args.NN_config
     from config.shapes.category_selection import nmssm_cat
     categorization=nmssm_cat(args.channels[0], classdict)
     #Parse given arguments.
