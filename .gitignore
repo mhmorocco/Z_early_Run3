@@ -34,7 +34,7 @@ submit/single_gr_all.sh
 submit_all.sh
 symlink_friends.sh
 utils/fit_cmssw.sh
-utils/setup_nmssm_samples.sh
+#utils/setup_nmssm_samples.sh
 webgallery.sh
 webgallery/
 # C extensions
