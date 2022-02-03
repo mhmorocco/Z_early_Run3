@@ -266,16 +266,68 @@ Compared to the command of step 2, now also the options `--friend_ntuples_direct
 
 After creating these friend trees, they can be added to the `utils/setup_samples.sh` and the full information of the NN response to each event is available.
 
-## 6. Produce analysis histograms
-
-This will change in this new framework! Will be updated once the commands are validated.
-
-If all ntuples in  `utils/setup_samples.sh` are correct, you can produce the analysis shapes via the commands:
+## 6. Produce analysis histograms (shapes)
+Before cloning the new analysis framework start the ssh agent:
 ```bash
-# Check utils/setup_samples.sh for correct paths
-ERA="2016" # other possibilities: 2017, 2018
-CHANNEL="tt" # other possibilities: mt, et
-MASS=500 # same as was used for the training
-BATCH=2 # same as was used for the training
-./shapes/produce_nmssm_shapes.sh $ERA $CHANNEL ${CHANNEL}_max_score $MASS $BATCH
+eval $(ssh-agent)
+ssh-add
 ```
+Àfterwards checkout the new analysis framework:
+```bash
+git clone --recursive git@github.com:KIT-CMS/NMSSM_analysis.git
+cd NMSSM_analysis
+git submodule init
+git submodule update
+```
+
+Now you are ready to produce shapes. This can be done locally or on the cluster. A local production of analysis shapes is not recommended, since signal processes  and also systematic variations need to be processed. The relevant file for the shape production is ```shapes/produce_shapes.py```. Consider all arguments of this file. For producting control shapes, enable the arguments ```--control-plots```, ```--skip-systematic-variations``` and depending on the quantities you want to plot ```--control-plot-set pt_1,pt_2```. Local execution:
+1. setup the environment
+```bash
+source utils/setup_root.sh
+```
+2. For producing control shapes for ```pt1, pt2``` an example command is:
+```bash
+python shapes/produce_shapes.py --channels mt --output-file output/parametrized_nn_mH1000/2016-mt --directory /ceph/jbechtel/nmssm/ntuples/2018/mt/ --mt-friend-directory /ceph/rschmieder/nmssm/friends/2018/mt/SVFit/ /ceph/rschmieder/nmssm/friends/2018/mt/FakeFactors_nmssm/ /ceph/rschmieder/nmssm/friends/2018/mt/HHKinFit/ /ceph/rschmieder/nmssm/friends/2018/mt/NNScore_train_all/parametrized_nn_mH1000/NNScore_workdir/NNScore_collected/ --era 2018 --num-processes 4 --num-threads 3 --optimization-level 1 --process-selection emb,data --controls-plots --control-plot-set pt_1,pt_2 -skip-systematic-variations --NN_config /work/rschmieder/nmssm/nmssm_condor_analysis/sm-htt-analysis/output/ml/parametrized_nn_mH1000/all_eras_mt/dataset_config.yaml
+```
+3. For plotting the control shapes use the script ```plotting/plot_shapes_control.py``` with the according arguments.
+
+For the production of analysis shape the submission script `/submit/submit_shape_production.sh` is provided. It is recommended to split up the signal shapes, since it takes a lot of memory to produce them in a single job and split up the channels and eras as well. The splitting of NMSSM processes is in `utils/setup_nmssm_samples.sh` and needs to be changed, depending which signal shapes you want to produce. The signelgraph argument remains fixed. The TAG you give to the script identifies the batch of shapes you are producing. This is just a string which ends up in the output filename. Choose 0 for control shapes and 1 for analysis shapes. The last argument is the path to the NN configfile. 
+The actual paths to your background and signal samples need to be specified. You will need to change the paths to the directories of your ntuples and friends in `utils/setup_samples` accordingly.
+1. An example execution is:
+```bash
+TAG=mH1000
+NN_config="/work/rschmieder/nmssm/nmssm_condor_analysis/sm-htt-analysis/output/ml/parametrized_nn_mH1000/all_eras_mt/dataset_config.yaml"
+
+for ERA in 2016 2017 2018
+do
+ for CHANNEL in et mt tt
+ do
+
+   for PROCESSES in backgrounds nmssm_split1
+   do
+     bash submit/submit_shape_production.sh $ERA $CHANNEL $PROCESSES singlegraph $TAG 1 
+   done
+ done
+done
+```
+The logs of the shape production can be found under `log/condor_shapes/`. The shapes can be found in `output/shapes/`.
+
+2. The different files we now have containing shapes for different proccesses are added together to a single root file with for example:
+```
+hadd output/YOUR_DIRECTORY/${ERA}-${CHANNEL}.root output/shapes/{YOUR_FILES}/*
+```
+
+3. We will now peform qcd estimations on the histograms in the root file you get in previous step To do this, execute: 
+    ./shapes/do_estimations.sh ${ERA} ${pathtoyourrootfile} 0
+
+4. The naming of the shapes needs to be converted to a format which combine (CMS fitting tool) is able to read. We call these 'synced shapes'
+    To do this, execute: 
+```
+python shapes/convert_to_synced_shapes.py --era ${ERA} --input ${pathtoyourrootfile} --output output/YOUR_DIRECTORY/ -n 12
+```
+The output file name can be altered in the conver_to_synced_shapes.py file
+ 5. As the last step, the synced shapes, which are divided in the NN classes right now, need to added into a single file again again via: 
+```
+hadd output/YOUR_DIRECTORY/htt_${CHANNEL}.inputs-nmssm-${ERA}-${CHANNEL}_max_score_{heavy_mass}_{batch}.root output/YOUR_DIRECTORY/{ERA}-{CHANNELS}-synced-NMSSM*
+```
+These shapes you can use for combine.
