@@ -6,7 +6,7 @@ PROCESSES=$3
 SUBMIT_MODE=$4
 TAG=$5
 CONTROL=$6
-CD="/work/rschmieder/nmssm_condor_analysis/sm-htt-analysis/output/ml/10_onenet/all_eras_et/dataset_config.yaml"
+CD=$7
 [[ ! -z $1 && ! -z $2 && ! -z $3 && ! -z $4  && ! -z $5 ]] || ( echo "[ERROR] Number of given parameters is to small."; exit 1 )
 [[ ! -z $6 ]] || CONTROL=0
 CONTROL_ARG=""
@@ -24,7 +24,11 @@ IFS="," read -a PROCS_ARR <<< $PROCESSES
 PROCESSES=""
 for PROC in ${PROCS_ARR[@]};
 do
-    if [[ "$PROC" =~ "backgrounds1" ]]
+    if [[ "$PROC" =~ "backgrounds" ]]
+    then
+        BKG_PROCS1="data,emb,ttt,ttl,ttj,ztt,zl,zj"
+        PROCESSES="$PROCESSES,$BKG_PROCS"
+    elif [[ "$PROC" =~ "backgrounds1" ]]
     then
         BKG_PROCS1="data,emb"
         PROCESSES="$PROCESSES,$BKG_PROCS1"    
