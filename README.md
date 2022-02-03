@@ -280,7 +280,7 @@ git submodule init
 git submodule update
 ```
 
-Now you are ready to produce shapes. This can be done locally or on the cluster. A local production of analysis shapes is not recommended, since signal processes  and also systematic variations need to be processed. The relevant file for the shape production is ```shapes/produce_shapes.py```. Consider all arguments of this file. For producting control shapes, enable the arguments ```--control-plots```, ```--skip-systematic-variations``` and depending on the quantities you want to plot ```--control-plot-set pt_1,pt_2```. Local execution:
+Now you are ready to produce shapes. This can be done locally or on the cluster. A local production of analysis shapes is not recommended, since signal processes  and also systematic variations need to be processed. The relevant file for the shape production is ```shapes/produce_shapes.py```. Consider all arguments of this file. For producting control shapes, enable the arguments ```--control-plots```, ```--skip-systematic-variations``` and depending on the quantities (see all possibilities in the variables list) you want to plot ```--control-plot-set pt_1,pt_2```. Local execution:
 1. setup the environment
 ```bash
 source utils/setup_root.sh
@@ -291,7 +291,7 @@ python shapes/produce_shapes.py --channels mt --output-file output/parametrized_
 ```
 3. For plotting the control shapes use the script ```plotting/plot_shapes_control.py``` with the according arguments.
 
-For the production of analysis shape the submission script `/submit/submit_shape_production.sh` is provided. It is recommended to split up the signal shapes, since it takes a lot of memory to produce them in a single job and split up the channels and eras as well. The splitting of NMSSM processes is in `utils/setup_nmssm_samples.sh` and needs to be changed, depending which signal shapes you want to produce. The signelgraph argument remains fixed. The TAG you give to the script identifies the batch of shapes you are producing. This is just a string which ends up in the output filename. Choose 0 for control shapes and 1 for analysis shapes. The last argument is the path to the NN configfile. 
+For the production of analysis shape the submission script `submit/submit_shape_production.sh` is provided. It is recommended to split up the signal shapes, since it takes a lot of memory to produce them in a single job and split up the channels and eras as well. The splitting of NMSSM processes can be found in `utils/setup_nmssm_samples.sh` and needs to be changed, depending which signal shapes you want to produce. The singlegraph argument remains fixed. The TAG you give to the script identifies the batch of shapes you are producing. This is just a string which ends up in the output filename. Choose 0 for control shapes and 1 for analysis shapes. The last argument is the path to the NN configuration file. 
 The actual paths to your background and signal samples need to be specified. You will need to change the paths to the directories of your ntuples and friends in `utils/setup_samples` accordingly.
 1. An example execution is:
 ```bash
@@ -305,7 +305,7 @@ do
 
    for PROCESSES in backgrounds nmssm_split1
    do
-     bash submit/submit_shape_production.sh $ERA $CHANNEL $PROCESSES singlegraph $TAG 1 
+     bash submit/submit_shape_production.sh $ERA $CHANNEL $PROCESSES singlegraph $TAG 1 $NN_config
    done
  done
 done
