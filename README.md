@@ -287,7 +287,7 @@ source utils/setup_root.sh
 ```
 2. For producing control shapes for ```pt1, pt2``` an example command is:
 ```bash
-python shapes/produce_shapes.py --channels mt --output-file output/parametrized_nn_mH1000/2016-mt --directory /ceph/jbechtel/nmssm/ntuples/2018/mt/ --mt-friend-directory /ceph/rschmieder/nmssm/friends/2018/mt/SVFit/ /ceph/rschmieder/nmssm/friends/2018/mt/FakeFactors_nmssm/ /ceph/rschmieder/nmssm/friends/2018/mt/HHKinFit/ /ceph/rschmieder/nmssm/friends/2018/mt/NNScore_train_all/parametrized_nn_mH1000/NNScore_workdir/NNScore_collected/ --era 2018 --num-processes 4 --num-threads 3 --optimization-level 1 --process-selection emb,data --controls-plots --control-plot-set pt_1,pt_2 -skip-systematic-variations --NN_config /work/rschmieder/nmssm/nmssm_condor_analysis/sm-htt-analysis/output/ml/parametrized_nn_mH1000/all_eras_mt/dataset_config.yaml
+python shapes/produce_shapes.py --channels mt --output-file output/parametrized_nn_mH1000/2016-mt --directory /ceph/jbechtel/nmssm/ntuples/2018/mt/ --mt-friend-directory /ceph/rschmieder/nmssm/friends/2018/mt/SVFit/ /ceph/rschmieder/nmssm/friends/2018/mt/FakeFactors_nmssm/ /ceph/rschmieder/nmssm/friends/2018/mt/HHKinFit/ /ceph/rschmieder/nmssm/friends/2018/mt/NNScore_train_all/parametrized_nn_mH1000/NNScore_workdir/NNScore_collected/ --era 2018 --num-processes 4 --num-threads 3 --optimization-level 1 --process-selection emb,data --control-plots --control-plot-set pt_1,pt_2 --skip-systematic-variations --NN_config /work/rschmieder/nmssm/nmssm_condor_analysis/sm-htt-analysis/output/ml/parametrized_nn_mH1000/all_eras_mt/dataset_config.yaml
 ```
 3. For plotting the control shapes use the script ```plotting/plot_shapes_control.py``` with the according arguments.
 
