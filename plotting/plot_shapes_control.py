@@ -429,8 +429,7 @@ def main(info):
     plot.legend(3).setAlpha(0.0)
     plot.legend(3).Draw()
     #draw scale text
-    signal_cs=NMSSM_scale*0.1
-    plot.DrawText(0.16, 0.8, "\sigma_{\mathrm{signal}}=%s\,\mathrm{pb}" %signal_cs,textsize=0.024)
+    plot.DrawText(0.16, 0.8, "\sigma_{\mathrm{signal}}=%s\,\mathrm{pb}" %NMSSM_scale,textsize=0.024)
     # draw additional labels
     plot.DrawCMS()
     if "2016" in args.era:

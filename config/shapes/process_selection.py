@@ -809,7 +809,7 @@ def qqH125_process_selection(channel, era):
 
 def NMSSM_process_selection(channel,era):
     NMSSM_weights = [("generatorWeight", "generatorWeight"),
-    ("0.1*crossSectionPerEventWeight", "crossSectionPerEventWeight"),
+    ("crossSectionPerEventWeight", "crossSectionPerEventWeight"),
     ("numberGeneratedEventsWeight", "numberGeneratedEventsWeight"),
     ("puweight", "puweight"),
     ("idWeight_1*idWeight_2","idweight"),
