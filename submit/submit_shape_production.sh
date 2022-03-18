@@ -141,7 +141,7 @@ then
     [[ ! -d $OUTPUT ]] && mkdir -p $OUTPUT
     echo $OUTPUT
     echo $PROCESSES
-    python shapes/produce_shapes_condor.py --channels $CHANNEL \
+    python shapes/produce_shapes.py --channels $CHANNEL \
         			    --output-file dummy.root \
         			    --directory $ARTUS_OUTPUTS \
                                     --et-friend-directory $SVFit_Friends $NNScore_Friends $FF_Friends $HHKinFit_Friends \

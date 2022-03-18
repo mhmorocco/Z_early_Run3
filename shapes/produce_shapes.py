@@ -7,7 +7,7 @@ import re
 import yaml
 
 from ntuple_processor import Histogram
-from ntuple_processor import dataset_from_artusoutput, Unit, UnitManager, GraphManager, RunManager
+from ntuple_processor import dataset_from_crownoutput,dataset_from_artusoutput, Unit, UnitManager, GraphManager, RunManager
 
 from config.shapes.channel_selection import channel_selection
 from config.shapes.file_names import files
@@ -17,16 +17,16 @@ from config.shapes.process_selection import NMSSM_process_selection
 # Variations for estimation of fake processes
 from config.shapes.variations import same_sign, same_sign_em, anti_iso_lt, anti_iso_tt, abcd_method
 # Energy scale uncertainties
-from config.shapes.variations import tau_es_3prong, tau_es_3prong1pizero, tau_es_1prong, tau_es_1prong1pizero, emb_tau_es_3prong, emb_tau_es_3prong1pizero, emb_tau_es_1prong, emb_tau_es_1prong1pizero, jet_es, mu_fake_es_1prong, mu_fake_es_1prong1pizero, ele_es, ele_res, emb_e_es, ele_fake_es_1prong, ele_fake_es_1prong1pizero
+from config.shapes.variations import tau_es_artus, tau_es_crown, emb_tau_es_artus, emb_tau_es_crown, jet_es_artus, jet_es_crown, mu_fake_es_artus, mu_fake_es_crown, ele_es_artus, ele_es_crown, ele_res_artus, ele_res_crown, emb_e_es_artus, emb_e_es_crown, ele_fake_es_artus, ele_fake_es_crown
 # MET related uncertainties.
-from config.shapes.variations import met_unclustered, recoil_resolution, recoil_response
+from config.shapes.variations import met_unclustered_artus, met_unclustered_crown, recoil_resolution_artus, recoil_resolution_crown, recoil_response_artus, recoil_response_crown
 # efficiency uncertainties
 from config.shapes.variations import tau_id_eff_lt, tau_id_eff_tt, emb_tau_id_eff_lt, emb_tau_id_eff_tt
 # fake rate uncertainties
 from config.shapes.variations import jet_to_tau_fake, zll_et_fake_rate_2016, zll_et_fake_rate_2017, zll_et_fake_rate_2018, zll_mt_fake_rate_2016, zll_mt_fake_rate_2017, zll_mt_fake_rate_2018
 # trigger efficiencies
 from config.shapes.variations import tau_trigger_eff_tt, tau_trigger_eff_emb_tt, lep_trigger_eff_mt_2016, lep_trigger_eff_et_2016, lep_trigger_eff_et_emb_2016, lep_trigger_eff_mt_emb_2016, tau_trigger_eff_et_2016, tau_trigger_eff_mt_2016, tau_trigger_eff_et_emb_2016, tau_trigger_eff_mt_emb_2016, lep_trigger_eff_et_2017, lep_trigger_eff_mt_2017, lep_trigger_eff_et_emb_2017, lep_trigger_eff_mt_emb_2017, tau_trigger_eff_et_2017, tau_trigger_eff_mt_2017, tau_trigger_eff_et_emb_2017, tau_trigger_eff_mt_emb_2017, lep_trigger_eff_mt_2018, lep_trigger_eff_et_2018, lep_trigger_eff_et_emb_2018, lep_trigger_eff_mt_emb_2018, tau_trigger_eff_et_2018, tau_trigger_eff_mt_2018, tau_trigger_eff_et_emb_2018, tau_trigger_eff_mt_emb_2018
-from config.shapes.variations import prefiring, btag_eff, mistag_eff, ggh_acceptance, qqh_acceptance, zpt, top_pt, emb_decay_mode_eff
+from config.shapes.variations import prefiring, btag_eff_artus, btag_eff_crown, mistag_eff_artus, mistag_eff_crown, ggh_acceptance, qqh_acceptance, zpt, top_pt, emb_decay_mode_eff
 from config.shapes.variations import ff_variations_lt, ff_variations_tt, qcd_variations_em
 from config.shapes.variations import MG_scale_choice, MG_scale_norm,PDF_scale
 from config.shapes.control_binning import control_binning, minimal_control_plot_set
@@ -130,12 +130,6 @@ def parse_arguments():
         help="ROOT file where shapes will be stored."
     )
     parser.add_argument(
-        "--NN_config",
-        required=True,
-        type=str,
-        help="Path to the config file from your NN training"
-    )
-    parser.add_argument(
         "--control-plots",
         action="store_true",
         help="Produce shapes for control plots. Default is production of analysis shapes."
@@ -163,6 +157,18 @@ def parse_arguments():
         type=str,
         help="Directory the graph file is written to."
     )
+        parser.add_argument(
+        "--classdict",
+        default=None,
+        type=str,
+        help="path to config file from NN training to extract the classes"
+    )
+    parser.add_argument(
+        "--ntuple_type",
+        default="artus",
+        type=str,
+        help="Options: crown or artus"
+    )
     parser.add_argument(
         "--enable-booking-check",
         action="store_true",
@@ -181,7 +187,7 @@ def light_masses(heavy_mass):
 
 def main(args): 
 #if nmssm_categorization, otherwise outcommend the following 3 lines:
-    classdict=args.NN_config
+    classdict=args.classdict
     from config.shapes.category_selection import nmssm_cat
     categorization=nmssm_cat(args.channels[0], classdict)
     #Parse given arguments.
@@ -211,8 +217,14 @@ def main(args):
                 if "FakeFactors" in friend or "EMQCDWeights" in friend:
                     return False
             return True
-        for key, names in files[era][channel].items():
-            datasets[key] = dataset_from_artusoutput(
+        if "artus" in args.ntuple_type:
+            for key, names in files[era][channel].items():
+                datasets[key] = dataset_from_artusoutput(
+                    key, names, channel + '_nominal', args.directory,
+                    [fdir for fdir in friend_directories[channel] if filter_friends(key, fdir)])
+        else: 
+            for key, names in files[era][channel].items():
+                datasets[key] = dataset_from_crownoutput(
                     key, names, channel + '_nominal', args.directory,
                     [fdir for fdir in friend_directories[channel] if filter_friends(key, fdir)])
         return datasets
@@ -421,7 +433,6 @@ def main(args):
     for channel in args.channels:
         nominals[args.era]['datasets'][channel] = get_nominal_datasets(args.era, channel)
         if args.control_plots:
-            
             nominals[args.era]['units'][channel] = get_control_units(channel, args.era, nominals[args.era]['datasets'][channel])
         else:
             nominals[args.era]['units'][channel] = get_analysis_units(channel, args.era, nominals[args.era]['datasets'][channel])
@@ -476,30 +487,46 @@ def main(args):
             um.book([unit for d in {"ggh"} & procS for unit in nominals[args.era]['units'][ch_][d]], [*ggh_acceptance], enable_check=args.enable_booking_check)
             um.book([unit for d in {"qqh"} & procS for unit in nominals[args.era]['units'][ch_][d]], [*qqh_acceptance], enable_check=args.enable_booking_check)
             um.book([unit for d in nmssm_signalsS for unit in nominals[args.era]['units'][ch_][d]], [*MG_scale_choice,*MG_scale_norm,*PDF_scale], enable_check=args.enable_booking_check)
-            um.book([unit for d in simulatedProcsDS[ch_] for unit in nominals[args.era]['units'][ch_][d]], [*jet_es, *met_unclustered, *btag_eff, *mistag_eff], enable_check=args.enable_booking_check)
-            um.book([unit for d in {'ztt', 'zj', 'zl', 'w'} & procS | signalsS for unit in nominals[args.era]['units'][ch_][d]], [*recoil_resolution, *recoil_response], enable_check=args.enable_booking_check)  
+            if "artus" in args.ntuple_type:
+                um.book([unit for d in simulatedProcsDS[ch_] for unit in nominals[args.era]['units'][ch_][d]], [*jet_es_artus, *met_unclustered_artus, *btag_eff_artus, *mistag_eff_artus], enable_check=args.enable_booking_check)
+                um.book([unit for d in {'ztt', 'zj', 'zl', 'w'} & procS | signalsS for unit in nominals[args.era]['units'][ch_][d]], [*recoil_resolution_artus, *recoil_response_artus], enable_check=args.enable_booking_check)  
+            else:
+                um.book([unit for d in simulatedProcsDS[ch_] for unit in nominals[args.era]['units'][ch_][d]], [*jet_es_crown, *met_unclustered_crown, *btag_eff_crown, *mistag_eff_crown], enable_check=args.enable_booking_check)
+                um.book([unit for d in {'ztt', 'zj', 'zl', 'w'} & procS | signalsS for unit in nominals[args.era]['units'][ch_][d]], [*recoil_resolution_crown, *recoil_response_crown], enable_check=args.enable_booking_check)  
 
             # Book variations common to multiple channels.
             if ch_ in ["et", "mt", "tt"]:
                 um.book([unit for d in {'ztt', 'zl','zj'} & procS for unit in nominals[args.era]['units'][ch_][d]], [*zpt], enable_check=args.enable_booking_check)
                 um.book([unit for d in {'ttt', 'ttl','ttj'} & procS for unit in nominals[args.era]['units'][ch_][d]], [*top_pt], enable_check=args.enable_booking_check)
-                um.book([unit for d in (trueTauBkgS | leptonFakesS | signalsS) - {"zl"} for unit in nominals[args.era]['units'][ch_][d]], [*tau_es_3prong, *tau_es_3prong1pizero, *tau_es_1prong, *tau_es_1prong1pizero], enable_check=args.enable_booking_check)
                 um.book([unit for d in jetFakesDS[ch_] for unit in nominals[args.era]['units'][ch_][d]], [*jet_to_tau_fake], enable_check=args.enable_booking_check)
-                um.book([unit for d in embS for unit in nominals[args.era]['units'][ch_][d]], [*emb_tau_es_3prong, *emb_tau_es_3prong1pizero, *emb_tau_es_1prong, *emb_tau_es_1prong1pizero,
-                                                                                               *tau_es_3prong, *tau_es_3prong1pizero, *tau_es_1prong, *tau_es_1prong1pizero,
-                                                                                               *emb_decay_mode_eff], enable_check=args.enable_booking_check)
+                if "artus" in args.ntuple_type:
+                    um.book([unit for d in (trueTauBkgS | leptonFakesS | signalsS) - {"zl"} for unit in nominals[args.era]['units'][ch_][d]], [*tau_es_artus], enable_check=args.enable_booking_check)
+                    um.book([unit for d in embS for unit in nominals[args.era]['units'][ch_][d]], [*emb_tau_es_artus, *tau_es_artus,*emb_decay_mode_eff], enable_check=args.enable_booking_check)
+                else:
+                    um.book([unit for d in (trueTauBkgS | leptonFakesS | signalsS) - {"zl"} for unit in nominals[args.era]['units'][ch_][d]], [*tau_es_crown], enable_check=args.enable_booking_check)
+                    um.book([unit for d in embS for unit in nominals[args.era]['units'][ch_][d]], [*emb_tau_es_crown, *tau_es_crown,*emb_decay_mode_eff], enable_check=args.enable_booking_check)
             if ch_ in ["et", "mt"]:
                 um.book([unit for d in (trueTauBkgS | leptonFakesS | signalsS) - {"zl"} for unit in nominals[args.era]['units'][ch_][d]], [*tau_id_eff_lt], enable_check=args.enable_booking_check)
                 um.book([unit for d in dataS | embS | leptonFakesS | trueTauBkgS for unit in nominals[args.era]['units'][ch_][d]], [*ff_variations_lt], enable_check=args.enable_booking_check)
                 um.book([unit for d in embS for unit in nominals[args.era]['units'][ch_][d]], [*emb_tau_id_eff_lt, *tau_id_eff_lt], enable_check=args.enable_booking_check)
             if ch_ in ["et", "em"]:
-                um.book([unit for d in simulatedProcsDS[ch_] for unit in nominals[args.era]['units'][ch_][d]], [*ele_es, *ele_res], enable_check=args.enable_booking_check)
-                um.book([unit for d in embS for unit in nominals[args.era]['units'][ch_][d]], [*emb_e_es], enable_check=args.enable_booking_check)
+                if "artus" in args.ntuple_type:
+                    um.book([unit for d in simulatedProcsDS[ch_] for unit in nominals[args.era]['units'][ch_][d]], [*ele_es_artus, *ele_res_artus], enable_check=args.enable_booking_check)
+                    um.book([unit for d in embS for unit in nominals[args.era]['units'][ch_][d]], [*emb_e_es_artus], enable_check=args.enable_booking_check)
+                else:
+                    um.book([unit for d in simulatedProcsDS[ch_] for unit in nominals[args.era]['units'][ch_][d]], [*ele_es_crown, *ele_res_crown], enable_check=args.enable_booking_check)
+                    um.book([unit for d in embS for unit in nominals[args.era]['units'][ch_][d]], [*emb_e_es_crown], enable_check=args.enable_booking_check)
             # Book channel dependent variables.
             if ch_ == "mt":
-                um.book([unit for d in {"zl"} & procS for unit in nominals[args.era]['units'][ch_][d]], [*mu_fake_es_1prong, *mu_fake_es_1prong1pizero], enable_check=args.enable_booking_check)
+                if "artus" in args.ntuple_type:
+                    um.book([unit for d in {"zl"} & procS for unit in nominals[args.era]['units'][ch_][d]], [*mu_fake_es_artus], enable_check=args.enable_booking_check)
+                else:
+                    um.book([unit for d in {"zl"} & procS for unit in nominals[args.era]['units'][ch_][d]], [*mu_fake_es_crown], enable_check=args.enable_booking_check)
             if ch_ == "et":
-                um.book([unit for d in {"zl"} & procS for unit in nominals[args.era]['units'][ch_][d]], [*ele_fake_es_1prong, *ele_fake_es_1prong1pizero], enable_check=args.enable_booking_check)
+                if "artus" in args.ntuple_type:
+                    um.book([unit for d in {"zl"} & procS for unit in nominals[args.era]['units'][ch_][d]], [*ele_fake_es_artus], enable_check=args.enable_booking_check)
+                else:
+                    um.book([unit for d in {"zl"} & procS for unit in nominals[args.era]['units'][ch_][d]], [*ele_fake_es_crown], enable_check=args.enable_booking_check)
             if ch_ == "tt":
                 um.book([unit for d in (trueTauBkgS | leptonFakesS | signalsS) -{"zl"} for unit in nominals[args.era]['units'][ch_][d]], [*tau_id_eff_tt], enable_check=args.enable_booking_check)
                 um.book([unit for d in simulatedProcsDS[ch_] for unit in nominals[args.era]['units'][ch_][d]], [*tau_trigger_eff_tt], enable_check=args.enable_booking_check)
@@ -549,7 +576,7 @@ def main(args):
         if args.control_plots:
             graph_file_name = "control_unit_graphs-{}-{}-{}.pkl".format(args.era, ",".join(args.channels), ",".join(sorted(procS)))
         else:
-            graph_file_name = "analysis_unit_graphs-{}-{}-{}.pkl".format(args.era, ",".join(args.channels), ",".join(sorted(procS)))
+            graph_file_name = "analysis_unit_graphs-{}-{}-{}-{}.pkl".format(args.tag,args.era, ",".join(args.channels), args.proc_arr)
         if args.graph_dir is not None:
             graph_file = os.path.join(args.graph_dir, graph_file_name)
         else:
@@ -559,7 +586,6 @@ def main(args):
             pickle.dump(graphs, f)
     else:
         # Step 3: convert to RDataFrame and run the event loop
-        print("drin")
         r_manager = RunManager(graphs)
         r_manager.run_locally(output_file, args.num_processes, args.num_threads)
     return
