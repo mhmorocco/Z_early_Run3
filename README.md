@@ -7,10 +7,7 @@ ssh-add
 ```
 Àfterwards checkout the early Run3 analysis framework:
 ```bash
-git clone --recursive git@github.com:KIT-CMS/NMSSM_analysis.git
-cd NMSSM_analysis
-git submodule init
-git submodule update
+git clone --recursive git@github.com:KIT-CMS/Z_early_Run3.git
 ```
 1. setup the environment
 ```bash
