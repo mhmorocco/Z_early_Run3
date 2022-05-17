@@ -3,7 +3,7 @@ source utils/setup_python.sh
 
 ERA=$1
 INPUT=$2
-VAR= $3
+VAR=$3
 CHANNEL=$4
 TAG=$5
 
