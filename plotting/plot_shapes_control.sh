@@ -6,7 +6,6 @@ INPUT=$2
 VAR= $3
 CHANNEL=$4
 TAG=$5
-v="m_vis"
 
 python plotting/plot_shapes_control.py -l --era Run${ERA} --input ${INPUT} --variables ${VAR} --channels ${CHANNEL} --tag ${TAG}
 
