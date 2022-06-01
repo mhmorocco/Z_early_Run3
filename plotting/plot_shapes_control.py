@@ -128,7 +128,7 @@ def main(info):
         bkg_processes = ["VVT", "VVL", "TTT", "TTL", "ZL", "jetFakes", "ZTT"]
     if not args.embedding and not args.fake_factor:
         bkg_processes = [
-            "VVL",
+            # "VVL",
             "W",
             "TTL",
             "ZL",
@@ -180,7 +180,8 @@ def main(info):
                 bkg_processes = ["VVL", "W", "TTL", "ZL", "EMB"]
 
     if "mm" in channel:
-        bkg_processes = ["VVL", "W", "TTL", "ZL"]
+        bkg_processes = ["W", "TTL", "ZL"]
+        # bkg_processes = ["VVL", "W", "TTL", "ZL"]
 
     legend_bkg_processes = copy.deepcopy(bkg_processes)
     legend_bkg_processes.reverse()
@@ -280,13 +281,14 @@ def main(info):
         ),
     )
 
-    plot.subplot(2).setYlims(0.75, 1.55)
+    # plot.subplot(2).setYlims(0.75, 1.55)
+    plot.subplot(2).setYlims(0.5, 2.0)
     if channel == "mm":
         plot.subplot(0).setLogY()
         plot.subplot(0).setYlims(1, 8 * 10**10)
-        plot.subplot(0).setXlims(50, 150)
-        plot.subplot(1).setXlims(50, 150)
-        plot.subplot(2).setXlims(50, 150)
+        # plot.subplot(0).setXlims(50, 150)
+        # plot.subplot(1).setXlims(50, 150)
+        # plot.subplot(2).setXlims(50, 150)
 
     if args.linear != True:
         plot.subplot(1).setYlims(0.1, split_dict[channel])

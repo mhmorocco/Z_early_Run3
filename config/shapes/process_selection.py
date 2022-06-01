@@ -28,7 +28,9 @@ def lumi_weight(era):
     elif era == "2017":
         lumi = "41.529"
     elif era == "2018":
-        lumi = "59.7"
+        # FIXME: testing with Run2018A only
+        lumi = "13.98"
+        # lumi = "59.7"
     else:
         raise ValueError("Given era {} not defined.".format(era))
     return ("{} * 1000.0".format(lumi), "lumi")
@@ -38,6 +40,7 @@ def MC_base_process_selection(channel, era):
     MC_base_process_weights = [
         ("puweight", "puweight"),
         ("id_wgt_mu_1*id_wgt_mu_2", "idweight"),
+        ("iso_wgt_mu_1*iso_wgt_mu_2", "isoweight"),
         ("numberGeneratedEventsWeight", "numberGeneratedEventsWeight"),
         ("crossSectionPerEventWeight", "crossSectionPerEventWeight"),
         lumi_weight(era),

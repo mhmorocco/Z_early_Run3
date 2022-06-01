@@ -271,21 +271,21 @@ def main(args):
                     ],
                 )
             ],
-            "vvl": [
-                Unit(
-                    datasets["VV"],
-                    [
-                        channel_selection(channel, era),
-                        VV_process_selection(channel, era),
-                        VVL_process_selection(channel),
-                    ],
-                    [
-                        control_binning[channel][v]
-                        for v in set(control_binning[channel].keys())
-                        & set(args.control_plot_set)
-                    ],
-                )
-            ],
+            # "vvl": [
+            #     Unit(
+            #         datasets["VV"],
+            #         [
+            #             channel_selection(channel, era),
+            #             VV_process_selection(channel, era),
+            #             VVL_process_selection(channel),
+            #         ],
+            #         [
+            #             control_binning[channel][v]
+            #             for v in set(control_binning[channel].keys())
+            #             & set(args.control_plot_set)
+            #         ],
+            #     )
+            # ],
             "w": [
                 Unit(
                     datasets["W"],
@@ -332,7 +332,7 @@ def main(args):
         "mm": {
             "zl",
             "ttl",
-            "vvl",
+            # "vvl",
             "w",
         }
     }

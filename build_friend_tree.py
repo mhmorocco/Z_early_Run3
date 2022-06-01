@@ -18,7 +18,11 @@ def job_wrapper(args):
 
 
 def friend_producer(rfile, dataset_proc):
-    output_path = rfile.replace("ntuples", "friends/crosssection")
+    # output_path = rfile.replace("ntuples", "friends/crosssection")
+    output_path = rfile.replace(
+        "/storage/gridka-nrg/moh/CROWN_samples/EarlyRun3_V00/CROWNRun",
+        "/ceph/moh/CROWN_samples/EarlyRun3_V00/friends/crosssection",
+    )
     os.makedirs(output_path, exist_ok=False)
     rdf = ROOT.RDataFrame("ntuple", rfile)
     numberGeneratedEventsWeight = 1 / float(dataset_proc["nevents"])
@@ -55,12 +59,16 @@ def generate_friend_trees(dataset, ntuples, nthreads):
 if __name__ == "__main__":
     # base_path = "ntuples/2018/*/*/*.root"
     # dataset = yaml.load(open("datasets.yaml"), Loader=yaml.Loader)
-    base_path = "/ceph/rschmieder/run3/CROWN_tutorial/ntuples/2018/*/*/*.root"
-    dataset = yaml.load(open("dataset_tut.yml"), Loader=yaml.Loader)
+    # base_path = "/ceph/rschmieder/run3/CROWN_tutorial/ntuples/2018/*/*/*.root"
+    # dataset = yaml.load(open("dataset_tut.yml"), Loader=yaml.Loader)
+
+    base_path = "/storage/gridka-nrg/moh/CROWN_samples/EarlyRun3_V00/CROWNRun/2018/*/*/*.root"
+    dataset = yaml.load(open("datasets.yaml"), Loader=yaml.Loader)
+
     ntuples = glob.glob(base_path)
     ntuples_wo_data = ntuples.copy()
     for ntuple in ntuples:
-        if "Double" in ntuple:
+        if "Run201" in ntuple:
             ntuples_wo_data.remove(str(ntuple))
     nthreads = 2
     if nthreads > len(ntuples_wo_data):
