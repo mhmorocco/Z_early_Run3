@@ -38,7 +38,20 @@ common_files_2018 = {
 
 common_files_2018_UL = {
     "DY": [
-        "DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8_RunIISummer20UL18NanoAODv9-106X",
+        # "ZToMuMu_M-120To200_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL18NanoAODv9-106X",
+        # "ZToMuMu_M-1400To2300_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL18NanoAODv9-106X",
+        # "ZToMuMu_M-200To400_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL18NanoAODv9-106X",
+        # "ZToMuMu_M-2300To3500_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL18NanoAODv9-106X",
+        # "ZToMuMu_M-3500To4500_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL18NanoAODv9-106X",
+        # "ZToMuMu_M-400To800_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL18NanoAODv9-106X",
+        # "ZToMuMu_M-4500To6000_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL18NanoAODv9-106X",
+        # "ZToMuMu_M-50To120_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL18NanoAODv9-106X",
+        # "ZToMuMu_M-6000ToInf_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL18NanoAODv9-106X",
+        # "ZToMuMu_M-800To1400_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL18NanoAODv9-106X",
+
+        "DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8_RunIISummer20UL18NanoAODv9-106X"
+        
+        # "DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8_RunIISummer20UL18NanoAODv9-106X",
 
         # "DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8",
         # "DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8",
@@ -82,6 +95,9 @@ files = {
             {
                 "data": [
                     "SingleMuon_Run2018A-UL2018",
+                    "SingleMuon_Run2018B-UL2018",
+                    "SingleMuon_Run2018C-UL2018",
+                    "SingleMuon_Run2018D-UL2018",
                 ],
             },
             **common_files_2018_UL

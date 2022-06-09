@@ -28,9 +28,10 @@ def lumi_weight(era):
     elif era == "2017":
         lumi = "41.529"
     elif era == "2018":
-        # FIXME: testing with Run2018A only
-        lumi = "13.98"
-        # lumi = "59.7"
+        # FIXME: testing with Run2018D only
+        # lumi = "31.75"
+        # lumi = "13.98"  # Run2018A
+        lumi = "59.7"
     else:
         raise ValueError("Given era {} not defined.".format(era))
     return ("{} * 1000.0".format(lumi), "lumi")
@@ -38,10 +39,12 @@ def lumi_weight(era):
 
 def MC_base_process_selection(channel, era):
     MC_base_process_weights = [
+        ("genweight/abs(genweight)", "genweight"),
         ("puweight", "puweight"),
         ("id_wgt_mu_1*id_wgt_mu_2", "idweight"),
         ("iso_wgt_mu_1*iso_wgt_mu_2", "isoweight"),
-        ("numberGeneratedEventsWeight", "numberGeneratedEventsWeight"),
+        # ("numberGeneratedEventsWeight", "numberGeneratedEventsWeight"),
+        ("sumwWeight", "sumwWeight"),
         ("crossSectionPerEventWeight", "crossSectionPerEventWeight"),
         lumi_weight(era),
     ]
@@ -50,7 +53,10 @@ def MC_base_process_selection(channel, era):
 
 def DY_process_selection(channel, era):
     DY_process_weights = MC_base_process_selection(channel, era).weights
-    return Selection(name="DY", weights=DY_process_weights)
+    cuts = [
+        ("(gen_match_1 != 15 && gen_match_2 != 15)", "tautauFilter")
+    ]
+    return Selection(name="DY", cuts=cuts, weights=DY_process_weights)
 
 
 def TT_process_selection(channel, era):

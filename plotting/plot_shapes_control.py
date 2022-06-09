@@ -17,7 +17,6 @@ from multiprocessing import Pool
 from multiprocessing import Process
 import multiprocessing
 
-
 def parse_arguments():
     parser = argparse.ArgumentParser(
         description="Plot categories using Dumbledraw from shapes produced by shape-producer module."
@@ -360,6 +359,7 @@ def main(info):
     elif "2017" in args.era:
         plot.DrawLumi("41.5 fb^{-1} (2017, 13 TeV)")
     elif "2018" in args.era:
+        # plot.DrawLumi("XYZ fb^{-1} (2018, 13 TeV)")
         plot.DrawLumi("59.7 fb^{-1} (2018, 13 TeV)")
     else:
         logger.critical("Era {} is not implemented.".format(args.era))
